@@ -8,26 +8,25 @@ DUMP    = $(BASE)-objdump
 BUILD_DIR=zpu_obj
 
 DIAG_PRJ = VampireDiag
+
+MINSTARTUP_SRC = ../Common/mincrt0.s
+MINSTARTUP_OBJ = $(patsubst ../Common/%.s,$(BUILD_DIR)/%.o,$(MINSTARTUP_SRC))
+
 COMMON_SRC = ../Common/minisoc_hardware.c ../Common/minisoc_hardware.h ../Common/small_printf.c ../Common/small_printf.h
 COMMON_OBJ = $(patsubst ../Common/%.c,$(BUILD_DIR)/%.o,$(COMMON_SRC))
 
-DIAG_SRC_C = main.c md5.c font8.h font8.c amiga.c amiga.h
+DIAG_SRC_C = main.c font8.h font8.c amiga.c amiga.h
 DIAG_OBJ_C = $(patsubst %.c,$(BUILD_DIR)/%.o,$(DIAG_SRC_C))
-DIAG_OBJ = $(DIAG_OBJ_C) $(COMMON_OBJ)
+DIAG_OBJ = $(MINSTARTUP_OBJ) $(DIAG_OBJ_C) $(COMMON_OBJ)
 
-LINKMAP  = dhry.ld
+LINKMAP  = $(DIAG_PRJ).ld
 LIBDIR   = 
-
-# Commandline options for each tool.
-#ZPUOPTS= -mno-poppcrel -mno-compare -mno-byteop -mno-shortop -mno-callpcrel \
-#  -mno-call -mno-neqbranch -mno-pushspadd \
-#  -mno-neg -mno-mod -mno-div
 
 ZPUOPTS= # -mno-poppcrel -mno-pushspadd -mno-callpcrel -mno-mult -mno-div # -mno-neg
 
 CFLAGS  = -I. -I../Common/ -c -O6 $(ZPUOPTS) -DPRINTF_HEX_ONLY # -DDISABLE_PRINTF -DDISABLE_UART
 AFLAGS  = 
-LFLAGS  = -mboard=abel -O6 -Wl,--relax
+LFLAGS  = -T$(LINKMAP) -mboard=abel -O6 -Wl,--relax -nostdlib
 CP_HEXFLAGS = -Oihex
 CP_SRECFLAGS = -Osrec --gap-fill 0
 
@@ -64,6 +63,9 @@ $(DIAG_PRJ).elf: $(DIAG_OBJ)
 	$(LD) $(LFLAGS) -o $@ $+ $(LIBS)
 
 $(BUILD_DIR)/%.o: ../Common/%.c
+	$(CC) $(CFLAGS)  -o $@ -c $<
+
+$(BUILD_DIR)/%.o: ../Common/%.s
 	$(CC) $(CFLAGS)  -o $@ -c $<
 
 $(BUILD_DIR)/%.o: %.c

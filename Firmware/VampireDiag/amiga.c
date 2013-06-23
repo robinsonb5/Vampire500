@@ -3,7 +3,7 @@
 
 #define plane0 0x8000
 
-short *copper=(short *)(plane0+640/8*208);
+short *copper;
 static int cursorx,cursory;
 
 static void ClearScreen()
@@ -26,6 +26,7 @@ static void BuildCopperlist(short *c,void *p)
 
 void Amiga_SetupScreen()
 {
+	copper=(short *)(plane0+640/8*208);
 	HW_AMIGA(BPLCON0)=0x9000; // hires, 1 bitplane
 	HW_AMIGA(BPLCON1)=0x0000; // horizontal scroll = 0
 	HW_AMIGA(BPLCON2)=0x0000;
