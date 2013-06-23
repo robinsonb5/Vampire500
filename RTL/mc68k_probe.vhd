@@ -33,7 +33,7 @@ entity mc68k_probe is
 		  oBRn					: out    std_logic:='1';
 		  iBGn					: in    std_logic;
 		  oBGACKn				: out    std_logic:='1';
-		  E						: out   std_logic;
+		  E						: buffer   std_logic;
 		  E_in               : in std_logic; 
 		  VMA_in 				: in std_logic;
  
@@ -93,15 +93,12 @@ signal amiga_risingedge_write : std_logic;
 signal amiga_fallingedge_write : std_logic;
 
 
-
 -- E Clock signals
-signal e_counter : std_logic_vector(3 downto 0); 
+signal eclk_shift : std_logic_vector(9 downto 0) := "1111000000";
+signal eclk_fallingedge : std_logic;
 signal VMA_int : std_logic;
-signal E_int : std_logic;
 
 
-signal SYNCn : std_logic;
-signal SYNCn_low : std_logic;
 signal signaltap_clk : std_logic;
 --
 -- FSM
@@ -118,11 +115,6 @@ signal mystate : mystates :=init;    -- Declare state machine variable with init
 
 signal amiga_addr : std_logic_vector(23 downto 1); -- CPU's current address
 signal reset_counter : unsigned(15 downto 0) := X"FFFF";
-
-
-
-
-
 
 
 
@@ -200,7 +192,8 @@ end process;
 	
 -- Instantiate CPU and Boot ROM
 
-myTG68 : entity work.TG68KdotC_Kernel
+--myTG68 : entity work.TG68KdotC_Kernel
+myTG68 : entity work.DummyCPU
 	generic map
 	(
 		SR_Read =>2,
@@ -234,57 +227,25 @@ myTG68 : entity work.TG68KdotC_Kernel
 		regin => open
 	);
 
-process(reset_a,clk_7Mhz) is
-begin
-if reset_a = '0' then
-e_counter <= "0000";
-elsif e_counter = "1010" then
-e_counter <= "0000";
-elsif rising_edge(clk_7Mhz) then
-e_counter <= e_counter + 1;
-end if;
-end process; 
 
-E <= '1' when e_counter = "0110" or e_counter = "0111" or e_counter = "1000" or e_counter = "1001" else '0';
---SYNCn <= '0' when (VMA_int ='0' and (e_counter = "1000" or e_counter = "1001")) else '1';
---SR FlipFlop
-process(clk_7Mhz,reset_a)
+-- ECLK generation.
+-- Every rising edge of the Amiga's clock we rotate a 10-bit register
+-- 1 bit to the right.  The lowest bit of this register is output as the eclk signal.
+
+process(reset_a,sysclk)
 begin
-if reset_a = '0' then
-VMA_int <= '1';
-elsif rising_edge(clk_7Mhz) then
-if (e_counter = "0010" and iVPA = '0') then
-VMA_int <= '0';
-elsif iVPA = '1' then
-VMA_int <= '1';
-end if;
-end if;
+	eclk_fallingedge<=eclk_shift(9) and not eclk_shift(0);  -- 1 when shift="1111000000"
+	if reset_a='0' then
+		eclk_shift<="1111000000"; -- High for 4 clocks, low for six clocks;
+	elsif rising_edge(sysclk) then  -- Use sysclk rather than 7MHz clock so we have scope to adjust phase if need be.
+		if amiga_risingedge_write='1' then
+			eclk_shift<=eclk_shift(0)&eclk_shift(9 downto 1);	-- Rotate eclock register 1 bit right;
+		end if;
+	end if;
 end process;
 
---Generate SYNC to end bus cycle
-
-process(clk_7Mhz,reset_a)
-begin
-if reset_a = '0' then
-SYNCn <= '1';
-elsif rising_edge(clk_7Mhz) then
-if (VMA_int ='0' and (e_counter = "1000" or e_counter = "1001")) then
-SYNCn <= '0';
-else 
-SYNCn <= '1';
-end if;
-end if;
-end process;
-
-
---Generate SYNC to end bus cycle
-
-
-
-
-
+E<=eclk_shift(0);
 oVMA <= VMA_int;
-
 
 	
 -- Simple boot ROM for testing.  Once this is tested and working we can remove it
@@ -311,6 +272,7 @@ begin
 			when init =>
 			if amiga_risingedge_read='1' then
 				ioTG68_DATA <= (others=>'Z');	-- Make the data lines high-impedence, suitable for input
+				VMA_int<='1';
 --				amiga_addr  <= (others=>'Z');
 			  reset_counter<=X"FFFF";
 			  mystate<=reset;
@@ -352,7 +314,9 @@ begin
 					U1_U2_DIR 			<= '1';    -- enable ALVC => ADDR
 					U1_U2_OE 			<= '0';
 					
-		
+					U2_2DIR_C			<= '1';		-- enable ALVC => VMA, RESET, BGACK, etc.
+					U2_2OE_C				<= '0';			
+
 					U3_2DIR_C			<= '1';		-- enable ALVC => AS,UDS,LDS,RW
 					U3_2OE_C				<= '0';			
 
@@ -397,19 +361,15 @@ begin
 
 
 			when delay1 =>
+				cpu_clkena<='1';			
 				mystate<=delay2;
 				
 			when delay2 =>
-				cpu_clkena<='1';			
 				mystate<=delay3;
 				
-				
 			when delay3 =>
-         mystate<=main;
+				mystate<=main;
 		
-		
-		
-	
 				
 	
 			-- **** WRITE CYCLE ****
@@ -445,34 +405,36 @@ begin
 				end if;
 
 			when writeS4 =>
-					
+
 				if amiga_risingedge_write='1' then -- Entering S4...	
 					oTG68_UDSn  <=cpu_uds;	-- Write UDS/LDS on rising edge of S4
 					oTG68_LDSn  <=cpu_lds;
-							
-					if iTG68_DTACKn ='0' or SYNCn = '0' then	-- Wait for DTACK or VPA
-						mystate<=writeS5;	-- Skip State 5 since nothing happens there.
-					
-					end if;
-					
-					
+
+					-- 6800-style cycle?
+					if iVPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
+						VMA_int<='0';
+						mystate<=writeS5;
+					elsif iTG68_DTACKn ='0' then	-- Wait for DTACK or VPA
+						mystate<=writeS5;
+					end if;					
 				end if;
-				
-				
 				
 				
 			when writeS5 => -- Nothing happens during S5			
-		        if amiga_fallingedge_write='1' then
-				  mystate<=writeS6;
-				  end if;
+				if amiga_fallingedge_write='1' then
+					mystate<=writeS6;
+				end if;
 				  			
 			when writeS6 => -- Nothing happens during S3
-				if amiga_risingedge_write='1' then 	
+				if iVPA='0' then
+					if eclk_fallingedge='1' then
+						mystate<=writeS7;
+					end if;
+				elsif amiga_risingedge_write='1' then 	
 --					cpu_clkena<='1'; -- We've finished with the CPU data now, so let the CPU run for 1 cycle
 					mystate<=writeS7;
 				end if;
-				
-					
+		
 			when writeS7 =>
 --				cpu_clkena<='1';			
 				if amiga_fallingedge_write='1' then -- Entering S7				
@@ -493,9 +455,10 @@ begin
 					U4_2OE_C  <= '0';	
 					ioTG68_DATA <= (others=>'Z');
 					amiga_addr  <= (others=>'Z');
+					VMA_int<='1';
 --					if cpustate="01" then
 					
-						mystate<=delay2;						
+						mystate<=delay1;						
 --					else
 --						if cpu_r_w='0' then					
 --							mystate<=writeS0;
@@ -526,8 +489,6 @@ begin
 				if amiga_risingedge_read='1' then -- Rising edge of S2
 					oTG68_ASn  	<='0'; -- Now pull /AS low to indicate that a valid address is on the bus			
 					-- The DATA lines are inputs by default, so we don't have to worry about the direction lines								
---					oTG68_UDSn  <='0';
---					oTG68_LDSn  <='0';
 
 					oTG68_UDSn  <=cpu_uds;	
 					oTG68_LDSn  <=cpu_lds;
@@ -540,65 +501,47 @@ begin
 					mystate<=readS4;
 				end if;	
 				
-				when readS4 =>
-					if amiga_risingedge_read='1' then
-					
-						if iTG68_DTACKn ='0' or SYNCn = '0' then
+			when readS4 =>
+				if amiga_risingedge_read='1' then
+
+					if iVPA='0' and E='0' then -- We're looking at a 6800 cycle, and are synchronised to the E clock
+						VMA_int<='0'; -- Indicate to 6800 device that the cycle is ready to proceed.
 						mystate<=readS6;
---						elsif iVPA = '0' then 
---						mystate<=read_wait;
-						end if;
+					elsif iTG68_DTACKn ='0' then -- Normal cycle.
+						mystate<=readS6;
 					end if;
+				end if;
 				
 			when readS5 =>
-					if amiga_fallingedge_read='1' then	-- Entering S6...
-														
-							mystate<=readS6;
-							
+					if amiga_fallingedge_read='1' then	-- Entering S6...										
+							mystate<=readS6;		
 					end if;
 				
 			when readS6 =>
-				if amiga_fallingedge_read='1' then
+				cpu_datain<=ioTG68_DATA;
+				if iVPA='0' then
+					if eclk_fallingedge='1' then
+						mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
+					end if;
+				elsif amiga_fallingedge_read='1' then
 					U4_1DIR_C <= '0';	-- Set ALVCs to input, and give them time to turn around.
 					U4_1OE_C  <= '0';	-- (They should be input already, but it doesn't hurt to be sure.)
 					U4_2DIR_C <= '0';
 					U4_2OE_C  <= '0';
-					cpu_datain<=ioTG68_DATA;
-					mystate <= readS7;
+					mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
 				end if;
-				
-				
-				
-			when read_wait =>					
-					if SYNCn = '0' then 
-					mystate <= readS6;
-					end if;
-					
-					
-			
-				
+
 			when readS7 =>	
 --				cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.			
 				if amiga_fallingedge_read='1' then -- Rising edge of next S0
 					oTG68_ASn   <='1'; -- Release /AS
 					oTG68_UDSn  <='1';
 					oTG68_LDSn  <='1'; -- Release /UDS and /LDS
-					
---					end if;
---				if amiga_risingedge_read='1' then 	
+					VMA_int <='1'; -- Release VMA
 	
 					ioTG68_DATA <= (others=>'Z');
 					amiga_addr  <= (others=>'Z');
 					mystate <= delay1;
---					if cpustate="01" then
-												
---					else
---						if cpu_r_w='0' then					
---						mystate<=writeS0;
---					else													
---						mystate <= readS0;
---						end if;
---					end if;
 				end if;		
 				
 				
@@ -608,6 +551,12 @@ begin
 		end case;
 	end if;
 end process;
+
+
+oBRn <='1';
+oBGACKn <= '1';
+--halt_b <= '1';
+--reset_b <= '1';
 
 --LED <= SYNCn;
 

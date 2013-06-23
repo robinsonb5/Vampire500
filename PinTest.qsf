@@ -1,17 +1,17 @@
 # -------------------------------------------------------------------------- #
 #
 # Copyright (C) 1991-2010 Altera Corporation
-# Your use of Altera Corporation's design tools, logic functions 
-# and other software and tools, and its AMPP partner logic 
-# functions, and any output files from any of the foregoing 
-# (including device programming or simulation files), and any 
-# associated documentation or information are expressly subject 
-# to the terms and conditions of the Altera Program License 
-# Subscription Agreement, Altera MegaCore Function License 
-# Agreement, or other applicable license agreement, including, 
-# without limitation, that your use is for the sole purpose of 
-# programming logic devices manufactured by Altera and sold by 
-# Altera or its authorized distributors.  Please refer to the 
+# Your use of Altera Corporation's design tools, logic functions
+# and other software and tools, and its AMPP partner logic
+# functions, and any output files from any of the foregoing
+# (including device programming or simulation files), and any
+# associated documentation or information are expressly subject
+# to the terms and conditions of the Altera Program License
+# Subscription Agreement, Altera MegaCore Function License
+# Agreement, or other applicable license agreement, including,
+# without limitation, that your use is for the sole purpose of
+# programming logic devices manufactured by Altera and sold by
+# Altera or its authorized distributors.  Please refer to the
 # applicable agreement for further details.
 #
 # -------------------------------------------------------------------------- #
@@ -25,7 +25,7 @@
 # Notes:
 #
 # 1) The default values for assignments are stored in the file:
-#		mc68k_probe_assignment_defaults.qdf
+#		PinTest_assignment_defaults.qdf
 #    If this file doesn't exist, see file:
 #		assignment_defaults.qdf
 #
@@ -38,18 +38,13 @@
 
 set_global_assignment -name FAMILY "Cyclone II"
 set_global_assignment -name DEVICE EP2C8Q208C8
-set_global_assignment -name TOP_LEVEL_ENTITY mc68k_probe
-set_global_assignment -name ORIGINAL_QUARTUS_VERSION "10.0 SP1"
-set_global_assignment -name PROJECT_CREATION_TIME_DATE "21:15:42  APRIL 30, 2012"
+set_global_assignment -name TOP_LEVEL_ENTITY PinTest
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION "12.0 SP1"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "11:39:42  JUNE 23, 2013"
 set_global_assignment -name LAST_QUARTUS_VERSION "12.0 SP1"
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name DEVICE_FILTER_PIN_COUNT 208
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
-set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVCMOS"
 set_location_assignment PIN_147 -to clk_7Mhz
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to clk_7Mhz
@@ -210,9 +205,7 @@ set_location_assignment PIN_160 -to iBGn
 set_location_assignment PIN_165 -to iASn
 set_global_assignment -name FMAX_REQUIREMENT "300 MHz"
 set_global_assignment -name FMAX_REQUIREMENT "7 MHz" -section_id clk_7Mhz
-set_instance_assignment -name CLOCK_SETTINGS clk_7Mhz -to clk_7Mhz
 set_global_assignment -name FMAX_REQUIREMENT "50 MHz" -section_id iSYS_CLK
-set_instance_assignment -name CLOCK_SETTINGS iSYS_CLK -to iSYS_CLK
 set_global_assignment -name FMAX_REQUIREMENT "14 MHz" -section_id clk_14Mhz
 set_location_assignment PIN_138 -to E
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to E
@@ -238,10 +231,6 @@ set_global_assignment -name RESERVE_ALL_UNUSED_PINS_NO_OUTPUT_GND "AS INPUT TRI-
 set_global_assignment -name MISC_FILE MC68K/mc68k_probe.dpf
 set_global_assignment -name MISC_FILE FSM/mc68k_probe.dpf
 set_global_assignment -name MISC_FILE 1/mc68k_probe.dpf
-set_global_assignment -name VHDL_FILE RTL/TG68K_Pack.vhd
-set_global_assignment -name VHDL_FILE RTL/TG68KdotC_Kernel.vhd
-set_global_assignment -name VHDL_FILE RTL/TG68K_ALU.vhd
-set_global_assignment -name VHDL_FILE RTL/mc68k_probe.vhd
 set_global_assignment -name QIP_FILE GeneratedRTL/SysClock.qip
 set_global_assignment -name MISC_FILE 2/mc68k_probe.dpf
 set_global_assignment -name MISC_FILE 4/mc68k_probe.dpf
@@ -253,7 +242,6 @@ set_global_assignment -name SEARCH_PATH FSM/ -tag from_archive
 set_global_assignment -name SEARCH_PATH MC68K/ -tag from_archive
 set_global_assignment -name SEARCH_PATH firmware/ -tag from_archive
 
-set_global_assignment -name VHDL_FILE RTL/DummyCPU.vhd
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "DummyCPU:myTG68|FC[0]" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "DummyCPU:myTG68|FC[1]" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "DummyCPU:myTG68|FC[2]" -section_id auto_signaltap_0
@@ -634,5 +622,13 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=00
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=580" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=51827" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=61328" -section_id auto_signaltap_0
-set_global_assignment -name SMART_RECOMPILE ON
+set_global_assignment -name VHDL_FILE RTL/PinTest.vhd
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
+set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
+set_instance_assignment -name CLOCK_SETTINGS clk_7Mhz -to clk_7Mhz
+set_instance_assignment -name CLOCK_SETTINGS iSYS_CLK -to iSYS_CLK
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name SMART_RECOMPILE ON
