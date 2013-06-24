@@ -1,14 +1,14 @@
 #include "amiga.h"
 #include "font8.h"
 
-#define plane0 0x8000
+static int plane0[640*208/8];
+static short copper[8];
 
-short *copper;
 static int cursorx,cursory;
 
 static void ClearScreen()
 {
-	int *p=(int*)plane0;
+	int *p=plane0;
 	int i;
 	for(i=0;i<(640*208/32);++i)
 		*p++=0;
@@ -26,7 +26,6 @@ static void BuildCopperlist(short *c,void *p)
 
 void Amiga_SetupScreen()
 {
-	copper=(short *)(plane0+640/8*208);
 	HW_AMIGA(BPLCON0)=0x9000; // hires, 1 bitplane
 	HW_AMIGA(BPLCON1)=0x0000; // horizontal scroll = 0
 	HW_AMIGA(BPLCON2)=0x0000;
@@ -54,7 +53,7 @@ void Amiga_SetupScreen()
 
 void Amiga_Putc(char c)
 {
-	char *planeptr=(char *)(plane0*(640/8)*(7*cursory)+cursorx);
+	char *planeptr=((char *)plane0)+(640/8)*(7*cursory)+cursorx;
 	int *font=(int *)&font[(c-32)*8];
 	int f1=*font++;
 	int f2=*font++;
@@ -115,9 +114,23 @@ void Amiga_Putc(char c)
 
 void Amiga_Puts(const char *s)
 {
+	// Because we haven't implemented loadb from ROM yet, we can't use *<char*>++.
+	int *s2=(int*)s;
 	char c;
-	while(c=*s++)
-		Amiga_Putc(c);
+	do
+	{
+		int i;
+		int cs=*s2++;
+		for(i=0;i<4;++i)
+		{
+			c=(cs>>24)&0xff;
+			cs<<=8;
+			if(!c)
+				break;
+			Amiga_Putc(c);
+		}
+	}
+	while(c);
 }
 
 #if 0

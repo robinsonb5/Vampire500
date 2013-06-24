@@ -6,6 +6,7 @@ MEMORY
   BOOT (rx) : ORIGIN = 0x04000000, LENGTH = 0x00000008 /* Boot section contains just the initial jump */
   TRAP (rx) : ORIGIN = 0x04000008, LENGTH = 0x00000000 /* Dummy region to ensure we don't have any Initialized writable data */
   CODE (rx) : ORIGIN = 0x04000008, LENGTH = 0x00001ff8 /* Up to the end of the first 4K */
+  AMIGA (rx) : ORIGIN = 0x00000000, LENGTH = 0x00080000 /* Half a meg of CHIP RAM in the Amiga */
 }
 
 
@@ -25,8 +26,6 @@ SECTIONS
   {
 	. = ALIGN(4);
     *(.text)                   /* remaining code */
-    *(.bss)                   /* remaining code */
-	*(COMMON)
   } >CODE
 
   /* .rodata section which is used for read-only data (constants) */
@@ -48,5 +47,11 @@ SECTIONS
     . = ALIGN(4);
   } >TRAP
 
+  .bss :
+  {
+	. = ALIGN(4);
+    *(.bss)                   /* BSS Data */
+	*(COMMON)
+  } >AMIGA
   __bss_end__ = . ;
 }
