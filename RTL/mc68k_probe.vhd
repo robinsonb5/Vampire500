@@ -3,11 +3,12 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
+
 entity mc68k_probe is
    port(
 			iSYS_CLK				: in std_logic;		-- 50MHz clock
 			reset_a			   : in std_logic;		-- System Reset
-			reset_b			   : out std_logic;		-- System Reset
+			reset_b			   : out std_logic;	-- System Reset 
 			halt_a				: in    std_logic;
 			halt_b				: out    std_logic;
 			clk_7Mhz          : in std_logic;      -- 7MHz clock from Amiga 600 motherboard 
@@ -92,6 +93,8 @@ signal amiga_fallingedge_read : std_logic;
 signal amiga_risingedge_write : std_logic;
 signal amiga_fallingedge_write : std_logic;
 
+signal sampled_reset : std_logic;
+signal sampled_reset_s : std_logic;
 
 -- E Clock signals
 signal eclk_shift : std_logic_vector(9 downto 0) := "1111000000";
@@ -189,11 +192,22 @@ begin
 	end if;
 end process;
 
+
+-- Synchronise the sampled_reset signal
+process(sysclk,sampled_reset_s)
+begin
+	if rising_edge(sysclk) then
+		sampled_reset_s<=reset_a;
+		sampled_reset<=sampled_reset_s;
+	end if;
+end process;
+
 	
 -- Instantiate CPU and Boot ROM
 
 --myTG68 : entity work.TG68KdotC_Kernel
-myTG68 : entity work.DummyCPU
+--myTG68 : entity work.DummyCPU
+myTG68 : entity work.ZPU_Bridge
 	generic map
 	(
 		SR_Read =>2,
@@ -232,12 +246,10 @@ myTG68 : entity work.DummyCPU
 -- Every rising edge of the Amiga's clock we rotate a 10-bit register
 -- 1 bit to the right.  The lowest bit of this register is output as the eclk signal.
 
-process(reset_a,sysclk)
+process(sysclk)
 begin
 	eclk_fallingedge<=eclk_shift(9) and not eclk_shift(0);  -- 1 when shift="1111000000"
-	if reset_a='0' then
-		eclk_shift<="1111000000"; -- High for 4 clocks, low for six clocks;
-	elsif rising_edge(sysclk) then  -- Use sysclk rather than 7MHz clock so we have scope to adjust phase if need be.
+	if rising_edge(sysclk) then  -- Use sysclk rather than 7MHz clock so we have scope to adjust phase if need be.
 		if amiga_risingedge_write='1' then
 			eclk_shift<=eclk_shift(0)&eclk_shift(9 downto 1);	-- Rotate eclock register 1 bit right;
 		end if;
@@ -278,7 +290,8 @@ begin
 			  mystate<=reset;
 			  -- Reset the Amiga....
 			  reset_b <= '0';
-			  halt_b <= '0'; 
+			  halt_b <= '0';
+				TG68_RESETn <= '0';
 			 end if; 
 			when reset =>
 				if amiga_risingedge_read='1' then
@@ -341,6 +354,7 @@ begin
 				-- **** This Main state directs the state machine depending upon the CPU address and write flag. ****
 				
 				when main =>
+
 					if cpustate="01" then -- CPU state 01 (decode) doesn't involve any external access
 						 -- We run CPU one more cycle
 						mystate<=delay1;	-- so we just skip straight to the delay state.
@@ -359,7 +373,12 @@ begin
 								
 					end if;
 
+				-- Respond to reset signal
+				if sampled_reset='0' then
+					mystate <= init;
+				end if;
 
+		
 			when delay1 =>
 				cpu_clkena<='1';			
 				mystate<=delay2;
@@ -368,9 +387,7 @@ begin
 				mystate<=delay3;
 				
 			when delay3 =>
-				mystate<=main;
-		
-				
+				mystate<=main;				
 	
 			-- **** WRITE CYCLE ****
 			when writeS0 =>
@@ -549,6 +566,7 @@ begin
 				null;
 
 		end case;
+
 	end if;
 end process;
 
