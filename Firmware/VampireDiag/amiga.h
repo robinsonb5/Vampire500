@@ -27,7 +27,12 @@
 
 #define HW_AMIGA(x) (*(short *)(0xDFF000+x))
 
-void Amiga_Putc(char c);
+#define CIAA_PRA 0x0001
+#define CIAA_DDRA 0x0201
+
+#define HW_CIAA(x) (*(char *)(0xBFE000+x))
+
+void Amiga_Putc(unsigned char c);
 void Amiga_Puts(const char *s);
 void Amiga_SetupScreen();
 

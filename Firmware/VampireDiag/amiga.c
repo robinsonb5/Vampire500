@@ -51,9 +51,9 @@ void Amiga_SetupScreen()
 	cursory=0;
 }
 
-void Amiga_Putc(char c)
+void Amiga_Putc(unsigned char c)
 {
-	char *planeptr=((char *)plane0)+(640/8)*(7*cursory)+cursorx;
+	char *planeptr=((char *)plane0)+(640/8)*(cursory+7)+cursorx;
 	int *font=(int *)&font[(c-32)*8];
 	int f1=*font++;
 	int f2=*font++;
@@ -61,29 +61,28 @@ void Amiga_Putc(char c)
 
 	*planeptr=f1&0xff;
 	planeptr-=(640/8);
-	f1>>8;
+	f1>>=8;
 	*planeptr=f1&0xff;
 	planeptr-=(640/8);
-	f1>>8;
+	f1>>=8;
 	*planeptr=f1&0xff;
 	planeptr-=(640/8);
-	f1>>8;
+	f1>>=8;
 	*planeptr=f1&0xff;
 	planeptr-=(640/8);
-	f1>>8;
 
 	*planeptr=f2&0xff;
 	planeptr-=(640/8);
-	f2>>8;
+	f2>>=8;
 	*planeptr=f2&0xff;
 	planeptr-=(640/8);
-	f2>>8;
+	f2>>=8;
 	*planeptr=f2&0xff;
 	planeptr-=(640/8);
-	f2>>8;
+	f2>>=8;
 	*planeptr=f2&0xff;
 	planeptr-=(640/8);
-	f2>>8;
+	f2>>=8;
 
 	if(c==10)	// line feed;
 	{
@@ -116,7 +115,7 @@ void Amiga_Puts(const char *s)
 {
 	// Because we haven't implemented loadb from ROM yet, we can't use *<char*>++.
 	int *s2=(int*)s;
-	char c;
+	unsigned char c;
 	do
 	{
 		int i;
@@ -125,8 +124,8 @@ void Amiga_Puts(const char *s)
 		{
 			c=(cs>>24)&0xff;
 			cs<<=8;
-			if(!c)
-				break;
+			if(c==0)
+				return;
 			Amiga_Putc(c);
 		}
 	}
