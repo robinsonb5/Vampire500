@@ -145,9 +145,9 @@ begin
 							
 						elsif mem_bEnable='1' then -- Byte cycle
 							addr<=mem_addr; -- For halfword or byte writes we use the address unmodified
-							data_write<=mem_write(15 downto 0);
-							nUDS<=not mem_addr(0);
-							nLDS<=mem_addr(0);
+							data_write<=mem_write(7 downto 0)&mem_write(7 downto 0);
+							nUDS<=mem_addr(0);
+							nLDS<=not mem_addr(0);
 							state<=writelow;
 							
 						else	-- longword cycle.
@@ -173,9 +173,9 @@ begin
 						elsif mem_bEnable='1' then -- Byte cycle
 							addr<=mem_addr; -- For halfword or byte writes we use the address unmodified
 							mem_read(31 downto 8)<=(others=>'0');
-							data_write<=mem_write(15 downto 0);
-							nUDS<=not mem_addr(0);
-							nLDS<=mem_addr(0);
+--							data_write<=mem_write(15 downto 0);
+							nUDS<=mem_addr(0);
+							nLDS<=not mem_addr(0);
 							state<=readlow;
 						else	-- longword cycle.
 							addr<=mem_addr(31 downto 2)&"00"; -- longword writes are 32-bit aligned to make the logic simpler

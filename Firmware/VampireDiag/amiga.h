@@ -32,9 +32,11 @@
 
 #define HW_CIAA(x) (*(char *)(0xBFE000+x))
 
-void Amiga_Putc(unsigned char c);
+void Amiga_Putc(int c);
 void Amiga_Puts(const char *s);
 void Amiga_SetupScreen();
+void Amiga_TestPattern();
+void Amiga_TestPattern2();
 
 #endif
 

@@ -6,13 +6,29 @@ static short copper[8];
 
 static int cursorx,cursory;
 
-static void ClearScreen()
+static void FillScreen(int v)
 {
 	int *p=plane0;
 	int i;
 	for(i=0;i<(640*208/32);++i)
-		*p++=0;
+		*p++=v;
 }
+
+
+static void IncScreen()
+{
+	int *p=plane0;
+	int i;
+	for(i=0;i<(640*208/32);++i)
+		(*p++)++;
+}
+
+
+static void ClearScreen()
+{
+	FillScreen(0);
+}
+
 
 static void BuildCopperlist(short *c,void *p)
 {
@@ -51,42 +67,70 @@ void Amiga_SetupScreen()
 	cursory=0;
 }
 
-void Amiga_Putc(unsigned char c)
+
+void Amiga_TestPattern()
 {
 	char *planeptr=((char *)plane0)+(640/8)*(cursory+7)+cursorx;
-	int *font=(int *)&font[(c-32)*8];
-	int f1=*font++;
-	int f2=*font++;
-	int i;
+	int y;
+	for(y=0;y<256;++y)
+	{
+		*planeptr=y;
+		*(planeptr+1)=y;
+		*(planeptr+2)=y;
+		*(planeptr+3)=y;
+		planeptr+=640/8;
+	}
+}
 
-	*planeptr=f1&0xff;
-	planeptr-=(640/8);
-	f1>>=8;
-	*planeptr=f1&0xff;
-	planeptr-=(640/8);
-	f1>>=8;
-	*planeptr=f1&0xff;
-	planeptr-=(640/8);
-	f1>>=8;
-	*planeptr=f1&0xff;
-	planeptr-=(640/8);
 
-	*planeptr=f2&0xff;
-	planeptr-=(640/8);
-	f2>>=8;
-	*planeptr=f2&0xff;
-	planeptr-=(640/8);
-	f2>>=8;
-	*planeptr=f2&0xff;
-	planeptr-=(640/8);
-	f2>>=8;
-	*planeptr=f2&0xff;
-	planeptr-=(640/8);
-	f2>>=8;
+void Amiga_TestPattern2()
+{
+	int v;
+	while(1)
+		IncScreen();
+}
 
-	if(c==10)	// line feed;
+
+void Amiga_Putc(int c)
+{
+	if(c>=32)
+	{
+		char *planeptr=((char *)plane0)+(640/8)*(cursory*8+7)+cursorx;
+		int *f=(int *)&font8[(c-32)*8];
+		int f2=*f++;
+		int f1=*f++;
+		int i;
+
+		*planeptr=f1&0xff;
+		planeptr-=(640/8);
+		f1>>=8;
+		*planeptr=f1&0xff;
+		planeptr-=(640/8);
+		f1>>=8;
+		*planeptr=f1&0xff;
+		planeptr-=(640/8);
+		f1>>=8;
+		*planeptr=f1&0xff;
+		planeptr-=(640/8);
+
+		*planeptr=f2&0xff;
+		planeptr-=(640/8);
+		f2>>=8;
+		*planeptr=f2&0xff;
+		planeptr-=(640/8);
+		f2>>=8;
+		*planeptr=f2&0xff;
+		planeptr-=(640/8);
+		f2>>=8;
+		*planeptr=f2&0xff;
+		planeptr-=(640/8);
+		f2>>=8;
+	}
+
+	if(c=='\n')	// line feed;
 	{
 		++cursory;
+		cursorx=0;
 	}
 	else
 	{

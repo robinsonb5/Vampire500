@@ -10,6 +10,8 @@ int main()
 //	while(1)
 //		HW_AMIGA(COLOR0)=c++;
 	Amiga_SetupScreen();
+	Amiga_TestPattern2();
+
 	Amiga_Putc('H');
 	Amiga_Putc('e');
 	Amiga_Putc('l');
