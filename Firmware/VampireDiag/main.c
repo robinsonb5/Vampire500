@@ -44,7 +44,7 @@ void CheckAlias()
 
 int main()
 {
-	int c;
+	int a,b,c,d,i;
 
 	HW_CIAA(CIAA_DDRA)=0x03;
 	HW_CIAA(CIAA_PRA)=0xfc;
@@ -62,17 +62,34 @@ int main()
 //	Amiga_Putc('\n');
 //	Amiga_Puts("Hello, world!\n");
 
-	c=*(volatile short*)0xfc0000;
-	while(1)
+	a=*(volatile short*)0xfc0000;
+	a=*(volatile short*)0xfc0000;
+	b=*(volatile short*)0x000004; // Change the data on the bus.
+	i=0;
+	c=*(volatile short*)0xf00000;
+	while(a==c)
+	{
+		++i;
+		b=*(volatile short*)0x000004; // Change the data on the bus.
 		c=*(volatile short*)0xf00000;
+	}
+	d=*(volatile short*)0xfc0004; // Something we can pick up in SignalTap
+
+	Amiga_Puts("Shadow of ");
+	Putint(a);
+	Amiga_Puts(" persisted for ");
+	Putint(i);
+	Amiga_Puts(" consecutive reads\n");
+	Amiga_Puts("Ending with a read of ");
+	Putint(c);
 
 //	CheckAlias();
 
 //	while(1)
 //		c=*(volatile int *)0xf00000;
 
-//	while(1)
-//		;
+	while(1)
+		;
     return 0;
 }
 
