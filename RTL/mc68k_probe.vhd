@@ -170,6 +170,10 @@ begin
 		end if;
 		
 		-- An enable signal we can use instead of rising_edge() or falling_edge()
+		-- Note that the _read and _write designations here refer to whether signals
+		-- are being changed by the FPGA or by the Amiga, and have nothing
+		-- to do with whether these are read or write cycles.
+		
 		amiga_risingedge_read<='0';
 		if amigaclk_phase1="00011" then -- phase 5 - might need to adjust this
 			amiga_risingedge_read<='1';
@@ -394,12 +398,14 @@ begin
 				if amiga_risingedge_write='1' then -- Rising edge of S0
 					oTG68_RW   <='1'; -- Drive RW high for the start of the sequence
 											-- (Should be high anyway from previous cycle, so we don't bother to wait.)
+
 					mystate<=writeS1;
 					
 				end if;
 
 			when writeS1 =>
 				if amiga_fallingedge_write='1' then	-- Entering S1 the CPU drives the Address lines.
+					U1_U2_DIR 			<= '1';  -- enable address bus
 					amiga_addr <= cpu_addr(23 downto 1);
 					mystate<=writeS2;
 				end if;
@@ -426,7 +432,8 @@ begin
 				if amiga_risingedge_write='1' then -- Entering S4...	
 					oTG68_UDSn  <=cpu_uds;	-- Write UDS/LDS on rising edge of S4
 					oTG68_LDSn  <=cpu_lds;
-
+				end if;
+				if amiga_risingedge_read='1' then -- Allow a little time for incoming signals to come through the ALVC.
 					-- 6800-style cycle?
 					if iVPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
 						VMA_int<='0';
@@ -472,6 +479,7 @@ begin
 					U4_2OE_C  <= '0';	
 					ioTG68_DATA <= (others=>'Z');
 					amiga_addr  <= (others=>'Z');
+					U1_U2_DIR 			<= '0';  -- Render address bus high-z
 					VMA_int<='1';
 --					if cpustate="01" then
 					
@@ -490,36 +498,37 @@ begin
 			-- **** READ CYCLE ****
 
 			when readS0 =>	
-				if amiga_risingedge_read='1' then
+				if amiga_risingedge_write='1' then
 --				amiga_addr  <= (others=>'Z');
 				oTG68_RW   <='1'; -- Let Amiga know this is a read cycle.
 				mystate<=readS1;
 				end if;
 				
 			when readS1 =>
-				if amiga_fallingedge_read='1' then	-- Entering S1...
+				if amiga_fallingedge_write='1' then	-- Entering S1...
 					amiga_addr <= cpu_addr(23 downto 1);
+					U1_U2_DIR 			<= '1';  -- enable address bus
 					mystate<=readS2;
 				end if;
 				
 			when readS2 =>									
-				if amiga_risingedge_read='1' then -- Rising edge of S2
+				if amiga_risingedge_write='1' then -- Rising edge of S2
 					oTG68_ASn  	<='0'; -- Now pull /AS low to indicate that a valid address is on the bus			
 					-- The DATA lines are inputs by default, so we don't have to worry about the direction lines								
 
 					oTG68_UDSn  <=cpu_uds;	
 					oTG68_LDSn  <=cpu_lds;
 								
-						mystate<=readS3;	
+					mystate<=readS3;	
 				end if;	
 				
 			when readS3 =>
-				if amiga_fallingedge_read='1' then	-- Entering S3...
+				if amiga_fallingedge_write='1' then	-- Entering S3...
 					mystate<=readS4;
 				end if;	
 				
 			when readS4 =>
-				if amiga_risingedge_read='1' then
+				if amiga_risingedge_read='1' then -- "read" to allow time for ALVCs to do their thing.
 
 					if iVPA='0' and E='0' then -- We're looking at a 6800 cycle, and are synchronised to the E clock
 						VMA_int<='0'; -- Indicate to 6800 device that the cycle is ready to proceed.
@@ -540,7 +549,7 @@ begin
 					if eclk_fallingedge='1' then
 						mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
 					end if;
-				elsif amiga_fallingedge_read='1' then
+				elsif amiga_risingedge_read='1' then
 					U4_1DIR_C <= '0';	-- Set ALVCs to input, and give them time to turn around.
 					U4_1OE_C  <= '0';	-- (They should be input already, but it doesn't hurt to be sure.)
 					U4_2DIR_C <= '0';
@@ -550,14 +559,16 @@ begin
 
 			when readS7 =>	
 --				cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.			
-				if amiga_fallingedge_read='1' then -- Rising edge of next S0
+				if amiga_fallingedge_write='1' then -- Rising edge of next S0
 					oTG68_ASn   <='1'; -- Release /AS
 					oTG68_UDSn  <='1';
 					oTG68_LDSn  <='1'; -- Release /UDS and /LDS
 					VMA_int <='1'; -- Release VMA
-	
+
+					-- FIXME - This should be delayed until the rising edge of the next S0
 					ioTG68_DATA <= (others=>'Z');
 					amiga_addr  <= (others=>'Z');
+					U1_U2_DIR 			<= '0';  -- Render address bus high-z
 					mystate <= delay1;
 				end if;		
 				
