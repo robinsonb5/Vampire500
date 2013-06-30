@@ -230,10 +230,6 @@ set_global_assignment -name RESERVE_ALL_UNUSED_PINS_NO_OUTPUT_GND "AS INPUT TRI-
 set_global_assignment -name MISC_FILE MC68K/mc68k_probe.dpf
 set_global_assignment -name MISC_FILE FSM/mc68k_probe.dpf
 set_global_assignment -name MISC_FILE 1/mc68k_probe.dpf
-set_global_assignment -name VHDL_FILE RTL/TG68K_Pack.vhd
-set_global_assignment -name VHDL_FILE RTL/TG68KdotC_Kernel.vhd
-set_global_assignment -name VHDL_FILE RTL/TG68K_ALU.vhd
-set_global_assignment -name QIP_FILE GeneratedRTL/SysClock.qip
 set_global_assignment -name MISC_FILE 2/mc68k_probe.dpf
 set_global_assignment -name MISC_FILE 4/mc68k_probe.dpf
 set_global_assignment -name MISC_FILE mc68k_probe.dpf
@@ -244,11 +240,9 @@ set_global_assignment -name SEARCH_PATH FSM/ -tag from_archive
 set_global_assignment -name SEARCH_PATH MC68K/ -tag from_archive
 set_global_assignment -name SEARCH_PATH firmware/ -tag from_archive
 
-set_global_assignment -name VHDL_FILE RTL/DummyCPU.vhd
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=256" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=256" -section_id auto_signaltap_0
 set_global_assignment -name SMART_RECOMPILE ON
-set_global_assignment -name VHDL_FILE RTL/Vampire500_Top.vhd
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
@@ -495,4 +489,146 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=00
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=370" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=49678" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=8586" -section_id auto_signaltap_0
+set_global_assignment -name QIP_FILE GeneratedRTL/CacheBlockRAM.qip
+set_global_assignment -name VHDL_FILE RTL/TG68K_Pack.vhd
+set_global_assignment -name VHDL_FILE RTL/TG68KdotC_Kernel.vhd
+set_global_assignment -name VHDL_FILE RTL/TG68K_ALU.vhd
+set_global_assignment -name QIP_FILE GeneratedRTL/SysClock.qip
+set_global_assignment -name VHDL_FILE RTL/DummyCPU.vhd
+set_global_assignment -name VHDL_FILE RTL/Vampire500_Top.vhd
+set_global_assignment -name VHDL_FILE RTL/sdram.vhd
+set_global_assignment -name VERILOG_FILE RTL/TwoWayCache.v
+set_location_assignment PIN_56 -to SDRAM_A[12]
+set_location_assignment PIN_57 -to SDRAM_A[11]
+set_location_assignment PIN_76 -to SDRAM_A[10]
+set_location_assignment PIN_58 -to SDRAM_A[9]
+set_location_assignment PIN_59 -to SDRAM_A[8]
+set_location_assignment PIN_60 -to SDRAM_A[7]
+set_location_assignment PIN_61 -to SDRAM_A[6]
+set_location_assignment PIN_63 -to SDRAM_A[5]
+set_location_assignment PIN_64 -to SDRAM_A[4]
+set_location_assignment PIN_82 -to SDRAM_A[3]
+set_location_assignment PIN_81 -to SDRAM_A[2]
+set_location_assignment PIN_80 -to SDRAM_A[1]
+set_location_assignment PIN_77 -to SDRAM_A[0]
+set_location_assignment PIN_35 -to SDRAM_DQ[15]
+set_location_assignment PIN_37 -to SDRAM_DQ[14]
+set_location_assignment PIN_39 -to SDRAM_DQ[13]
+set_location_assignment PIN_40 -to SDRAM_DQ[12]
+set_location_assignment PIN_41 -to SDRAM_DQ[11]
+set_location_assignment PIN_43 -to SDRAM_DQ[10]
+set_location_assignment PIN_44 -to SDRAM_DQ[9]
+set_location_assignment PIN_45 -to SDRAM_DQ[8]
+set_location_assignment PIN_34 -to SDRAM_DQ[7]
+set_location_assignment PIN_33 -to SDRAM_DQ[6]
+set_location_assignment PIN_31 -to SDRAM_DQ[5]
+set_location_assignment PIN_30 -to SDRAM_DQ[4]
+set_location_assignment PIN_15 -to SDRAM_DQ[3]
+set_location_assignment PIN_14 -to SDRAM_DQ[2]
+set_location_assignment PIN_13 -to SDRAM_DQ[1]
+set_location_assignment PIN_12 -to SDRAM_DQ[0]
+set_location_assignment PIN_47 -to SDRAM_CLK
+set_location_assignment PIN_48 -to SDRAM_CKE
+set_location_assignment PIN_46 -to SDRAM_DQMH
+set_location_assignment PIN_67 -to SDRAM_DQML
+set_location_assignment PIN_68 -to SDRAM_WE
+set_location_assignment PIN_69 -to SDRAM_CAS
+set_location_assignment PIN_70 -to SDRAM_RAS
+set_location_assignment PIN_72 -to SDRAM_CS
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[12]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[11]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[10]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[9]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[8]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[7]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[6]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[5]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[4]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[3]
+set_location_assignment PIN_75 -to SDRAM_BA[1]
+set_location_assignment PIN_74 -to SDRAM_BA[0]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[2]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[1]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_A[0]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_BA[1]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_BA[0]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_CAS
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_CKE
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_CLK
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_CS
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[15]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[14]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[13]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[12]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[11]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[10]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[9]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[8]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[7]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[6]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[5]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[4]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[3]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[2]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[1]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQ[0]
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQMH
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_DQML
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_RAS
+set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to SDRAM_WE
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[12]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[11]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[10]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[9]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[8]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[7]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[6]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[5]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[4]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[3]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[2]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[1]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_A[0]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_BA[1]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_BA[0]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_CAS
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_CKE
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_CLK
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_CS
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[15]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[14]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[13]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[12]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[11]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[10]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[9]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[8]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[7]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[6]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[5]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[4]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[3]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[2]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[1]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[0]
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQMH
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQML
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_RAS
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_WE
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[15]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[14]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[13]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[12]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[11]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[10]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[9]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[8]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[7]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[6]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[5]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[4]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[3]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[2]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[1]
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to SDRAM_DQ[0]
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

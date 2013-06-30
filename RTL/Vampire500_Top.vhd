@@ -68,13 +68,25 @@ LED : out std_logic;
 --
 -- ALVT U4 direction	(Lower address bus)		
 --
-			U4_1DIR_C			: out std_logic;
-			U4_1OE_C				: out std_logic:='1';
-			U4_2DIR_C			: out std_logic;
-			U4_2OE_C				: out std_logic:='1'
+		U4_1DIR_C			: out std_logic;
+		U4_1OE_C				: out std_logic:='1';
+		U4_2DIR_C			: out std_logic;
+		U4_2OE_C				: out std_logic:='1';
 --			
+-- SDRAM Signals
+		SDRAM_A : out std_logic_vector(12 downto 0);
+		SDRAM_DQ : inout std_logic_vector(15 downto 0);
+		SDRAM_WE		: out std_logic;	-- Write enable, active low
+		SDRAM_RAS : out std_logic;	-- Row Address Strobe, active low
+		SDRAM_CAS : out std_logic;	-- Column Address Strobe, active low
+		SDRAM_CS : out std_logic;	-- Chip select
+		SDRAM_DQMH : out std_logic;	-- Data mask, upper and lower byte
+		SDRAM_DQML : out std_logic;	-- Data mask, upper and lower byte
+		SDRAM_BA : buffer std_logic_vector(1 downto 0); -- Bank
+		SDRAM_CLK : out std_logic;
+		SDRAM_CKE : out std_logic
 	
-			  );
+	);
 end Vampire500_Top;
 
 ARCHITECTURE logic OF Vampire500_Top IS
@@ -92,6 +104,8 @@ signal amiga_risingedge_read : std_logic;
 signal amiga_fallingedge_read : std_logic;
 signal amiga_risingedge_write : std_logic;
 signal amiga_fallingedge_write : std_logic;
+signal amiga_eitheredge_read : std_logic;
+signal amiga_eitheredge_write : std_logic;
 
 signal sampled_reset : std_logic;
 signal sampled_reset_s : std_logic;
@@ -146,8 +160,23 @@ mySysClock : entity work.SysClock
 		inclk0 => iSYS_CLK,
 		pllena => '1',
 		c0 => sysclk,
-		c1 => open
+		c1 => SDRAM_CLK
 	);
+
+
+-- SDRAM - -Stub out the SDRAM for now.
+SDRAM_A <= (others => '1');
+SDRAM_DQ  <= (others => 'Z');
+SDRAM_WE <= '1';
+SDRAM_RAS <= '1';
+SDRAM_CAS <= '1';
+SDRAM_CS <= '1';
+SDRAM_DQMH <= '1';
+SDRAM_DQML <= '1';
+SDRAM_BA  <= (others => '1');
+SDRAM_CKE <= '1';
+
+	
 
 	
 -- Double-synchronise the Amiga clock signal.
@@ -174,25 +203,27 @@ begin
 		-- to do with whether these are read or write cycles.
 		
 		amiga_risingedge_read<='0';
-		if amigaclk_phase1="00011" then -- phase 5 - might need to adjust this
+		if amigaclk_phase1="00101" then -- phase 5 - might need to adjust this
 			amiga_risingedge_read<='1';
 		end if;	
 
 		amiga_risingedge_write<='0';
-		if amigaclk_phase1="00011" then   ----- 121Mhz 00101 risingedge 00110 fallingedge
+		if amigaclk_phase1="00101" then   ----- 121Mhz 00101 risingedge 00110 fallingedge
 			amiga_risingedge_write<='1';
 		end if;
 
 		amiga_fallingedge_read<='0';
-		if amigaclk_phase2="00011" then -- phase 5 - might need to adjust this
+		if amigaclk_phase2="00101" then -- phase 5 - might need to adjust this
 			amiga_fallingedge_read<='1';
 		end if;	
 				
 		amiga_fallingedge_write<='0';
-		if amigaclk_phase2="00011" then -- phase 5 - might need to adjust this
+		if amigaclk_phase2="00101" then -- phase 5 - might need to adjust this
 			amiga_fallingedge_write<='1';
 		end if;
 	end if;
+	amiga_eitheredge_read <= amiga_fallingedge_read or amiga_risingedge_read;
+	amiga_eitheredge_write <= amiga_fallingedge_write or amiga_risingedge_write;
 end process;
 
 
@@ -234,7 +265,7 @@ myTG68 : entity work.TG68KdotC_Kernel
       data_in => cpu_datain,
 		IPL => cpu_ipl, -- Stub out with 1s for now.  Later we'll replace it with the IPL signals from the Amiga.
 		IPL_autovector => '0',
-		CPU => "11", -- 68000-mode for now.
+		CPU => "00", -- 68000-mode for now.
 		addr(31 downto 24) => nullsig,
 		addr(23 downto 1) => cpu_addr,
 		addr(0) => nullsig0,
@@ -438,20 +469,21 @@ begin
 					oTG68_UDSn  <=cpu_uds;	-- Write UDS/LDS on rising edge of S4
 					oTG68_LDSn  <=cpu_lds;
 				end if;
-				if amiga_risingedge_read='1' then -- Allow a little time for incoming signals to come through the ALVC.
+				if amiga_eitheredge_read='1' then -- Allow a little time for incoming signals to come through the ALVC.
 					-- 6800-style cycle?
 					if iVPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
 						VMA_int<='0';
 						mystate<=writeS5;
+						cpu_clkena<='1';			
 					elsif iTG68_DTACKn ='0' then	-- Wait for DTACK or VPA
+						cpu_clkena<='1';
 						mystate<=writeS5;
 					end if;					
 				end if;
 				
 				
 			when writeS5 => -- Nothing happens during S5			
-				if amiga_fallingedge_write='1' then
-					cpu_clkena<='1';			
+				if amiga_eitheredge_write='1' then
 					mystate<=writeS6;
 				end if;
 				  			
@@ -460,13 +492,13 @@ begin
 					if eclk_fallingedge='1' then
 						mystate<=writeS7;
 					end if;
-				elsif amiga_risingedge_write='1' then 	
+				else -- if amiga_risingedge_write='1' then 	
 --					cpu_clkena<='1'; -- We've finished with the CPU data now, so let the CPU run for 1 cycle
 					mystate<=writeS7;
 				end if;
 		
 			when writeS7 =>
-				if amiga_fallingedge_write='1' then -- Entering S7				
+--				if amiga_fallingedge_write='1' then -- Entering S7				
 					oTG68_ASn  <= '1';
 					oTG68_UDSn <= '1';
 					oTG68_LDSn <= '1';
@@ -480,7 +512,7 @@ begin
 					U1_U2_OE 			<= '1';  -- Render address bus high-z
 					VMA_int<='1';
 					mystate<=main;
-				end if;
+--				end if;
 
 			when writeS8 =>	-- This is just cleaning up in preparation for the next cycle.
 									-- The rising edge here is the rising edge of the next cycle's S0 state.
@@ -514,14 +546,14 @@ begin
 				end if;
 				
 			when readS1 =>
-				if amiga_fallingedge_write='1' then	-- Entering S1...
+--				if amiga_fallingedge_write='1' then	-- Entering S1...
 					amiga_addr <= cpu_addr(23 downto 1);
 					U1_U2_OE 			<= '0';  -- enable address bus
 					mystate<=readS2;
-				end if;
+--				end if;
 				
-			when readS2 =>									
-				if amiga_risingedge_write='1' then -- Rising edge of S2
+			when readS2 =>
+--				if amiga_eitheredge_write='1' then -- Rising edge of S2
 					oTG68_ASn  	<='0'; -- Now pull /AS low to indicate that a valid address is on the bus			
 					-- The DATA lines are inputs by default, so we don't have to worry about the direction lines								
 
@@ -529,10 +561,10 @@ begin
 					oTG68_LDSn  <=cpu_lds;
 								
 					mystate<=readS3;	
-				end if;	
+--				end if;	
 				
 			when readS3 =>
-				if amiga_fallingedge_write='1' then	-- Entering S3...
+				if amiga_eitheredge_write='1' then	-- Entering S3...
 					mystate<=readS4;
 				end if;	
 				
@@ -559,7 +591,7 @@ begin
 						cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 						mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
 					end if;
-				elsif amiga_risingedge_read='1' then
+				elsif amiga_eitheredge_read='1' then
 					cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 					U4_1DIR_C <= '0';	-- Set ALVCs to input, and give them time to turn around.
 					U4_1OE_C  <= '0';	-- (They should be input already, but it doesn't hurt to be sure.)
