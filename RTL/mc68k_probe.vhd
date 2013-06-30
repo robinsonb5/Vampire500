@@ -466,6 +466,7 @@ begin
 					oTG68_UDSn <= '1';
 					oTG68_LDSn <= '1';
 					mystate<=writeS8;
+					cpu_clkena<='1'; -- We've finished with the CPU data now, so let the CPU run for 1 cycle
 				end if;
 
 			when writeS8 =>	-- This is just cleaning up in preparation for the next cycle.
@@ -483,7 +484,7 @@ begin
 					VMA_int<='1';
 --					if cpustate="01" then
 					
-						mystate<=delay1;						
+						mystate<=main;						
 --					else
 --						if cpu_r_w='0' then					
 --							mystate<=writeS0;
@@ -544,21 +545,22 @@ begin
 					end if;
 				
 			when readS6 =>
-				cpu_datain<=ioTG68_DATA;
+				cpu_datain<=ioTG68_DATA; -- This gives the data extra time to settle before we let the CPU run.
 				if iVPA='0' then
 					if eclk_fallingedge='1' then
+						cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 						mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
 					end if;
 				elsif amiga_risingedge_read='1' then
+					cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 					U4_1DIR_C <= '0';	-- Set ALVCs to input, and give them time to turn around.
 					U4_1OE_C  <= '0';	-- (They should be input already, but it doesn't hurt to be sure.)
 					U4_2DIR_C <= '0';
 					U4_2OE_C  <= '0';
-					mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
+					mystate <= readS7;
 				end if;
 
 			when readS7 =>	
---				cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.			
 				if amiga_fallingedge_write='1' then -- Rising edge of next S0
 					oTG68_ASn   <='1'; -- Release /AS
 					oTG68_UDSn  <='1';
@@ -569,7 +571,7 @@ begin
 					ioTG68_DATA <= (others=>'Z');
 					amiga_addr  <= (others=>'Z');
 					U1_U2_DIR 			<= '0';  -- Render address bus high-z
-					mystate <= delay1;
+					mystate <= main;
 				end if;		
 				
 				
