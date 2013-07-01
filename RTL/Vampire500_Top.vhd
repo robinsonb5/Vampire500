@@ -3,6 +3,9 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.sdram_pkg.all;
+
 
 entity Vampire500_Top is
    port(
@@ -91,7 +94,11 @@ end Vampire500_Top;
 
 ARCHITECTURE logic OF Vampire500_Top IS
 
+-- Fast RAM signals
 
+signal sdram_ready : std_logic;
+signal fastram_fromcpu : SDRAM_Port_FromCPU;
+signal fastram_tocpu : SDRAM_Port_ToCPU;
 
 
 -- Clock signals 
@@ -124,7 +131,7 @@ signal TG68_RESETn : std_logic;  -- TG68 reset, active low
 type mystates is
 	(init,reset,state1,state2,main,bootrom,delay1,delay2,delay3,delay4,
 	writeS0,writeS1,writeS2,writeS3,writeS4,writeS5,writeS6,writeS7,writeS8,
-	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,read_wait,read_wait2);
+	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,fast_access,fast2);
 
 signal mystate : mystates :=init;    -- Declare state machine variable with initial value of "init"
 
@@ -137,7 +144,7 @@ signal reset_counter : unsigned(15 downto 0) := X"FFFF";
 
 signal cpu_datain : std_logic_vector(15 downto 0);	-- Data provided by us to CPU
 signal cpu_dataout : std_logic_vector(15 downto 0); -- Data received from the CPU
-signal cpu_addr : std_logic_vector(23 downto 1); -- CPU's current address
+signal cpu_addr : std_logic_vector(31 downto 1); -- CPU's current address
 signal cpu_as : std_logic; -- Address strobe
 signal cpu_uds : std_logic; -- upper data strobe
 signal cpu_lds : std_logic; -- lower data strobe
@@ -150,6 +157,10 @@ signal cpu_ipl : std_logic_vector(2 downto 0);
 
 signal nullsig : std_logic_vector (31 downto 24);
 signal nullsig0 : std_logic;
+
+-- Fast RAM signals
+
+signal sel_fast : std_logic;
 
 BEGIN
 
@@ -165,16 +176,16 @@ mySysClock : entity work.SysClock
 
 
 -- SDRAM - -Stub out the SDRAM for now.
-SDRAM_A <= (others => '1');
-SDRAM_DQ  <= (others => 'Z');
-SDRAM_WE <= '1';
-SDRAM_RAS <= '1';
-SDRAM_CAS <= '1';
-SDRAM_CS <= '1';
-SDRAM_DQMH <= '1';
-SDRAM_DQML <= '1';
-SDRAM_BA  <= (others => '1');
-SDRAM_CKE <= '1';
+--SDRAM_A <= (others => '1');
+--SDRAM_DQ  <= (others => 'Z');
+--SDRAM_WE <= '1';
+--SDRAM_RAS <= '1';
+--SDRAM_CAS <= '1';
+--SDRAM_CS <= '0';
+--SDRAM_DQMH <= '1';
+--SDRAM_DQML <= '1';
+--SDRAM_BA  <= (others => '1');
+SDRAM_CKE <= '0';
 
 	
 
@@ -265,9 +276,8 @@ myTG68 : entity work.TG68KdotC_Kernel
       data_in => cpu_datain,
 		IPL => cpu_ipl, -- Stub out with 1s for now.  Later we'll replace it with the IPL signals from the Amiga.
 		IPL_autovector => '0',
-		CPU => "00", -- 68000-mode for now.
-		addr(31 downto 24) => nullsig,
-		addr(23 downto 1) => cpu_addr,
+		CPU => "11", -- 68000-mode for now.
+		addr(31 downto 1) => cpu_addr,
 		addr(0) => nullsig0,
 		data_write => cpu_dataout,
 		nWr => cpu_r_w,
@@ -313,6 +323,11 @@ oVMA <= VMA_int;
 oTG68_ADDR <= amiga_addr;
 --oTG68_ADDR(0) <= null;
 -- FSM who generates one reset on Amiga motherboards, and after that enables reset_fsm with fsm_ena(active high)
+
+-- Address decoding...
+sel_fast <= '1' when
+  cpu_addr(31 downto 24)=X"01" -- 1000000 17ffff8
+  else '0';
 
 process(sysclk,reset_counter)
 begin
@@ -401,16 +416,16 @@ begin
 												-- (at 7Mhz no delays are strictly necessary,
 												-- but they certainly will be once we ramp up the speed.)
 					else
-					
-						if cpu_r_w='0' then	-- Write cycle.
---									if amiga_risingedge_read='1' then
-									
-									mystate <= writeS0;
---									end if;
-								elsif	cpu_r_w='1' then -- Read cycle
-									mystate <= readS0;
+						if sel_fast='1' then
+							fastram_fromcpu.req<='1';
+							mystate<=fast_access;					
+						else
+							if cpu_r_w='0' then	-- Write cycle.
+								mystate <= writeS0;
+							elsif	cpu_r_w='1' then -- Read cycle
+								mystate <= readS0;
+							end if;
 						end if;
-								
 					end if;
 
 				-- Respond to reset signal
@@ -418,6 +433,16 @@ begin
 					mystate <= init;
 				end if;
 
+			when fast_access =>
+				cpu_datain<=fastram_tocpu.data;	-- copy data from SDRAM to CPU. (Unnecessary but harmless for write cycles.)
+		
+				if fastram_tocpu.ack='0' then
+					fastram_fromcpu.req<='0'; -- Cancel the request, since it's been acknowledged.
+					mystate<=fast2;	-- If we've received the enable signal we can proceed.
+				end if;
+				
+			when fast2 => -- We give the data one more clock to settle.
+				mystate<=delay1; -- If we're very lucky, we might get away with skipping this state.
 		
 			when delay1 =>
 				cpu_clkena<='1';			
@@ -695,4 +720,50 @@ oBGACKn <= '1';
 --  		U4_2OE_C				<= '0';
 -- 
 
+mysdram : component sdram 
+generic map
+	(
+		rows => 13,
+		cols => 10
+	)
+port map
+	(
+	-- Physical connections to the SDRAM
+		sdata => SDRAM_DQ,
+		sdaddr => SDRAM_A,
+		sd_we	=> SDRAM_WE,
+		sd_ras => SDRAM_RAS,
+		sd_cas => SDRAM_CAS,
+		sd_cs	=> SDRAM_CS,
+		dqm(1) => SDRAM_DQMH,
+		dqm(0) => SDRAM_DQML,
+		ba=>SDRAM_BA,
+
+	-- Housekeeping
+		sysclk => sysclk,
+		reset => TG68_RESETn,
+		reset_out => sdram_ready,
+		reinit => '0',
+
+	-- Port 0 - VGA
+		vga_addr => (others=>'X'),
+		vga_data	=> open,
+		vga_req => '0',
+		vga_fill => open,
+		vga_ack => open,
+		vga_refresh => '0',
+		vga_reservebank => '0',
+		vga_reserveaddr => (others=>'X'),
+
+		-- Port 1
+		port1_i => fastram_fromcpu,
+		port1_o => fastram_tocpu
+	);
+
+fastram_fromcpu.wr<=cpu_r_w;
+fastram_fromcpu.data<=cpu_dataout;
+fastram_fromcpu.addr<=cpu_addr&'0'; -- FIXME - need to assign the decoded address properly.
+fastram_fromcpu.uds<=cpu_uds;
+fastram_fromcpu.lds<=cpu_lds;
+	
 END;
