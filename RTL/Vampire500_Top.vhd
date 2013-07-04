@@ -131,7 +131,7 @@ signal TG68_RESETn : std_logic;  -- TG68 reset, active low
 type mystates is
 	(init,reset,state1,state2,main,bootrom,delay1,delay2,delay3,delay4,
 	writeS0,writeS1,writeS2,writeS3,writeS4,writeS5,writeS6,writeS7,writeS8,
-	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,fast_access,fast2);
+	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,fast_access,fast2,fast3);
 
 signal mystate : mystates :=init;    -- Declare state machine variable with initial value of "init"
 
@@ -185,7 +185,7 @@ mySysClock : entity work.SysClock
 --SDRAM_DQMH <= '1';
 --SDRAM_DQML <= '1';
 --SDRAM_BA  <= (others => '1');
-SDRAM_CKE <= '0';
+SDRAM_CKE <= '1';
 
 	
 
@@ -442,7 +442,10 @@ begin
 				end if;
 				
 			when fast2 => -- We give the data one more clock to settle.
-				mystate<=delay1; -- If we're very lucky, we might get away with skipping this state.
+				mystate<=fast3; -- If we're very lucky, we might get away with skipping this state.
+
+			when fast3 => -- We give the data yet one more clock to settle.
+				mystate<=delay1; -- We're not very lucky!
 		
 			when delay1 =>
 				cpu_clkena<='1';			
@@ -751,7 +754,7 @@ port map
 		vga_req => '0',
 		vga_fill => open,
 		vga_ack => open,
-		vga_refresh => '0',
+		vga_refresh => '1',
 		vga_reservebank => '0',
 		vga_reserveaddr => (others=>'X'),
 
