@@ -58,4 +58,33 @@ port
 	);
 end component;
 
+component sdram_simple is
+generic
+	(
+		rows : integer := 12;	-- FIXME - change access sizes according to number of rows
+		cols : integer := 8
+	);
+port
+	(
+-- Physical connections to the SDRAM
+	sdata		: inout std_logic_vector(15 downto 0);
+	sdaddr		: out std_logic_vector((rows-1) downto 0);
+	sd_we		: out std_logic;	-- Write enable, active low
+	sd_ras		: out std_logic;	-- Row Address Strobe, active low
+	sd_cas		: out std_logic;	-- Column Address Strobe, active low
+	sd_cs		: out std_logic;	-- Chip select - only the lsb does anything.
+	dqm			: out std_logic_vector(1 downto 0);	-- Data mask, upper and lower byte
+	ba			: buffer std_logic_vector(1 downto 0); -- Bank?
+
+-- Housekeeping
+	sysclk		: in std_logic;
+	reset		: in std_logic;
+	reset_out	: out std_logic;
+
+	-- Port 1
+	port1_i : in SDRAM_Port_FromCPU;
+	port1_o : out SDRAM_Port_ToCPU
+	);
+end component;
+
 end package;

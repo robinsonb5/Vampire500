@@ -7,7 +7,7 @@ library work;
 use work.sdram_pkg.all;
 
 
-entity Vampire500_Top is
+entity SDRAMTest_Top is
    port(
 			iSYS_CLK				: in std_logic;		-- 50MHz clock
 			reset_a			   : in std_logic;		-- System Reset
@@ -90,15 +90,15 @@ LED : out std_logic;
 		SDRAM_CKE : out std_logic
 	
 	);
-end Vampire500_Top;
+end SDRAMTest_Top;
 
-ARCHITECTURE logic OF Vampire500_Top IS
+ARCHITECTURE logic OF SDRAMTest_Top IS
 
 -- Fast RAM signals
 
 signal sdram_ready : std_logic;
-signal fastram_fromcpu : SDRAM_Port_FromCPU;
-signal fastram_tocpu : SDRAM_Port_ToCPU;
+signal sdram_fromcpu : SDRAM_Port_FromCPU;
+signal sdram_tocpu : SDRAM_Port_ToCPU;
 
 
 -- Clock signals 
@@ -338,6 +338,27 @@ begin
 		 case mystate is	
 			when init =>
 			if amiga_risingedge_read='1' then
+					U1_U2_DIR 			<= '1';    -- enable ALVC => ADDR
+					U1_U2_OE 			<= '0';
+					
+					U2_2DIR_C			<= '1';		-- enable ALVC => VMA, RESET, BGACK, etc.
+					U2_2OE_C				<= '0';			
+
+					U3_2DIR_C			<= '1';		-- enable ALVC => AS,UDS,LDS,RW
+					U3_2OE_C				<= '0';			
+
+					U4_1DIR_C			<= '0'; 		
+					U4_1OE_C				<=	'0';		-- enable ALVC => DATA
+					U4_2DIR_C			<=	'0';	
+					U4_2OE_C				<=	'0';		
+					
+							-- Here you should set direction of ADDR, AS, LDS, UDS and RW as output,
+							-- and set DATA and DTACK as input
+
+					oTG68_ASn   <='1';
+					oTG68_RW    <='1';
+					oTG68_UDSn  <='1';
+					oTG68_LDSn  <='1';
 				ioTG68_DATA <= (others=>'Z');	-- Make the data lines high-impedence, suitable for input
 				VMA_int<='1';
 --				amiga_addr  <= (others=>'Z');
@@ -379,27 +400,6 @@ begin
 				if amiga_risingedge_read='1' then			
 					mystate<=main;	-- go the Main state.
 
-					U1_U2_DIR 			<= '1';    -- enable ALVC => ADDR
-					U1_U2_OE 			<= '0';
-					
-					U2_2DIR_C			<= '1';		-- enable ALVC => VMA, RESET, BGACK, etc.
-					U2_2OE_C				<= '0';			
-
-					U3_2DIR_C			<= '1';		-- enable ALVC => AS,UDS,LDS,RW
-					U3_2OE_C				<= '0';			
-
-					U4_1DIR_C			<= '0'; 		
-					U4_1OE_C				<=	'0';		-- enable ALVC => DATA
-					U4_2DIR_C			<=	'0';	
-					U4_2OE_C				<=	'0';		
-					
-							-- Here you should set direction of ADDR, AS, LDS, UDS and RW as output,
-							-- and set DATA and DTACK as input
-
-					oTG68_ASn   <='1';
-					oTG68_RW    <='1';
-					oTG68_UDSn  <='1';
-					oTG68_LDSn  <='1';
 						
 --				else
 --					mystate<=state2;
@@ -409,239 +409,7 @@ begin
 				-- **** This Main state directs the state machine depending upon the CPU address and write flag. ****
 				
 				when main =>
-
-					if cpustate="01" then -- CPU state 01 (decode) doesn't involve any external access
-						 -- We run CPU one more cycle
-						mystate<=delay1;	-- so we just skip straight to the delay state.
-												-- (at 7Mhz no delays are strictly necessary,
-												-- but they certainly will be once we ramp up the speed.)
-					else
-						if sel_fast='1' then
-							fastram_fromcpu.req<='1';
-							mystate<=fast_access;					
-						else
-							if cpu_r_w='0' then	-- Write cycle.
-								mystate <= writeS0;
-							elsif	cpu_r_w='1' then -- Read cycle
-								mystate <= readS0;
-							end if;
-						end if;
-					end if;
-
-				-- Respond to reset signal
-				if sampled_reset='0' then
-					mystate <= init;
-				end if;
-
-			when fast_access =>
-				cpu_datain<=fastram_tocpu.data;	-- copy data from SDRAM to CPU. (Unnecessary but harmless for write cycles.)
-		
-				if fastram_tocpu.ack='0' then
-					fastram_fromcpu.req<='0'; -- Cancel the request, since it's been acknowledged.
-					mystate<=fast2;	-- If we've received the enable signal we can proceed.
-				end if;
-				
-			when fast2 => -- We give the data one more clock to settle.
-				mystate<=fast3; -- If we're very lucky, we might get away with skipping this state.
-
-			when fast3 => -- We give the data yet one more clock to settle.
-				mystate<=delay1; -- We're not very lucky!
-		
-			when delay1 =>
-				cpu_clkena<='1';			
-				mystate<=delay2;
-				
-			when delay2 =>
-				mystate<=delay3;
-				
-			when delay3 =>
-				mystate<=main;				
-	
-			-- **** WRITE CYCLE ****
-			when writeS0 =>
-				if amiga_risingedge_write='1' then -- Rising edge of S0
-					oTG68_RW   <='1'; -- Drive RW high for the start of the sequence
-											-- (Should be high anyway from previous cycle, so we don't bother to wait.)
-
-					mystate<=writeS1;
-					
-				end if;
-
-			when writeS1 =>
-				if amiga_fallingedge_write='1' then	-- Entering S1 the CPU drives the Address lines.
-					U1_U2_OE 			<= '0';  -- enable address bus
-					amiga_addr <= cpu_addr(23 downto 1);
-					mystate<=writeS2;
-				end if;
-				
-			when writeS2 =>	
-				if amiga_risingedge_write='1' then -- On the rising edge of S2...
-					oTG68_ASn  <='0'; -- Now pull /AS low to indicate that a valid address is on the bus
-					oTG68_RW   <='0'; -- Let Amiga know this is a write cycle.
-					mystate<=writeS3;
-				end if;
-				
-			when writeS3 =>
-				if amiga_fallingedge_write='1' then -- Entering S3...		
-					U4_1DIR_C <= '1';
-					U4_1OE_C  <= '0';            -- ALVC devices as output
-					U4_2DIR_C <= '1';         
-					U4_2OE_C  <= '0';			
-					ioTG68_DATA<=cpu_dataout;     -- DATA to Amiga bus			
-					mystate<=writeS4;
-				end if;
-
-			when writeS4 =>
-
-				if amiga_risingedge_write='1' then -- Entering S4...	
-					oTG68_UDSn  <=cpu_uds;	-- Write UDS/LDS on rising edge of S4
-					oTG68_LDSn  <=cpu_lds;
-				end if;
-				if amiga_eitheredge_read='1' then -- Allow a little time for incoming signals to come through the ALVC.
-					-- 6800-style cycle?
-					if iVPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
-						VMA_int<='0';
-						mystate<=writeS5;
-						cpu_clkena<='1';			
-					elsif iTG68_DTACKn ='0' then	-- Wait for DTACK or VPA
-						cpu_clkena<='1';
-						mystate<=writeS5;
-					end if;					
-				end if;
-				
-				
-			when writeS5 => -- Nothing happens during S5			
-				if amiga_eitheredge_write='1' then
-					mystate<=writeS6;
-				end if;
-				  			
-			when writeS6 => -- Nothing happens during S3
-				if iVPA='0' then
-					if eclk_fallingedge='1' then
-						mystate<=writeS7;
-					end if;
-				else -- if amiga_risingedge_write='1' then 	
---					cpu_clkena<='1'; -- We've finished with the CPU data now, so let the CPU run for 1 cycle
-					mystate<=writeS7;
-				end if;
-		
-			when writeS7 =>
---				if amiga_fallingedge_write='1' then -- Entering S7				
-					oTG68_ASn  <= '1';
-					oTG68_UDSn <= '1';
-					oTG68_LDSn <= '1';
-					ioTG68_DATA <= (others=>'Z');
-					U4_1DIR_C <= '0';
-					U4_1OE_C  <= '0';            -- ALVC devices as input
-					U4_2DIR_C <= '0';
-					U4_2OE_C  <= '0';	
-					oTG68_RW <='1';
---					amiga_addr  <= (others=>'0');
-					U1_U2_OE 			<= '1';  -- Render address bus high-z
-					VMA_int<='1';
-					mystate<=main;
---				end if;
-
-			when writeS8 =>	-- This is just cleaning up in preparation for the next cycle.
-									-- The rising edge here is the rising edge of the next cycle's S0 state.
-				if amiga_risingedge_write='1' then
-
-					oTG68_RW <='1';
---					amiga_addr  <= (others=>'0');
-					U1_U2_OE 			<= '1';  -- Render address bus high-z
-					VMA_int<='1';
---					if cpustate="01" then
-					
-						mystate<=main;						
---					else
---						if cpu_r_w='0' then					
---							mystate<=writeS0;
---						else													
---							mystate <= readS0;
---						end if;
---					end if;
-				end if;		
-					
-		
-				
-			-- **** READ CYCLE ****
-
-			when readS0 =>	
-				if amiga_risingedge_write='1' then
---				amiga_addr  <= (others=>'Z');
-				oTG68_RW   <='1'; -- Let Amiga know this is a read cycle.
-				mystate<=readS1;
-				end if;
-				
-			when readS1 =>
---				if amiga_fallingedge_write='1' then	-- Entering S1...
-					amiga_addr <= cpu_addr(23 downto 1);
-					U1_U2_OE 			<= '0';  -- enable address bus
-					mystate<=readS2;
---				end if;
-				
-			when readS2 =>
---				if amiga_eitheredge_write='1' then -- Rising edge of S2
-					oTG68_ASn  	<='0'; -- Now pull /AS low to indicate that a valid address is on the bus			
-					-- The DATA lines are inputs by default, so we don't have to worry about the direction lines								
-
-					oTG68_UDSn  <=cpu_uds;	
-					oTG68_LDSn  <=cpu_lds;
-								
-					mystate<=readS3;	
---				end if;	
-				
-			when readS3 =>
-				if amiga_eitheredge_write='1' then	-- Entering S3...
-					mystate<=readS4;
-				end if;	
-				
-			when readS4 =>
-				if amiga_risingedge_read='1' then -- "read" to allow time for ALVCs to do their thing.
-
-					if iVPA='0' and E='0' then -- We're looking at a 6800 cycle, and are synchronised to the E clock
-						VMA_int<='0'; -- Indicate to 6800 device that the cycle is ready to proceed.
-						mystate<=readS6;
-					elsif iTG68_DTACKn ='0' then -- Normal cycle.
-						mystate<=readS6;
-					end if;
-				end if;
-				
-			when readS5 =>
-					if amiga_fallingedge_read='1' then	-- Entering S6...										
-							mystate<=readS6;		
-					end if;
-				
-			when readS6 =>
-				cpu_datain<=ioTG68_DATA;
-				if iVPA='0' then
-					if eclk_fallingedge='1' then
-						cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
-						mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
-					end if;
-				elsif amiga_eitheredge_read='1' then
-					cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
-					U4_1DIR_C <= '0';	-- Set ALVCs to input, and give them time to turn around.
-					U4_1OE_C  <= '0';	-- (They should be input already, but it doesn't hurt to be sure.)
-					U4_2DIR_C <= '0';
-					U4_2OE_C  <= '0';
-					mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
-				end if;
-
-			when readS7 =>	
-				if amiga_fallingedge_write='1' then -- Rising edge of next S0
-					oTG68_ASn   <='1'; -- Release /AS
-					oTG68_UDSn  <='1';
-					oTG68_LDSn  <='1'; -- Release /UDS and /LDS
-					VMA_int <='1'; -- Release VMA
-
-					-- FIXME - This should be delayed until the rising edge of the next S0
-					ioTG68_DATA <= (others=>'Z');
---					amiga_addr  <= (others=>'0');
-					U1_U2_OE 			<= '1';  -- Render address bus high-z
-					mystate <= main;
-				end if;		
-				
+					null;
 				
 			when others =>
 				null;
@@ -654,76 +422,8 @@ end process;
 
 oBRn <='1';
 oBGACKn <= '1';
---halt_b <= '1';
---reset_b <= '1';
 
---LED <= SYNCn;
-
---Reset_FSM_inst: reset_fsm
---   port map( 
---    iCLK_7MHZ     => clk_7Mhz,      -- 7MHz clock
---    iRESETn       => reset_a,       -- Active low reset from Amiga 600 motherboards
---	 fsm_ena => fsm_ena,
---
--- MC68k signals
---
---    iASn          => iASn,         -- MC68k address strobe, active low
---    iDTACKn       => iTG68_DTACKn,       -- MC68k DTACKn
---	 ioBRn			=> oBRn,         -- Bus Request output to MC68k
---	 iBGn          => iBGn,          -- Bus Grant input from MC68k
---	 oBGACKn			=> oBGACKn       -- Bus Grant Acknowledge to the MC68k
-	 
-
---
--- TG68 signals
---
- --   oTG68_RESETn  => TG68_RESETn  -- TG68 reset, active low
---		);
-		
-
---
--- ALVT U1 direction		Cocntrol bus	
---
---			U1_U2_OE 			<= '0';
---			U1_U2_DIR 			<= '0';
-		
---			U1_1DIR_C			<= '0';  -- '0' = B to A, = input to FPGA
---			U1_1OE_C				<= '0'; -- '0' = always enable outputs
---			U1_2DIR_C			<= '0';
---			U1_2OE_C				<= '0';
- 
-
---
--- ALVT U2 direction		Data bus	
---
-
---			U2_1DIR_C			<= '0'; -- '0' = RD, '1' = WR
---			U2_1OE_C				<= '0';
---			U2_2DIR_C			<= '1';
---			U2_2OE_C				<= '0';
- 
-
---
--- ALVT U3 direction	Upper address bus		
---
-
---			U3_1DIR_C			<= '0';
---			U3_1OE_C				<= '0';
---			U3_2DIR_C			<= '0';
---			U3_2OE_C				<= '0';
- 
-
---
--- ALVT U4 direction	Lower address bus		
---
-
---			U4_1DIR_C			<= '0';
---			U4_1OE_C				<= '0';
---   		U4_2DIR_C			<= '0';
---  		U4_2OE_C				<= '0';
--- 
-
-mysdram : component sdram_simple
+mysdram : entity work.sdramtest
 generic map
 	(
 		rows => 13,
@@ -732,30 +432,22 @@ generic map
 port map
 	(
 	-- Physical connections to the SDRAM
-		sdata => SDRAM_DQ,
-		sdaddr => SDRAM_A,
-		sd_we	=> SDRAM_WE,
-		sd_ras => SDRAM_RAS,
-		sd_cas => SDRAM_CAS,
-		sd_cs	=> SDRAM_CS,
-		dqm(1) => SDRAM_DQMH,
-		dqm(0) => SDRAM_DQML,
-		ba=>SDRAM_BA,
+		sdr_data => SDRAM_DQ,
+		sdr_addr => SDRAM_A,
+		sdr_we	=> SDRAM_WE,
+		sdr_ras => SDRAM_RAS,
+		sdr_cas => SDRAM_CAS,
+		sdr_cs	=> SDRAM_CS,
+		sdr_dqm(1) => SDRAM_DQMH,
+		sdr_dqm(0) => SDRAM_DQML,
+		sdr_ba=>SDRAM_BA,
 
 	-- Housekeeping
-		sysclk => sysclk,
-		reset => TG68_RESETn,
-		reset_out => sdram_ready,
-
-		-- Port 1
-		port1_i => fastram_fromcpu,
-		port1_o => fastram_tocpu
+		clk => sysclk,
+		reset_n => TG68_RESETn,
+		errorbits => amiga_addr(23 downto 8) -- Make sure they're not optimised away.
 	);
 
-fastram_fromcpu.wr<=cpu_r_w;
-fastram_fromcpu.data<=cpu_dataout;
-fastram_fromcpu.addr<=cpu_addr&'0'; -- FIXME - need to assign the decoded address properly.
-fastram_fromcpu.uds<=cpu_uds;
-fastram_fromcpu.lds<=cpu_lds;
+	sdram_ready<='1';
 	
 END;

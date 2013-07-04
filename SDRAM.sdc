@@ -63,8 +63,8 @@ derive_clock_uncertainty;
 # Set Input Delay
 #**************************************************************
 
-set_input_delay -clock sdclk_pin -max 5.8 [get_ports SDRAM_DQ*]
-set_input_delay -clock sdclk_pin -min 3.2 [get_ports SDRAM_DQ*]
+set_input_delay -clock sdclk_pin -max 6.4 [get_ports SDRAM_DQ*]
+set_input_delay -clock sdclk_pin -min 1.0 [get_ports SDRAM_DQ*]
 
 #**************************************************************
 # Set Output Delay
