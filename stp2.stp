@@ -1,0 +1,370 @@
+<session jtag_chain="USB-Blaster [2-6]" jtag_device="@1: EP2C8 (0x020B20DD)" sof_file="Vampire500.sof">
+  <display_tree gui_logging_enabled="0">
+    <display_branch instance="auto_signaltap_0" log="USE_GLOBAL_TEMP" signal_set="USE_GLOBAL_TEMP" trigger="USE_GLOBAL_TEMP"/>
+  </display_tree>
+  <instance entity_name="sld_signaltap" is_auto_node="yes" is_expanded="true" name="auto_signaltap_0" source_file="sld_signaltap.vhd">
+    <node_ip_info instance_id="0" mfg_id="110" node_id="0" version="6"/>
+    <signal_set global_temp="1" is_expanded="true" name="signal_set: 2013/07/05 00:42:39  #0">
+      <clock name="SysClock:mySysClock|altpll:altpll_component|clk[0]" polarity="posedge" tap_mode="classic"/>
+      <config ram_type="M4K" reserved_data_nodes="0" reserved_storage_qualifier_nodes="0" reserved_trigger_nodes="0" sample_depth="64" trigger_in_enable="no" trigger_out_enable="no"/>
+      <top_entity/>
+      <signal_vec>
+        <trigger_input_vec>
+          <wire name="SDRAM_A[0]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[10]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[11]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[12]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[1]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[2]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[3]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[4]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[5]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[6]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[7]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[8]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[9]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_CAS" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_DQ[0]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[10]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[11]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[12]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[13]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[14]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[15]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[1]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[2]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[3]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[4]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[5]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[6]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[7]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[8]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[9]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_RAS" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_WE" tap_mode="classic" type="output pin"/>
+          <wire name="sdram:mysdram|TwoWayCache:mytwc|ready" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|port1_i.req" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|port1_o.ack" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|refreshpending" tap_mode="classic" type="register"/>
+          <wire name="sdram:mysdram|reset" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|reset_out" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|error" tap_mode="classic" type="register"/>
+          <wire name="sdramtest:mysdram|errorbits[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[9]" tap_mode="classic" type="combinatorial"/>
+        </trigger_input_vec>
+        <data_input_vec>
+          <wire name="SDRAM_A[0]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[10]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[11]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[12]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[1]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[2]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[3]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[4]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[5]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[6]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[7]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[8]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[9]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_CAS" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_DQ[0]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[10]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[11]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[12]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[13]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[14]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[15]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[1]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[2]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[3]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[4]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[5]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[6]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[7]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[8]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[9]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_RAS" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_WE" tap_mode="classic" type="output pin"/>
+          <wire name="sdram:mysdram|TwoWayCache:mytwc|ready" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|port1_i.req" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|port1_o.ack" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|refreshpending" tap_mode="classic" type="register"/>
+          <wire name="sdram:mysdram|reset" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|reset_out" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|error" tap_mode="classic" type="register"/>
+          <wire name="sdramtest:mysdram|errorbits[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[9]" tap_mode="classic" type="combinatorial"/>
+        </data_input_vec>
+        <storage_qualifier_input_vec>
+          <wire name="SDRAM_A[0]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[10]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[11]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[12]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[1]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[2]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[3]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[4]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[5]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[6]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[7]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[8]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_A[9]" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_CAS" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_DQ[0]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[10]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[11]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[12]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[13]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[14]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[15]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[1]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[2]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[3]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[4]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[5]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[6]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[7]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[8]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_DQ[9]" tap_mode="classic" type="bidir pin"/>
+          <wire name="SDRAM_RAS" tap_mode="classic" type="output pin"/>
+          <wire name="SDRAM_WE" tap_mode="classic" type="output pin"/>
+          <wire name="sdram:mysdram|TwoWayCache:mytwc|ready" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|port1_i.req" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|port1_o.ack" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|refreshpending" tap_mode="classic" type="register"/>
+          <wire name="sdram:mysdram|reset" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram:mysdram|reset_out" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|error" tap_mode="classic" type="register"/>
+          <wire name="sdramtest:mysdram|errorbits[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdramtest:mysdram|errorbits[9]" tap_mode="classic" type="combinatorial"/>
+        </storage_qualifier_input_vec>
+      </signal_vec>
+      <presentation>
+        <data_view>
+          <net is_signal_inverted="no" name="sdram:mysdram|TwoWayCache:mytwc|ready"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|port1_i.req"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|port1_o.ack"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|refreshpending"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|reset"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|reset_out"/>
+          <bus is_signal_inverted="no" link="all" name="SDRAM_A" order="msb_to_lsb" radix="hex" state="collapse" type="output pin">
+            <net is_signal_inverted="no" name="SDRAM_A[12]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[11]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[10]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[9]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[8]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[7]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[6]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[5]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[4]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[3]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[2]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[1]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="SDRAM_DQ" order="msb_to_lsb" radix="hex" state="collapse" type="bidir pin">
+            <net is_signal_inverted="no" name="SDRAM_DQ[15]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[14]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[13]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[12]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[11]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[10]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[9]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[8]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[7]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[6]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[5]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[4]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[3]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[2]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[1]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[0]"/>
+          </bus>
+          <net is_signal_inverted="no" name="SDRAM_CAS"/>
+          <net is_signal_inverted="no" name="SDRAM_RAS"/>
+          <net is_signal_inverted="no" name="SDRAM_WE"/>
+          <net is_signal_inverted="no" name="sdramtest:mysdram|error"/>
+          <bus is_signal_inverted="no" link="all" name="sdramtest:mysdram|errorbits" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[15]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[14]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[13]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[12]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[11]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[10]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[9]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[8]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[7]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[6]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[5]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[4]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[3]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[2]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[1]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[0]"/>
+          </bus>
+        </data_view>
+        <setup_view>
+          <net is_signal_inverted="no" name="sdram:mysdram|TwoWayCache:mytwc|ready"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|port1_i.req"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|port1_o.ack"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|refreshpending"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|reset"/>
+          <net is_signal_inverted="no" name="sdram:mysdram|reset_out"/>
+          <bus is_signal_inverted="no" link="all" name="SDRAM_A" order="msb_to_lsb" radix="hex" state="collapse" type="output pin">
+            <net is_signal_inverted="no" name="SDRAM_A[12]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[11]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[10]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[9]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[8]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[7]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[6]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[5]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[4]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[3]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[2]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[1]"/>
+            <net is_signal_inverted="no" name="SDRAM_A[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="SDRAM_DQ" order="msb_to_lsb" radix="hex" state="collapse" type="bidir pin">
+            <net is_signal_inverted="no" name="SDRAM_DQ[15]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[14]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[13]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[12]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[11]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[10]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[9]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[8]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[7]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[6]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[5]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[4]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[3]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[2]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[1]"/>
+            <net is_signal_inverted="no" name="SDRAM_DQ[0]"/>
+          </bus>
+          <net is_signal_inverted="no" name="SDRAM_CAS"/>
+          <net is_signal_inverted="no" name="SDRAM_RAS"/>
+          <net is_signal_inverted="no" name="SDRAM_WE"/>
+          <net is_signal_inverted="no" name="sdramtest:mysdram|error"/>
+          <bus is_signal_inverted="no" link="all" name="sdramtest:mysdram|errorbits" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[15]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[14]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[13]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[12]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[11]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[10]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[9]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[8]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[7]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[6]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[5]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[4]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[3]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[2]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[1]"/>
+            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[0]"/>
+          </bus>
+        </setup_view>
+      </presentation>
+      <trigger CRC="AF61AA0A" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2013/07/05 00:42:39  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="64" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="true" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_in="dont_care" trigger_out="active high" trigger_type="circular">
+        <power_up_trigger position="pre" storage_qualifier_disabled="no" trigger_in="dont_care" trigger_out="active high"/>
+        <events use_custom_flow_control="no">
+          <level enabled="yes" name="condition1" type="basic">'sdramtest:mysdram|error' == rising edge
+            <power_up enabled="yes">
+            </power_up><op_node/>
+          </level>
+        </events>
+        <storage_qualifier_events>
+          <transitional>0000000000000000000000000000000000000000000000000000000
+            <pwr_up_transitional>0000000000000000000000000000000000000000000000000000000</pwr_up_transitional>
+          </transitional>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+        </storage_qualifier_events>
+        <log>
+          <data global_temp="1" name="log: 2013/07/05 00:45:00  #0" power_up_mode="false" sample_depth="64" trigger_position="8">0000000000000110010000001100011100001000000000001000000010000000000001001000000110001110000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000010000000000000000110000100000000000100000000000000000001100000000000000011000010000000000010000000000000000000100000001000000001100001000000000001000000000000000000011000000100000000110000100000000000100000000000000000001100100000011000111000010100000000010000000100000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000000000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000101000010100000000010000000000000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000011000000000000100100000011000111000010100000000010000000000000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100000000000000011000010100000000010000000000000000000100000001000000001100001010000000001000000000000000000011000000100000000110000101000000000100000000000000000001000000000000000011000010100000000010000000000000000000110010000001100011100001010000000001000000110000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000000000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000000000000000110010000001100010100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000100010000000010010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000000000000000100000000001000001100001010000000001000000000000000000011000000000100000110000101000000000100000000000000000001100100000000111111000010100000000010000000000000000000110001001100110001100001010000000001000000000000000000011001000000110001110000100000000000100000001000100000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000011001000000110001110000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000011001000000110001010000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000110001000000001001000000110001110000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000011000000000100000110000100000000000100000000000000000001100100000000111111000010000000000010000000000000000000110001001100110001100001000000000001000000000000000000010000000000100000110000100000000000100000000000000000001100100000011000111000010000000000010000001100010000000110010000001100011100001000000000001000000000000000000011001000000110001110000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000011001000000110001110000100000000000100000000000000000001100100000011000101000010000000000010000000000000000000110010000001100011100001000000000001000000</data>
+          <extradata>11111111T1111111111111111111111111111111111111111111111111111111</extradata>
+        </log>
+      </trigger>
+    </signal_set>
+    <position_info>
+      <single attribute="active tab" value="0"/>
+      <single attribute="data horizontal scroll position" value="0"/>
+      <single attribute="data vertical scroll position" value="0"/>
+      <single attribute="setup horizontal scroll position" value="0"/>
+      <single attribute="setup vertical scroll position" value="0"/>
+      <single attribute="zoom level denominator" value="1"/>
+      <single attribute="zoom level numerator" value="8"/>
+      <single attribute="zoom offset denominator" value="1"/>
+      <single attribute="zoom offset numerator" value="16368"/>
+    </position_info>
+  </instance>
+  <mnemonics/>
+  <static_plugin_mnemonics/>
+  <global_info>
+    <single attribute="active instance" value="0"/>
+    <single attribute="config widget visible" value="1"/>
+    <single attribute="data log widget visible" value="0"/>
+    <single attribute="hierarchy widget visible" value="0"/>
+    <single attribute="instance widget visible" value="1"/>
+    <single attribute="jtag widget visible" value="1"/>
+    <multi attribute="frame size" size="2" value="1209,800"/>
+    <multi attribute="jtag widget size" size="2" value="384,133"/>
+  </global_info>
+</session>
