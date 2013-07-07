@@ -162,7 +162,16 @@ signal nullsig0 : std_logic;
 
 signal sel_fast : std_logic;
 
+type cpudatasources is (src_amiga,src_sdram,src_autoconfig,src_peripheral);
+signal cpudatasource : cpudatasources := src_amiga;
+
 BEGIN
+
+-- Multiplexer for CPU Data in.
+cpu_datain <= ioTG68_Data when cpudatasource=src_amiga
+	else fastram_tocpu.data when cpudatasource=src_sdram
+	else --- src_autoconfig, src_peripheral, etc.
+		(others => 'X');
 
 -- PLL to generate 128Mhz from 50MHz sysclock.
 
@@ -214,7 +223,7 @@ begin
 		-- to do with whether these are read or write cycles.
 		
 		amiga_risingedge_read<='0';
-		if amigaclk_phase1="00101" then -- phase 5 - might need to adjust this
+		if amigaclk_phase1="00100" then -- phase 5 - might need to adjust this
 			amiga_risingedge_read<='1';
 		end if;	
 
@@ -224,7 +233,7 @@ begin
 		end if;
 
 		amiga_fallingedge_read<='0';
-		if amigaclk_phase2="00101" then -- phase 5 - might need to adjust this
+		if amigaclk_phase2="00100" then -- phase 5 - might need to adjust this
 			amiga_fallingedge_read<='1';
 		end if;	
 				
@@ -417,12 +426,14 @@ begin
 												-- but they certainly will be once we ramp up the speed.)
 					else
 						if sel_fast='1' then
+							cpudatasource<=src_sdram;
 							fastram_fromcpu.req<='1';
 							mystate<=fast_access;					
 						else
+							cpudatasource<=src_amiga;
 							if cpu_r_w='0' then	-- Write cycle.
 								mystate <= writeS0;
-							elsif	cpu_r_w='1' then -- Read cycle
+							else -- Read cycle
 								mystate <= readS0;
 							end if;
 						end if;
@@ -434,8 +445,7 @@ begin
 				end if;
 
 			when fast_access =>
-				cpu_datain<=fastram_tocpu.data;	-- copy data from SDRAM to CPU. (Unnecessary but harmless for write cycles.)
-		
+--				cpu_datain<=fastram_tocpu.data;	-- copy data from SDRAM to CPU. (Unnecessary but harmless for write cycles.)
 				if fastram_tocpu.ack='0' then
 					fastram_fromcpu.req<='0'; -- Cancel the request, since it's been acknowledged.
 					if cpu_r_w='0' then -- If we're writing we can let the CPU continue immediately...
@@ -626,7 +636,7 @@ begin
 					end if;
 				
 			when readS6 =>
-				cpu_datain<=ioTG68_DATA;
+--				cpu_datain<=ioTG68_DATA;
 				if iVPA='0' then
 					if eclk_fallingedge='1' then
 						cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
