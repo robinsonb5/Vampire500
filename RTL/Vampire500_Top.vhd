@@ -219,7 +219,7 @@ begin
 		end if;	
 
 		amiga_risingedge_write<='0';
-		if amigaclk_phase1="00101" then   ----- 121Mhz 00101 risingedge 00110 fallingedge
+		if amigaclk_phase1="00100" then   ----- 121Mhz 00101 risingedge 00110 fallingedge
 			amiga_risingedge_write<='1';
 		end if;
 
@@ -229,7 +229,7 @@ begin
 		end if;	
 				
 		amiga_fallingedge_write<='0';
-		if amigaclk_phase2="00101" then -- phase 5 - might need to adjust this
+		if amigaclk_phase2="00100" then -- phase 5 - might need to adjust this
 			amiga_fallingedge_write<='1';
 		end if;
 	end if;
@@ -438,14 +438,24 @@ begin
 		
 				if fastram_tocpu.ack='0' then
 					fastram_fromcpu.req<='0'; -- Cancel the request, since it's been acknowledged.
-					mystate<=fast2;	-- If we've received the enable signal we can proceed.
+					if cpu_r_w='0' then -- If we're writing we can let the CPU continue immediately...
+						cpu_clkena<='1';
+						mystate<=delay4;
+					else
+						mystate<=fast2;	-- If reading we let the data settle...
+					end if;
 				end if;
 				
-			when fast2 => -- We give the data one more clock to settle.
-				mystate<=fast3; -- If we're very lucky, we might get away with skipping this state.
+			when fast2 =>
+				mystate<=fast3;
 
-			when fast3 => -- We give the data yet one more clock to settle.
-				mystate<=delay1; -- We're not very lucky!
+			when fast3 =>
+				cpu_clkena<='1';
+				mystate<=delay4;
+				
+
+--			when fast3 => -- We give the data yet one more clock to settle.
+--				mystate<=delay1;
 		
 			when delay1 =>
 				cpu_clkena<='1';			
@@ -455,7 +465,10 @@ begin
 				mystate<=delay3;
 				
 			when delay3 =>
-				mystate<=main;				
+				mystate<=delay4;
+				
+			when delay4 =>
+				mystate<=main;
 	
 			-- **** WRITE CYCLE ****
 			when writeS0 =>
@@ -723,7 +736,8 @@ oBGACKn <= '1';
 --  		U4_2OE_C				<= '0';
 -- 
 
-mysdram : component sdram_simple
+-- mysdram : component sdram_simple
+mysdram : component sdram
 generic map
 	(
 		rows => 13,

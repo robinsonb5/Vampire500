@@ -4,181 +4,231 @@
   </display_tree>
   <instance entity_name="sld_signaltap" is_auto_node="yes" is_expanded="true" name="auto_signaltap_0" source_file="sld_signaltap.vhd">
     <node_ip_info instance_id="0" mfg_id="110" node_id="0" version="6"/>
-    <signal_set global_temp="1" is_expanded="true" name="signal_set: 2013/07/05 00:42:39  #0">
+    <position_info>
+      <single attribute="active tab" value="0"/>
+      <single attribute="data horizontal scroll position" value="0"/>
+      <single attribute="data vertical scroll position" value="0"/>
+      <single attribute="setup horizontal scroll position" value="0"/>
+      <single attribute="setup vertical scroll position" value="2"/>
+      <single attribute="zoom level denominator" value="1"/>
+      <single attribute="zoom level numerator" value="8"/>
+      <single attribute="zoom offset denominator" value="1"/>
+      <single attribute="zoom offset numerator" value="16368"/>
+    </position_info>
+    <signal_set global_temp="1" name="signal_set: 2013/07/06 17:16:32  #0">
       <clock name="SysClock:mySysClock|altpll:altpll_component|clk[0]" polarity="posedge" tap_mode="classic"/>
       <config ram_type="M4K" reserved_data_nodes="0" reserved_storage_qualifier_nodes="0" reserved_trigger_nodes="0" sample_depth="64" trigger_in_enable="no" trigger_out_enable="no"/>
       <top_entity/>
       <signal_vec>
         <trigger_input_vec>
-          <wire name="SDRAM_A[0]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[10]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[11]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[12]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[1]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[2]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[3]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[4]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[5]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[6]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[7]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[8]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[9]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_CAS" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_DQ[0]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[10]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[11]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[12]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[13]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[14]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[15]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[1]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[2]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[3]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[4]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[5]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[6]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[7]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[8]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[9]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_RAS" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_WE" tap_mode="classic" type="output pin"/>
+          <wire name="E" tap_mode="classic" type="output pin"/>
+          <wire name="amiga_addr[10]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[11]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[12]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[13]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[14]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[15]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[16]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[17]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[18]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[19]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[1]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[20]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[21]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[22]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[23]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[2]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[3]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[4]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[5]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[6]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[7]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[8]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[9]" tap_mode="classic" type="register"/>
+          <wire name="fastram_fromcpu.req" tap_mode="classic" type="register"/>
+          <wire name="iTG68_DTACKn" tap_mode="classic" type="input pin"/>
+          <wire name="iVPA" tap_mode="classic" type="input pin"/>
+          <wire name="ioTG68_DATA[0]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[10]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[11]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[12]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[13]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[14]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[15]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[1]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[2]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[3]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[4]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[5]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[6]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[7]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[8]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[9]" tap_mode="classic" type="bidir pin"/>
+          <wire name="mystate.delay1" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.delay2" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.delay3" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.delay4" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.fast2" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.fast3" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.fast_access" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.init" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.main" tap_mode="classic" type="combinatorial"/>
+          <wire name="oTG68_ASn" tap_mode="classic" type="output pin"/>
+          <wire name="oTG68_LDSn" tap_mode="classic" type="output pin"/>
+          <wire name="oTG68_RW" tap_mode="classic" type="output pin"/>
+          <wire name="oTG68_UDSn" tap_mode="classic" type="output pin"/>
           <wire name="sdram:mysdram|TwoWayCache:mytwc|ready" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|port1_i.req" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|port1_o.ack" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|refreshpending" tap_mode="classic" type="register"/>
           <wire name="sdram:mysdram|reset" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|reset_out" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|error" tap_mode="classic" type="register"/>
-          <wire name="sdramtest:mysdram|errorbits[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram_simple:mysdram|port1_o.ack" tap_mode="classic" type="combinatorial"/>
+          <wire name="amiga_fallingedge_read" tap_mode="probeonly" type="register"/>
+          <wire name="amiga_fallingedge_write" tap_mode="probeonly" type="register"/>
+          <wire name="amiga_risingedge_read" tap_mode="probeonly" type="register"/>
+          <wire name="amiga_risingedge_write" tap_mode="probeonly" type="register"/>
+          <wire name="clk_7Mhz" tap_mode="probeonly" type="input pin"/>
         </trigger_input_vec>
         <data_input_vec>
-          <wire name="SDRAM_A[0]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[10]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[11]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[12]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[1]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[2]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[3]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[4]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[5]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[6]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[7]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[8]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[9]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_CAS" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_DQ[0]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[10]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[11]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[12]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[13]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[14]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[15]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[1]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[2]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[3]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[4]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[5]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[6]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[7]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[8]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[9]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_RAS" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_WE" tap_mode="classic" type="output pin"/>
+          <wire name="E" tap_mode="classic" type="output pin"/>
+          <wire name="amiga_addr[10]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[11]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[12]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[13]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[14]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[15]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[16]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[17]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[18]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[19]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[1]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[20]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[21]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[22]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[23]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[2]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[3]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[4]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[5]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[6]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[7]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[8]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[9]" tap_mode="classic" type="register"/>
+          <wire name="fastram_fromcpu.req" tap_mode="classic" type="register"/>
+          <wire name="iTG68_DTACKn" tap_mode="classic" type="input pin"/>
+          <wire name="iVPA" tap_mode="classic" type="input pin"/>
+          <wire name="ioTG68_DATA[0]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[10]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[11]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[12]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[13]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[14]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[15]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[1]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[2]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[3]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[4]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[5]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[6]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[7]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[8]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[9]" tap_mode="classic" type="bidir pin"/>
+          <wire name="mystate.delay1" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.delay2" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.delay3" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.delay4" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.fast2" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.fast3" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.fast_access" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.init" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.main" tap_mode="classic" type="combinatorial"/>
+          <wire name="oTG68_ASn" tap_mode="classic" type="output pin"/>
+          <wire name="oTG68_LDSn" tap_mode="classic" type="output pin"/>
+          <wire name="oTG68_RW" tap_mode="classic" type="output pin"/>
+          <wire name="oTG68_UDSn" tap_mode="classic" type="output pin"/>
           <wire name="sdram:mysdram|TwoWayCache:mytwc|ready" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|port1_i.req" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|port1_o.ack" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|refreshpending" tap_mode="classic" type="register"/>
           <wire name="sdram:mysdram|reset" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|reset_out" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|error" tap_mode="classic" type="register"/>
-          <wire name="sdramtest:mysdram|errorbits[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram_simple:mysdram|port1_o.ack" tap_mode="classic" type="combinatorial"/>
+          <wire name="amiga_fallingedge_read" tap_mode="probeonly" type="register"/>
+          <wire name="amiga_fallingedge_write" tap_mode="probeonly" type="register"/>
+          <wire name="amiga_risingedge_read" tap_mode="probeonly" type="register"/>
+          <wire name="amiga_risingedge_write" tap_mode="probeonly" type="register"/>
+          <wire name="clk_7Mhz" tap_mode="probeonly" type="input pin"/>
         </data_input_vec>
         <storage_qualifier_input_vec>
-          <wire name="SDRAM_A[0]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[10]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[11]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[12]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[1]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[2]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[3]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[4]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[5]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[6]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[7]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[8]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_A[9]" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_CAS" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_DQ[0]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[10]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[11]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[12]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[13]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[14]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[15]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[1]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[2]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[3]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[4]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[5]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[6]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[7]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[8]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_DQ[9]" tap_mode="classic" type="bidir pin"/>
-          <wire name="SDRAM_RAS" tap_mode="classic" type="output pin"/>
-          <wire name="SDRAM_WE" tap_mode="classic" type="output pin"/>
+          <wire name="E" tap_mode="classic" type="output pin"/>
+          <wire name="amiga_addr[10]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[11]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[12]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[13]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[14]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[15]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[16]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[17]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[18]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[19]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[1]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[20]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[21]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[22]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[23]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[2]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[3]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[4]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[5]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[6]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[7]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[8]" tap_mode="classic" type="register"/>
+          <wire name="amiga_addr[9]" tap_mode="classic" type="register"/>
+          <wire name="fastram_fromcpu.req" tap_mode="classic" type="register"/>
+          <wire name="iTG68_DTACKn" tap_mode="classic" type="input pin"/>
+          <wire name="iVPA" tap_mode="classic" type="input pin"/>
+          <wire name="ioTG68_DATA[0]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[10]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[11]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[12]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[13]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[14]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[15]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[1]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[2]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[3]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[4]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[5]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[6]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[7]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[8]" tap_mode="classic" type="bidir pin"/>
+          <wire name="ioTG68_DATA[9]" tap_mode="classic" type="bidir pin"/>
+          <wire name="mystate.delay1" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.delay2" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.delay3" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.delay4" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.fast2" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.fast3" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.fast_access" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.init" tap_mode="classic" type="combinatorial"/>
+          <wire name="mystate.main" tap_mode="classic" type="combinatorial"/>
+          <wire name="oTG68_ASn" tap_mode="classic" type="output pin"/>
+          <wire name="oTG68_LDSn" tap_mode="classic" type="output pin"/>
+          <wire name="oTG68_RW" tap_mode="classic" type="output pin"/>
+          <wire name="oTG68_UDSn" tap_mode="classic" type="output pin"/>
           <wire name="sdram:mysdram|TwoWayCache:mytwc|ready" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|port1_i.req" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|port1_o.ack" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|refreshpending" tap_mode="classic" type="register"/>
           <wire name="sdram:mysdram|reset" tap_mode="classic" type="combinatorial"/>
           <wire name="sdram:mysdram|reset_out" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|error" tap_mode="classic" type="register"/>
-          <wire name="sdramtest:mysdram|errorbits[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="sdramtest:mysdram|errorbits[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="sdram_simple:mysdram|port1_o.ack" tap_mode="classic" type="combinatorial"/>
+          <wire name="amiga_fallingedge_read" tap_mode="probeonly" type="register"/>
+          <wire name="amiga_fallingedge_write" tap_mode="probeonly" type="register"/>
+          <wire name="amiga_risingedge_read" tap_mode="probeonly" type="register"/>
+          <wire name="amiga_risingedge_write" tap_mode="probeonly" type="register"/>
+          <wire name="clk_7Mhz" tap_mode="probeonly" type="input pin"/>
         </storage_qualifier_input_vec>
       </signal_vec>
       <presentation>
@@ -189,61 +239,72 @@
           <net is_signal_inverted="no" name="sdram:mysdram|refreshpending"/>
           <net is_signal_inverted="no" name="sdram:mysdram|reset"/>
           <net is_signal_inverted="no" name="sdram:mysdram|reset_out"/>
-          <bus is_signal_inverted="no" link="all" name="SDRAM_A" order="msb_to_lsb" radix="hex" state="collapse" type="output pin">
-            <net is_signal_inverted="no" name="SDRAM_A[12]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[11]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[10]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[9]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[8]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[7]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[6]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[5]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[4]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[3]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[2]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[1]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[0]"/>
+          <net is_signal_inverted="no" name="mystate.delay1"/>
+          <net is_signal_inverted="no" name="mystate.delay2"/>
+          <net is_signal_inverted="no" name="mystate.delay3"/>
+          <net is_signal_inverted="no" name="mystate.delay4"/>
+          <net is_signal_inverted="no" name="mystate.fast2"/>
+          <net is_signal_inverted="no" name="mystate.fast3"/>
+          <net is_signal_inverted="no" name="mystate.fast_access"/>
+          <net is_signal_inverted="no" name="mystate.init"/>
+          <net is_signal_inverted="no" name="mystate.main"/>
+          <net is_signal_inverted="no" name="fastram_fromcpu.req"/>
+          <net is_signal_inverted="no" name="sdram_simple:mysdram|port1_o.ack"/>
+          <bus is_signal_inverted="no" link="all" name="amiga_addr" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="amiga_addr[23]"/>
+            <net is_signal_inverted="no" name="amiga_addr[22]"/>
+            <net is_signal_inverted="no" name="amiga_addr[21]"/>
+            <net is_signal_inverted="no" name="amiga_addr[20]"/>
+            <net is_signal_inverted="no" name="amiga_addr[19]"/>
+            <net is_signal_inverted="no" name="amiga_addr[18]"/>
+            <net is_signal_inverted="no" name="amiga_addr[17]"/>
+            <net is_signal_inverted="no" name="amiga_addr[16]"/>
+            <net is_signal_inverted="no" name="amiga_addr[15]"/>
+            <net is_signal_inverted="no" name="amiga_addr[14]"/>
+            <net is_signal_inverted="no" name="amiga_addr[13]"/>
+            <net is_signal_inverted="no" name="amiga_addr[12]"/>
+            <net is_signal_inverted="no" name="amiga_addr[11]"/>
+            <net is_signal_inverted="no" name="amiga_addr[10]"/>
+            <net is_signal_inverted="no" name="amiga_addr[9]"/>
+            <net is_signal_inverted="no" name="amiga_addr[8]"/>
+            <net is_signal_inverted="no" name="amiga_addr[7]"/>
+            <net is_signal_inverted="no" name="amiga_addr[6]"/>
+            <net is_signal_inverted="no" name="amiga_addr[5]"/>
+            <net is_signal_inverted="no" name="amiga_addr[4]"/>
+            <net is_signal_inverted="no" name="amiga_addr[3]"/>
+            <net is_signal_inverted="no" name="amiga_addr[2]"/>
+            <net is_signal_inverted="no" name="amiga_addr[1]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="SDRAM_DQ" order="msb_to_lsb" radix="hex" state="collapse" type="bidir pin">
-            <net is_signal_inverted="no" name="SDRAM_DQ[15]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[14]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[13]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[12]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[11]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[10]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[9]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[8]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[7]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[6]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[5]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[4]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[3]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[2]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[1]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[0]"/>
+          <net is_signal_inverted="no" name="amiga_risingedge_read"/>
+          <net is_signal_inverted="no" name="amiga_risingedge_write"/>
+          <net is_signal_inverted="no" name="amiga_fallingedge_read"/>
+          <net is_signal_inverted="no" name="amiga_fallingedge_write"/>
+          <net is_signal_inverted="no" name="clk_7Mhz"/>
+          <bus is_signal_inverted="no" link="all" name="ioTG68_DATA" order="msb_to_lsb" radix="hex" state="collapse" type="bidir pin">
+            <net is_signal_inverted="no" name="ioTG68_DATA[15]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[14]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[13]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[12]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[11]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[10]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[9]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[8]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[7]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[6]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[5]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[4]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[3]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[2]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[1]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[0]"/>
           </bus>
-          <net is_signal_inverted="no" name="SDRAM_CAS"/>
-          <net is_signal_inverted="no" name="SDRAM_RAS"/>
-          <net is_signal_inverted="no" name="SDRAM_WE"/>
-          <net is_signal_inverted="no" name="sdramtest:mysdram|error"/>
-          <bus is_signal_inverted="no" link="all" name="sdramtest:mysdram|errorbits" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[15]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[14]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[13]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[12]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[11]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[10]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[9]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[8]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[7]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[6]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[5]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[4]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[3]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[2]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[1]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[0]"/>
-          </bus>
+          <net is_signal_inverted="no" name="iTG68_DTACKn"/>
+          <net is_signal_inverted="no" name="iVPA"/>
+          <net is_signal_inverted="no" name="E"/>
+          <net is_signal_inverted="no" name="oTG68_ASn"/>
+          <net is_signal_inverted="no" name="oTG68_LDSn"/>
+          <net is_signal_inverted="no" name="oTG68_UDSn"/>
+          <net is_signal_inverted="no" name="oTG68_RW"/>
         </data_view>
         <setup_view>
           <net is_signal_inverted="no" name="sdram:mysdram|TwoWayCache:mytwc|ready"/>
@@ -252,74 +313,86 @@
           <net is_signal_inverted="no" name="sdram:mysdram|refreshpending"/>
           <net is_signal_inverted="no" name="sdram:mysdram|reset"/>
           <net is_signal_inverted="no" name="sdram:mysdram|reset_out"/>
-          <bus is_signal_inverted="no" link="all" name="SDRAM_A" order="msb_to_lsb" radix="hex" state="collapse" type="output pin">
-            <net is_signal_inverted="no" name="SDRAM_A[12]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[11]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[10]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[9]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[8]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[7]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[6]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[5]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[4]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[3]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[2]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[1]"/>
-            <net is_signal_inverted="no" name="SDRAM_A[0]"/>
+          <net is_signal_inverted="no" name="mystate.delay1"/>
+          <net is_signal_inverted="no" name="mystate.delay2"/>
+          <net is_signal_inverted="no" name="mystate.delay3"/>
+          <net is_signal_inverted="no" name="mystate.delay4"/>
+          <net is_signal_inverted="no" name="mystate.fast2"/>
+          <net is_signal_inverted="no" name="mystate.fast3"/>
+          <net is_signal_inverted="no" name="mystate.fast_access"/>
+          <net is_signal_inverted="no" name="mystate.init"/>
+          <net is_signal_inverted="no" name="mystate.main"/>
+          <net is_signal_inverted="no" name="fastram_fromcpu.req"/>
+          <net is_signal_inverted="no" name="sdram_simple:mysdram|port1_o.ack"/>
+          <bus is_signal_inverted="no" link="all" name="amiga_addr" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="amiga_addr[23]"/>
+            <net is_signal_inverted="no" name="amiga_addr[22]"/>
+            <net is_signal_inverted="no" name="amiga_addr[21]"/>
+            <net is_signal_inverted="no" name="amiga_addr[20]"/>
+            <net is_signal_inverted="no" name="amiga_addr[19]"/>
+            <net is_signal_inverted="no" name="amiga_addr[18]"/>
+            <net is_signal_inverted="no" name="amiga_addr[17]"/>
+            <net is_signal_inverted="no" name="amiga_addr[16]"/>
+            <net is_signal_inverted="no" name="amiga_addr[15]"/>
+            <net is_signal_inverted="no" name="amiga_addr[14]"/>
+            <net is_signal_inverted="no" name="amiga_addr[13]"/>
+            <net is_signal_inverted="no" name="amiga_addr[12]"/>
+            <net is_signal_inverted="no" name="amiga_addr[11]"/>
+            <net is_signal_inverted="no" name="amiga_addr[10]"/>
+            <net is_signal_inverted="no" name="amiga_addr[9]"/>
+            <net is_signal_inverted="no" name="amiga_addr[8]"/>
+            <net is_signal_inverted="no" name="amiga_addr[7]"/>
+            <net is_signal_inverted="no" name="amiga_addr[6]"/>
+            <net is_signal_inverted="no" name="amiga_addr[5]"/>
+            <net is_signal_inverted="no" name="amiga_addr[4]"/>
+            <net is_signal_inverted="no" name="amiga_addr[3]"/>
+            <net is_signal_inverted="no" name="amiga_addr[2]"/>
+            <net is_signal_inverted="no" name="amiga_addr[1]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="SDRAM_DQ" order="msb_to_lsb" radix="hex" state="collapse" type="bidir pin">
-            <net is_signal_inverted="no" name="SDRAM_DQ[15]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[14]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[13]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[12]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[11]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[10]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[9]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[8]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[7]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[6]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[5]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[4]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[3]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[2]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[1]"/>
-            <net is_signal_inverted="no" name="SDRAM_DQ[0]"/>
+          <net is_signal_inverted="no" name="amiga_risingedge_read"/>
+          <net is_signal_inverted="no" name="amiga_risingedge_write"/>
+          <net is_signal_inverted="no" name="amiga_fallingedge_read"/>
+          <net is_signal_inverted="no" name="amiga_fallingedge_write"/>
+          <net is_signal_inverted="no" name="clk_7Mhz"/>
+          <bus is_signal_inverted="no" link="all" name="ioTG68_DATA" order="msb_to_lsb" radix="hex" state="collapse" type="bidir pin">
+            <net is_signal_inverted="no" name="ioTG68_DATA[15]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[14]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[13]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[12]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[11]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[10]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[9]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[8]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[7]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[6]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[5]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[4]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[3]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[2]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[1]"/>
+            <net is_signal_inverted="no" name="ioTG68_DATA[0]"/>
           </bus>
-          <net is_signal_inverted="no" name="SDRAM_CAS"/>
-          <net is_signal_inverted="no" name="SDRAM_RAS"/>
-          <net is_signal_inverted="no" name="SDRAM_WE"/>
-          <net is_signal_inverted="no" name="sdramtest:mysdram|error"/>
-          <bus is_signal_inverted="no" link="all" name="sdramtest:mysdram|errorbits" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[15]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[14]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[13]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[12]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[11]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[10]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[9]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[8]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[7]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[6]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[5]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[4]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[3]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[2]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[1]"/>
-            <net is_signal_inverted="no" name="sdramtest:mysdram|errorbits[0]"/>
-          </bus>
+          <net is_signal_inverted="no" name="iTG68_DTACKn"/>
+          <net is_signal_inverted="no" name="iVPA"/>
+          <net is_signal_inverted="no" name="E"/>
+          <net is_signal_inverted="no" name="oTG68_ASn"/>
+          <net is_signal_inverted="no" name="oTG68_LDSn"/>
+          <net is_signal_inverted="no" name="oTG68_UDSn"/>
+          <net is_signal_inverted="no" name="oTG68_RW"/>
         </setup_view>
       </presentation>
-      <trigger CRC="AF61AA0A" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2013/07/05 00:42:39  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="64" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="true" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_in="dont_care" trigger_out="active high" trigger_type="circular">
+      <trigger CRC="844511DB" attribute_mem_mode="false" gap_record="true" global_temp="1" name="trigger: 2013/07/06 17:29:01  #0" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="64" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="true" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_in="dont_care" trigger_out="active high" trigger_type="circular">
         <power_up_trigger position="pre" storage_qualifier_disabled="no" trigger_in="dont_care" trigger_out="active high"/>
         <events use_custom_flow_control="no">
-          <level enabled="yes" name="condition1" type="basic">'sdramtest:mysdram|error' == rising edge
+          <level enabled="yes" name="condition1" type="basic">'iTG68_DTACKn' == rising edge
             <power_up enabled="yes">
-            </power_up><op_node/>
+            </power_up>
+            <op_node/>
           </level>
         </events>
         <storage_qualifier_events>
-          <transitional>0000000000000000000000000000000000000000000000000000000
-            <pwr_up_transitional>0000000000000000000000000000000000000000000000000000000</pwr_up_transitional>
+          <transitional>00000000000000000000000000000000000000000000000000000000000000000000
+            <pwr_up_transitional>00000000000000000000000000000000000000000000000000000000000000000000</pwr_up_transitional>
           </transitional>
           <storage_qualifier_level type="basic">
             <power_up>
@@ -338,22 +411,11 @@
           </storage_qualifier_level>
         </storage_qualifier_events>
         <log>
-          <data global_temp="1" name="log: 2013/07/05 00:45:00  #0" power_up_mode="false" sample_depth="64" trigger_position="8">0000000000000110010000001100011100001000000000001000000010000000000001001000000110001110000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000010000000000000000110000100000000000100000000000000000001100000000000000011000010000000000010000000000000000000100000001000000001100001000000000001000000000000000000011000000100000000110000100000000000100000000000000000001100100000011000111000010100000000010000000100000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000000000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000101000010100000000010000000000000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000011000000000000100100000011000111000010100000000010000000000000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100000000000000011000010100000000010000000000000000000100000001000000001100001010000000001000000000000000000011000000100000000110000101000000000100000000000000000001000000000000000011000010100000000010000000000000000000110010000001100011100001010000000001000000110000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000000000000000110010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000000000000000110010000001100010100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000100010000000010010000001100011100001010000000001000000000000000000011001000000110001110000101000000000100000000000000000001100100000011000111000010100000000010000000000000000000100000000001000001100001010000000001000000000000000000011000000000100000110000101000000000100000000000000000001100100000000111111000010100000000010000000000000000000110001001100110001100001010000000001000000000000000000011001000000110001110000100000000000100000001000100000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000011001000000110001110000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000011001000000110001010000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000110001000000001001000000110001110000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000011000000000100000110000100000000000100000000000000000001100100000000111111000010000000000010000000000000000000110001001100110001100001000000000001000000000000000000010000000000100000110000100000000000100000000000000000001100100000011000111000010000000000010000001100010000000110010000001100011100001000000000001000000000000000000011001000000110001110000100000000000100000000000000000001100100000011000111000010000000000010000000000000000000110010000001100011100001000000000001000000000000000000011001000000110001110000100000000000100000000000000000001100100000011000101000010000000000010000000000000000000110010000001100011100001000000000001000000</data>
+          <data global_temp="1" name="log: 2013/07/06 18:28:58  #0" power_up_mode="false" sample_depth="64" trigger_position="8">01111111111111111011111100110000001011000000000000000010101011101001011111111111111110111111001100000010110000000000000111111010111000000111111111111111101111110011000000101100000100000000111110101110000001111111111111111011111100110000001011000000100000001111101011100000011111111111111110111111001100000010110000000100000011111010111000000111111111111111101111110011000000101100000000100000111110101110000001111111111111111011111100110000001011000000000000011111101011100000011111111111111110111111001100000010110000000000000011111010111000000111111111111111101111110111000000101100000000000000111110101110001011111111111111111011111101110000001011000000000000001111101011100001111111111111111110111111011100000010110000000000000011111010111000011111111111111111101111110111000000101100000000000000111110101110000111111111111111111011111101110000001011000000000000001111101011100001111111111111111110111111011100000010110000000000000011111010111000011111111111111111101111110111000000101100000000000000111110101110000111111111111111111011111101110000001011000000000000001111101011100001111111111111111110111111011100000010110000000000000011111010111010001111111111000000111111110111000000101100000000000000111110101110000011111111110000001111111101110000001011000000000000001111101011100000111111111100000011111111011100000010110000000000000011111010111000001111111111000000111111110111000000101100000000000000111110101110000011111111110000001111111101110000001011000000000000001111101011100000111111111100000011111111011100000010110000000000000011111010111000001111111111000000111111110111000000101100000000000000111110101110001011111111110000001111111101110000001011000000000000000101101011100001111111111100000011111111011100000010110000000000000001011010111000011111111111000000111111110111000000101100000000000000010110101110000111111111110000001111111101110000001011000000000000000101101011100001111111111100000011111111011100000010110000000000000001011010111000011111111111000000111111110111000000101100000000000000010110101110000111111111110000001111111101110000001011000000000000000101101011100001111111111100000011111111011100000010110000000000000001011010111010011111111111000000111111110110000000011011000000000000010110101110000011111111110000001111111101100000000110110000000000000101101011100000111111111100000011111111011000000001101100000000000001011010111000001111111111000000111111110110000000011011000000000000010110101110000011111111110000001111111101100000000110110000000000000101101011100000111111111100000011111111011000000001101100000000000001011010111000001111111111000000111111110110000000011011000000000000010110101110000011111111110000001111111101100000000110110000000000000101101011100010111111111100000011111111011000000001101100000000000000001010111000011111111111000000111111110110000000011011000000000000000010101110000111111111110000001111111101100000000110110000000000000000101011100001111111111100000011111111011000000001101100000000000000001010111000011111111111000000111111110110000000011011000000000000000010101110000111111111110000001111111101100000000110110000000000000000101011100001111111111100000011111111011000000001101100000000000000001010111000011111111111000000111111110110000000011011000000000000000010101110100111111111110000001111111101100000000110110000000000000000101011100000111111111100000011111111011000000001101100000000000000001010111000001111111111000000111111110110000000011011000000000000000010101110000011111111110000001111111101100000000110110000000000000000101011100000111111111100000011111111011000000001101100000000000000001010111000001111111111000000111111110110000000011011000000000000000010101110000011111111110000001111111101100000000110110000000000000000101011100000111111111100000011111111011000000001101100000000000000001010111000101111111111000000111111110110000000011011000000000000000010101110000111111111110000001111111101100000000110110000000000000000101011100001111111111100000011111111011000000001101100000000000000001010111000011111111111000000111111110110000000011011000000000000000010101110000111111111110000001111111101100000000110110000000000000000101011100001111111111100000011111111011000000001101100000000000000001010111000011111111111000000111111110110000000011011000000000000000010101110000111111111110000001111111101100000000110110000000000000000101011101001</data>
           <extradata>11111111T1111111111111111111111111111111111111111111111111111111</extradata>
         </log>
       </trigger>
     </signal_set>
-    <position_info>
-      <single attribute="active tab" value="0"/>
-      <single attribute="data horizontal scroll position" value="0"/>
-      <single attribute="data vertical scroll position" value="0"/>
-      <single attribute="setup horizontal scroll position" value="0"/>
-      <single attribute="setup vertical scroll position" value="0"/>
-      <single attribute="zoom level denominator" value="1"/>
-      <single attribute="zoom level numerator" value="8"/>
-      <single attribute="zoom offset denominator" value="1"/>
-      <single attribute="zoom offset numerator" value="16368"/>
-    </position_info>
   </instance>
   <mnemonics/>
   <static_plugin_mnemonics/>
@@ -364,7 +426,7 @@
     <single attribute="hierarchy widget visible" value="0"/>
     <single attribute="instance widget visible" value="1"/>
     <single attribute="jtag widget visible" value="1"/>
-    <multi attribute="frame size" size="2" value="1209,800"/>
+    <multi attribute="frame size" size="2" value="1208,800"/>
     <multi attribute="jtag widget size" size="2" value="384,133"/>
   </global_info>
 </session>

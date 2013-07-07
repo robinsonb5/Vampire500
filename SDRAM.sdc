@@ -62,16 +62,19 @@ derive_clock_uncertainty;
 #**************************************************************
 # Set Input Delay
 #**************************************************************
+# We'll reduce these slightly thanks to the short CLK line
 
-set_input_delay -clock sdclk_pin -max 6.4 [get_ports SDRAM_DQ*]
-set_input_delay -clock sdclk_pin -min 1.0 [get_ports SDRAM_DQ*]
+set_input_delay -clock sdclk_pin -max 5.4 [get_ports SDRAM_DQ*]
+set_input_delay -clock sdclk_pin -min 0.3 [get_ports SDRAM_DQ*]
 
 #**************************************************************
 # Set Output Delay
 #**************************************************************
+# CLK line is very short compared with other signals, so we'll add some extra delay here
+# (without this these would be 1.5, -0.8)
 
-set_output_delay -clock sdclk_pin -max 1.5 [get_ports SDRAM_*]
-set_output_delay -clock sdclk_pin -min -0.8 [get_ports SDRAM_*]
+set_output_delay -clock sdclk_pin -max 2.5 [get_ports SDRAM_*]
+set_output_delay -clock sdclk_pin -min -0.5 [get_ports SDRAM_*]
 
 #**************************************************************
 # Set Clock Groups

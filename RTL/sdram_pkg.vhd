@@ -43,14 +43,14 @@ port
 	reinit : in std_logic :='0';
 
 -- Port 0 - VGA
-	vga_addr : in std_logic_vector(31 downto 0);
+	vga_addr : in std_logic_vector(31 downto 0) := (others => 'X');
 	vga_data	: out std_logic_vector(15 downto 0);
-	vga_req : in std_logic;
+	vga_req : in std_logic :='0';
 	vga_fill : out std_logic;
 	vga_ack : out std_logic;
-	vga_refresh : in std_logic; -- SDRAM won't come out of reset without this.
-	vga_reservebank : in std_logic; -- Keep a bank clear for instant access in slot 1
-	vga_reserveaddr : in std_logic_vector(31 downto 0);
+	vga_refresh : in std_logic:='1'; -- SDRAM won't come out of reset without this.
+	vga_reservebank : in std_logic:='0'; -- Keep a bank clear for instant access in slot 1
+	vga_reserveaddr : in std_logic_vector(31 downto 0) := (others => 'X');
 
 	-- Port 1
 	port1_i : in SDRAM_Port_FromCPU;
