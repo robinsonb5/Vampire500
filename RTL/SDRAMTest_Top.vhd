@@ -6,7 +6,6 @@ use ieee.numeric_std.all;
 library work;
 use work.sdram_pkg.all;
 
-
 entity SDRAMTest_Top is
    port(
 			iSYS_CLK				: in std_logic;		-- 50MHz clock
@@ -77,17 +76,8 @@ LED : out std_logic;
 		U4_2OE_C				: out std_logic:='1';
 --			
 -- SDRAM Signals
-		SDRAM_A : out std_logic_vector(12 downto 0);
-		SDRAM_DQ : inout std_logic_vector(15 downto 0);
-		SDRAM_WE		: out std_logic;	-- Write enable, active low
-		SDRAM_RAS : out std_logic;	-- Row Address Strobe, active low
-		SDRAM_CAS : out std_logic;	-- Column Address Strobe, active low
-		SDRAM_CS : out std_logic;	-- Chip select
-		SDRAM_DQMH : out std_logic;	-- Data mask, upper and lower byte
-		SDRAM_DQML : out std_logic;	-- Data mask, upper and lower byte
-		SDRAM_BA : buffer std_logic_vector(1 downto 0); -- Bank
-		SDRAM_CLK : out std_logic;
-		SDRAM_CKE : out std_logic
+		sdram_pins_io : inout SDRAM_Pins_io;
+		sdram_pins_o : out SDRAM_Pins_o
 	
 	);
 end SDRAMTest_Top;
@@ -97,6 +87,7 @@ ARCHITECTURE logic OF SDRAMTest_Top IS
 -- Fast RAM signals
 
 signal sdram_ready : std_logic;
+signal sdram_clk : std_logic;
 signal sdram_fromcpu : SDRAM_Port_FromCPU;
 signal sdram_tocpu : SDRAM_Port_ToCPU;
 
@@ -171,7 +162,7 @@ mySysClock : entity work.SysClock
 		inclk0 => iSYS_CLK,
 		pllena => '1',
 		c0 => sysclk,
-		c1 => SDRAM_CLK
+		c1 => sdram_clk
 	);
 
 
@@ -185,7 +176,7 @@ mySysClock : entity work.SysClock
 --SDRAM_DQMH <= '1';
 --SDRAM_DQML <= '1';
 --SDRAM_BA  <= (others => '1');
-SDRAM_CKE <= '1';
+-- SDRAM_CKE <= '1';
 
 	
 
@@ -424,26 +415,15 @@ oBRn <='1';
 oBGACKn <= '1';
 
 mysdram : entity work.sdramtest
-generic map
-	(
-		rows => 13,
-		cols => 10
-	)
 port map
 	(
 	-- Physical connections to the SDRAM
-		sdr_data => SDRAM_DQ,
-		sdr_addr => SDRAM_A,
-		sdr_we	=> SDRAM_WE,
-		sdr_ras => SDRAM_RAS,
-		sdr_cas => SDRAM_CAS,
-		sdr_cs	=> SDRAM_CS,
-		sdr_dqm(1) => SDRAM_DQMH,
-		sdr_dqm(0) => SDRAM_DQML,
-		sdr_ba=>SDRAM_BA,
+		sdram_pins_o => sdram_pins_o,
+		sdram_pins_io => sdram_pins_io,
 
 	-- Housekeeping
 		clk => sysclk,
+		sdram_clk => sdram_clk,
 		reset_n => TG68_RESETn,
 		errorbits => amiga_addr(23 downto 8) -- Make sure they're not optimised away.
 	);

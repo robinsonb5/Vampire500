@@ -11,27 +11,16 @@ use work.sdram_pkg.all;
 
 
 entity sdramtest is
-generic
-	(
-		rows : integer := 12;	-- FIXME - change access sizes according to number of rows
-		cols : integer := 8
-	);
 port(
 		clk 	: in 	std_logic;
+		sdram_clk : in std_logic;
 		reset_n : in 	std_logic;
 		led_out : out 	std_logic;
 		errorbits : out std_logic_vector(15 downto 0);
 
 		-- SDRAM - chip 1
-		sdr_addr : out std_logic_vector((rows-1) downto 0);
-		sdr_data : inout std_logic_vector(15 downto 0);
-		sdr_ba : out std_logic_vector(1 downto 0);
-		sdr_cke : out std_logic;
-		sdr_dqm : out std_logic_vector(1 downto 0);
-		sdr_cs : out std_logic;
-		sdr_we : out std_logic;
-		sdr_cas : out std_logic;
-		sdr_ras : out std_logic
+		sdram_pins_o : out SDRAM_Pins_o;
+		sdram_pins_io : inout SDRAM_Pins_io
 	);
 end sdramtest;
 
@@ -78,8 +67,6 @@ COMPONENT simplelfsr
 END COMPONENT;
 
 begin
-
-	sdr_cke<='1';
 
 	mylfsr : component simplelfsr
 		port map (
@@ -207,25 +194,23 @@ begin
 	end process;
 
 	-- SDRAM
-	mysdram_simple : entity work.sdram_simple
-		generic map
-		(
-			rows => rows,
-			cols => cols
-		)
+	mysdram : entity work.sdram
 		port map
 		(
 		-- Physical connections to the SDRAM
-			sdata => sdr_data,
-			sdaddr => sdr_addr,
-			sd_we	=> sdr_we,
-			sd_ras => sdr_ras,
-			sd_cas => sdr_cas,
-			sd_cs	=> sdr_cs,
-			dqm => sdr_dqm,
-			ba	=> sdr_ba,
+			pins_o => sdram_pins_o,
+			pins_io => sdram_pins_io,
+--			sdata => sdr_data,
+--			sdaddr => sdr_addr,
+--			sd_we	=> sdr_we,
+--			sd_ras => sdr_ras,
+--			sd_cas => sdr_cas,
+--			sd_cs	=> sdr_cs,
+--			dqm => sdr_dqm,
+--			ba	=> sdr_ba,
 
 		-- Housekeeping
+			sdram_clk => sdram_clk,
 			sysclk => clk,
 			reset => reset,
 			reset_out => sdr_ready,

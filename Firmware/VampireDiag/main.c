@@ -1,5 +1,7 @@
 #include "amiga.h"
 
+#include "minisoc_hardware.h"
+
 void Putint(unsigned int val)
 {
 	int c;
@@ -42,6 +44,8 @@ void CheckAlias()
 }
 #endif
 
+// Check for aliasing of Kickstart
+#if 0
 int main()
 {
 	int a,b,c,d,i;
@@ -87,6 +91,26 @@ int main()
 
 //	while(1)
 //		c=*(volatile int *)0xf00000;
+
+	while(1)
+		;
+    return 0;
+}
+#endif
+
+// Display text received from a second CPU, masquerading as a UART.
+int main()
+{
+	HW_CIAA(CIAA_DDRA)=0x03;
+	HW_CIAA(CIAA_PRA)=0xfc;
+	Amiga_SetupScreen();
+
+	while(1)
+	{
+		int in=HW_PER(PER_UART);
+		if(in & (1<<PER_UART_RXINT))
+			Amiga_Putc(in&0xff);
+	}
 
 	while(1)
 		;

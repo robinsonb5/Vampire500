@@ -1,8 +1,10 @@
-all: zpuromgen VampireDiag.gen
+all: zpuromgen VampireDiag.gen SDRAMTest.gen
 
 clean:
 	make -C VampireDiag clean
+	make -C SDRAMTest clean
 	rm *.vhd
+	rm zpuromgen
 
 zpuromgen: zpuromgen.c
 	gcc -o zpuromgen zpuromgen.c

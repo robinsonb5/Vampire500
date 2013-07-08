@@ -18,16 +18,16 @@
 #
 # Quartus II 32-bit
 # Version 12.0 Build 232 07/05/2012 Service Pack 1 SJ Web Edition
-# Date created = 13:11:17  July 06, 2013
+# Date created = 23:15:02  July 08, 2013
 #
 # -------------------------------------------------------------------------- #
 
 QUARTUS_VERSION = "12.0"
-DATE = "13:11:17  July 06, 2013"
+DATE = "23:15:02  July 08, 2013"
 
 # Revisions
 
-PROJECT_REVISION = "Vampire500"
-PROJECT_REVISION = "SDRAMTest"
 PROJECT_REVISION = "mc68k_probe"
+PROJECT_REVISION = "SDRAMTest"
+PROJECT_REVISION = "Vampire500"
 PROJECT_REVISION = "PinTest"

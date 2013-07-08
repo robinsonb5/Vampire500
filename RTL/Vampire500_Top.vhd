@@ -77,18 +77,19 @@ LED : out std_logic;
 		U4_2OE_C				: out std_logic:='1';
 --			
 -- SDRAM Signals
-		SDRAM_A : out std_logic_vector(12 downto 0);
-		SDRAM_DQ : inout std_logic_vector(15 downto 0);
-		SDRAM_WE		: out std_logic;	-- Write enable, active low
-		SDRAM_RAS : out std_logic;	-- Row Address Strobe, active low
-		SDRAM_CAS : out std_logic;	-- Column Address Strobe, active low
-		SDRAM_CS : out std_logic;	-- Chip select
-		SDRAM_DQMH : out std_logic;	-- Data mask, upper and lower byte
-		SDRAM_DQML : out std_logic;	-- Data mask, upper and lower byte
-		SDRAM_BA : buffer std_logic_vector(1 downto 0); -- Bank
-		SDRAM_CLK : out std_logic;
-		SDRAM_CKE : out std_logic
-	
+--		SDRAM_A : out std_logic_vector(12 downto 0);
+--		SDRAM_DQ : inout std_logic_vector(15 downto 0);
+--		SDRAM_WE		: out std_logic;	-- Write enable, active low
+--		SDRAM_RAS : out std_logic;	-- Row Address Strobe, active low
+--		SDRAM_CAS : out std_logic;	-- Column Address Strobe, active low
+--		SDRAM_CS : out std_logic;	-- Chip select
+--		SDRAM_DQMH : out std_logic;	-- Data mask, upper and lower byte
+--		SDRAM_DQML : out std_logic;	-- Data mask, upper and lower byte
+--		SDRAM_BA : out std_logic_vector(1 downto 0); -- Bank
+--		SDRAM_CLK : out std_logic;
+--		SDRAM_CKE : out std_logic;
+		sdram_io : inout SDRAM_Pins_io;
+		sdram_o : out SDRAM_Pins_o
 	);
 end Vampire500_Top;
 
@@ -96,6 +97,7 @@ ARCHITECTURE logic OF Vampire500_Top IS
 
 -- Fast RAM signals
 
+signal sdram_clk : std_logic;
 signal sdram_ready : std_logic;
 signal fastram_fromcpu : SDRAM_Port_FromCPU;
 signal fastram_tocpu : SDRAM_Port_ToCPU;
@@ -180,7 +182,7 @@ mySysClock : entity work.SysClock
 		inclk0 => iSYS_CLK,
 		pllena => '1',
 		c0 => sysclk,
-		c1 => SDRAM_CLK
+		c1 => sdram_clk
 	);
 
 
@@ -194,7 +196,7 @@ mySysClock : entity work.SysClock
 --SDRAM_DQMH <= '1';
 --SDRAM_DQML <= '1';
 --SDRAM_BA  <= (others => '1');
-SDRAM_CKE <= '1';
+-- SDRAM_CKE <= '1';
 
 	
 
@@ -428,7 +430,7 @@ begin
 						if sel_fast='1' then
 							cpudatasource<=src_sdram;
 							fastram_fromcpu.req<='1';
-							mystate<=fast_access;					
+							mystate<=fast_access;
 						else
 							cpudatasource<=src_amiga;
 							if cpu_r_w='0' then	-- Write cycle.
@@ -450,7 +452,7 @@ begin
 					fastram_fromcpu.req<='0'; -- Cancel the request, since it's been acknowledged.
 					if cpu_r_w='0' then -- If we're writing we can let the CPU continue immediately...
 						cpu_clkena<='1';
-						mystate<=delay4;
+						mystate<=delay3;
 					else
 						mystate<=fast2;	-- If reading we let the data settle...
 					end if;
@@ -461,7 +463,7 @@ begin
 
 			when fast3 =>
 				cpu_clkena<='1';
-				mystate<=delay4;
+				mystate<=delay3;
 				
 
 --			when fast3 => -- We give the data yet one more clock to settle.
@@ -748,23 +750,20 @@ oBGACKn <= '1';
 
 -- mysdram : component sdram_simple
 mysdram : component sdram
-generic map
-	(
-		rows => 13,
-		cols => 10
-	)
 port map
 	(
 	-- Physical connections to the SDRAM
-		sdata => SDRAM_DQ,
-		sdaddr => SDRAM_A,
-		sd_we	=> SDRAM_WE,
-		sd_ras => SDRAM_RAS,
-		sd_cas => SDRAM_CAS,
-		sd_cs	=> SDRAM_CS,
-		dqm(1) => SDRAM_DQMH,
-		dqm(0) => SDRAM_DQML,
-		ba=>SDRAM_BA,
+		pins_io => sdram_io,
+		pins_o => sdram_o,
+--		sdata => SDRAM_DQ,
+--		sdaddr => SDRAM_A,
+--		sd_we	=> SDRAM_WE,
+--		sd_ras => SDRAM_RAS,
+--		sd_cas => SDRAM_CAS,
+--		sd_cs	=> SDRAM_CS,
+--		dqm(1) => SDRAM_DQMH,
+--		dqm(0) => SDRAM_DQML,
+--		ba=>SDRAM_BA,
 
 	-- Housekeeping
 		sysclk => sysclk,
@@ -775,6 +774,16 @@ port map
 		port1_i => fastram_fromcpu,
 		port1_o => fastram_tocpu
 	);
+	
+-- tofromsdram.data <= SDRAM_DQ;
+--SDRAM_A <= tosdram.addr;
+--SDRAM_WE <= tosdram.we;
+--SDRAM_RAS <= tosdram.ras;
+--SDRAM_CAS <= tosdram.cas;
+--SDRAM_CS <= tosdram.cs;
+--SDRAM_DQMH <= tosdram.dqm(1);
+--SDRAM_DQML <= tosdram.dqm(0);
+--SDRAM_BA <= tosdram.ba;
 
 fastram_fromcpu.wr<=cpu_r_w;
 fastram_fromcpu.data<=cpu_dataout;

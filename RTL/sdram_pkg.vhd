@@ -2,7 +2,31 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library work;
+use work.sdram_config.all;
+
 package sdram_pkg is
+
+-- Physical connections to SDRAM
+
+type SDRAM_Pins_io is record
+	data : std_logic_vector(15 downto 0);
+end record;
+
+type SDRAM_Pins_o is record
+	clk : std_logic;
+	cke : std_logic; -- Clock enable
+	addr : std_logic_vector(sdram_rows-1 downto 0); -- Address - size specified in sdram_config.vhd
+	we : std_logic;	-- Write enable, active low
+	ras : std_logic;	-- Row Address Strobe, active low
+	cas : std_logic;	-- Column Address Strobe, active low
+	cs : std_logic;	-- Chip select - only the lsb does anything.
+	dqm : std_logic_vector(1 downto 0);	-- Data mask, upper and lower byte
+	ba : std_logic_vector(1 downto 0); -- Bank
+end record;
+
+
+-- Logical connections to CPU
 
 type SDRAM_Port_FromCPU is record
 	data : std_logic_vector(15 downto 0);
@@ -18,23 +42,14 @@ type SDRAM_Port_ToCPU is record
 	ack : std_logic;
 end record;
 
+-- Component definition
+
 component sdram is
-generic
-	(
-		rows : integer := 12;	-- FIXME - change access sizes according to number of rows
-		cols : integer := 8
-	);
 port
 	(
--- Physical connections to the SDRAM
-	sdata		: inout std_logic_vector(15 downto 0);
-	sdaddr		: out std_logic_vector((rows-1) downto 0);
-	sd_we		: out std_logic;	-- Write enable, active low
-	sd_ras		: out std_logic;	-- Row Address Strobe, active low
-	sd_cas		: out std_logic;	-- Column Address Strobe, active low
-	sd_cs		: out std_logic;	-- Chip select - only the lsb does anything.
-	dqm			: out std_logic_vector(1 downto 0);	-- Data mask, upper and lower byte
-	ba			: buffer std_logic_vector(1 downto 0); -- Bank?
+-- Pinssical connections to the SDRAM
+	pins_io : inout SDRAM_Pins_io;	-- Data lines
+	pins_o : out SDRAM_Pins_o; -- control signals
 
 -- Housekeeping
 	sysclk		: in std_logic;
@@ -59,22 +74,11 @@ port
 end component;
 
 component sdram_simple is
-generic
-	(
-		rows : integer := 12;	-- FIXME - change access sizes according to number of rows
-		cols : integer := 8
-	);
 port
 	(
--- Physical connections to the SDRAM
-	sdata		: inout std_logic_vector(15 downto 0);
-	sdaddr		: out std_logic_vector((rows-1) downto 0);
-	sd_we		: out std_logic;	-- Write enable, active low
-	sd_ras		: out std_logic;	-- Row Address Strobe, active low
-	sd_cas		: out std_logic;	-- Column Address Strobe, active low
-	sd_cs		: out std_logic;	-- Chip select - only the lsb does anything.
-	dqm			: out std_logic_vector(1 downto 0);	-- Data mask, upper and lower byte
-	ba			: buffer std_logic_vector(1 downto 0); -- Bank?
+-- Pinssical connections to the SDRAM
+	Pins_io : inout SDRAM_Pins_io;	-- Data lines
+	Pins_o : out SDRAM_Pins_o; -- control signals
 
 -- Housekeeping
 	sysclk		: in std_logic;

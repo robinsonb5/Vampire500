@@ -25,29 +25,29 @@ library ieee;
 use ieee.std_logic_1164.all;
 use IEEE.numeric_std.ALL;
 
-library work;
 use work.sdram_pkg.ALL;
+use work.sdram_config.all;
 
 entity sdram is
-generic
-	(
-		rows : integer := 12;	-- FIXME - change access sizes according to number of rows
-		cols : integer := 8
-	);
 port
 	(
-	-- Physical connections to the SDRAM
-		sdata		: inout std_logic_vector(15 downto 0);
-		sdaddr		: out std_logic_vector((rows-1) downto 0);
-		sd_we		: out std_logic;	-- Write enable, active low
-		sd_ras		: out std_logic;	-- Row Address Strobe, active low
-		sd_cas		: out std_logic;	-- Column Address Strobe, active low
-		sd_cs		: out std_logic;	-- Chip select - only the lsb does anything.
-		dqm			: out std_logic_vector(1 downto 0);	-- Data mask, upper and lower byte
-		ba			: buffer std_logic_vector(1 downto 0); -- Bank?
+		-- Physical connections to the SDRAM
+		pins_io : inout SDRAM_Pins_io;	-- Data lines
+		pins_o : out SDRAM_Pins_o; -- control signals
+		
+--	-- Physical connections to the SDRAM
+--		sdata		: inout std_logic_vector(15 downto 0);
+--		sdaddr		: out std_logic_vector((sdram_rows-1) downto 0);
+--		sd_we		: out std_logic;	-- Write enable, active low
+--		sd_ras		: out std_logic;	-- Row Address Strobe, active low
+--		sd_cas		: out std_logic;	-- Column Address Strobe, active low
+--		sd_cs		: out std_logic;	-- Chip select - only the lsb does anything.
+--		dqm			: out std_logic_vector(1 downto 0);	-- Data mask, upper and lower byte
+--		ba			: buffer std_logic_vector(1 downto 0); -- Bank?
 
 	-- Housekeeping
 		sysclk		: in std_logic;
+		sdram_clk : in std_logic;
 		reset		: in std_logic;
 		reset_out	: out std_logic;
 		reinit : in std_logic :='0';
@@ -171,6 +171,9 @@ END COMPONENT;
 
 begin
 
+Pins_o.cke <= '1';
+Pins_o.clk <= sdram_clk;
+
 	process(sysclk)
 	begin
 	
@@ -280,15 +283,15 @@ mytwc : component TwoWayCache
 
 	process (sysclk, reset, sdwrite, datain) begin
 		IF sdwrite='1' THEN	-- Keep sdram data high impedence if not writing to it.
-			sdata <= datain;
+			Pins_io.data <= datain;
 		ELSE
-			sdata <= "ZZZZZZZZZZZZZZZZ";
+			Pins_io.data <= "ZZZZZZZZZZZZZZZZ";
 		END IF;
 
 		--   sample SDRAM data
 		if rising_edge(sysclk) then
-			sdata_reg <= sdata;
-			vga_data <= sdata;
+			sdata_reg <= Pins_io.data;
+			vga_data <= Pins_io.data;
 		END IF;	
 		
 		if reset = '0' then
@@ -411,13 +414,13 @@ mytwc : component TwoWayCache
 			end if;
 
 		--		ba <= Addr(22 downto 21);
-			sd_cs <='1';
-			sd_ras <= '1';
-			sd_cas <= '1';
-			sd_we <= '1';
-			sdaddr <= (others =>'X');
-			ba <= "00";
-			dqm <= "00";  -- safe defaults for everything...
+			Pins_o.cs <='1';
+			Pins_o.ras <= '1';
+			Pins_o.cas <= '1';
+			Pins_o.we <= '1';
+			Pins_o.addr <= (others =>'X');
+			Pins_o.ba <= "00";
+			Pins_o.dqm <= "00";  -- safe defaults for everything...
 
 			port1_dtack<='1';
 
@@ -426,27 +429,27 @@ mytwc : component TwoWayCache
 				if sdram_state =ph2 then
 					case initstate is
 						when "0010" => --PRECHARGE
-							sdaddr(10) <= '1'; 	--all banks
-							sd_cs <='0';
-							sd_ras <= '0';
-							sd_cas <= '1';
-							sd_we <= '0';
+							Pins_o.addr(10) <= '1'; 	--all banks
+							Pins_o.cs <='0';
+							Pins_o.ras <= '0';
+							Pins_o.cas <= '1';
+							Pins_o.we <= '0';
 						when "0011"|"0100"|"0101"|"0110"|"0111"|"1000"|"1001"|"1010"|"1011"|"1100" => --AUTOREFRESH
-							sd_cs <='0'; 
-							sd_ras <= '0';
-							sd_cas <= '0';
-							sd_we <= '1';
+							Pins_o.cs <='0'; 
+							Pins_o.ras <= '0';
+							Pins_o.cas <= '0';
+							Pins_o.we <= '1';
 						when "1101" => --LOAD MODE REGISTER
-							sd_cs <='0';
-							sd_ras <= '0';
-							sd_cas <= '0';
-							sd_we <= '0';
+							Pins_o.cs <='0';
+							Pins_o.ras <= '0';
+							Pins_o.cas <= '0';
+							Pins_o.we <= '0';
 --							ba <= "00";
 	--						sdaddr <= "001000100010"; --BURST=4 LATENCY=2
 --							sdaddr <= "001000110010"; --BURST=4 LATENCY=3
 --							sdaddr <= "001000110000"; --noBURST LATENCY=3
-							sdaddr <= (others=>'0'); --BURST=4 LATENCY=3, BURST WRITES
-							sdaddr(11 downto 0) <= "000000110010"; --BURST=4 LATENCY=3, BURST WRITES
+							Pins_o.addr <= (others=>'0'); --BURST=4 LATENCY=3, BURST WRITES
+							Pins_o.addr(11 downto 0) <= "000000110010"; --BURST=4 LATENCY=3, BURST WRITES
 						when others =>	null;	--NOP
 					end case;
 				END IF;
@@ -516,14 +519,14 @@ mytwc : component TwoWayCache
 						sdram_slot1<=idle;
 						if refreshpending='1' and sdram_slot2=idle then	-- refreshcycle
 							sdram_slot1<=refresh;
-							sd_cs <= '0'; --ACTIVE
-							sd_ras <= '0';
-							sd_cas <= '0'; --AUTOREFRESH
+							Pins_o.cs <= '0'; --ACTIVE
+							Pins_o.ras <= '0';
+							Pins_o.cas <= '0'; --AUTOREFRESH
 						elsif vga_req='1' then
 							if vga_addr(4 downto 3)/=slot2_bank or sdram_slot2=idle then
 								sdram_slot1<=port0;
-								sdaddr <= vga_addr(25 downto 13);
-								ba <= vga_addr(4 downto 3);
+								Pins_o.addr <= vga_addr(25 downto 13);
+								Pins_o.ba <= vga_addr(4 downto 3);
 								slot1_bank <= vga_addr(4 downto 3);
 --								if vga_idle='0' then
 --									vga_nextbank <= unsigned(vga_addr(4 downto 3))+"01";
@@ -532,8 +535,8 @@ mytwc : component TwoWayCache
 	--							datain <= X"0000";
 								cas_sd_cas <= '0';
 								cas_sd_we <= '1';
-								sd_cs <= '0'; --ACTIVE
-								sd_ras <= '0';
+								Pins_o.cs <= '0'; --ACTIVE
+								Pins_o.ras <= '0';
 								vga_ack<='1'; -- Signal to VGA controller that it can bump bankreserve
 --							else
 --								vga_nextbank <= unsigned(vga_addr(4 downto 3)); -- reserve bank for next access
@@ -543,8 +546,8 @@ mytwc : component TwoWayCache
 								and (writecache_addr(4 downto 3)/=slot2_bank or sdram_slot2=idle)
 									then
 							sdram_slot1<=writecache;
-							sdaddr <= writecache_addr(25 downto 13);
-							ba <= writecache_addr(4 downto 3);
+							Pins_o.addr <= writecache_addr(25 downto 13);
+							Pins_o.ba <= writecache_addr(4 downto 3);
 							slot1_bank <= writecache_addr(4 downto 3);
 							cas_dqm <= port1_i.uds&port1_i.lds;
 							casaddr <= writecache_addr&"000";
@@ -552,13 +555,13 @@ mytwc : component TwoWayCache
 							cas_sd_cas <= '0';
 							cas_sd_we <= '0';
 							sdram_slot1_readwrite <= '0';
-							sd_cs <= '0'; --ACTIVE
-							sd_ras <= '0';
+							Pins_o.cs <= '0'; --ACTIVE
+							Pins_o.ras <= '0';
 						elsif readcache_req='1' --port1_i.req='1' and port1_i.wr='1'
 								and (port1_i.addr(4 downto 3)/=slot2_bank or sdram_slot2=idle) then
 							sdram_slot1<=port1;
-							sdaddr <= port1_i.addr(25 downto 13);
-							ba <= port1_i.addr(4 downto 3);
+							Pins_o.addr <= port1_i.addr(25 downto 13);
+							Pins_o.ba <= port1_i.addr(4 downto 3);
 							slot1_bank <= port1_i.addr(4 downto 3); -- slot1 bank
 							cas_dqm <= "00";
 							casaddr <= port1_i.addr(31 downto 1) & "0";
@@ -566,8 +569,8 @@ mytwc : component TwoWayCache
 							cas_sd_cas <= '0';
 							cas_sd_we <= '1';
 							sdram_slot1_readwrite <= '1';
-							sd_cs <= '0'; --ACTIVE
-							sd_ras <= '0';
+							Pins_o.cs <= '0'; --ACTIVE
+							Pins_o.ras <= '0';
 						end if;
 
 						if sdram_slot2=port1 then
@@ -590,36 +593,36 @@ mytwc : component TwoWayCache
 						end if;
 						
 					when ph5 => -- Read or Write command			
-						sdaddr <=  "001" & casaddr(12 downto 5) & casaddr(2 downto 1) ;--auto precharge
-						ba <= casaddr(4 downto 3);
-						sd_cs <= cas_sd_cs; 
+						Pins_o.addr <=  "001" & casaddr(12 downto 5) & casaddr(2 downto 1) ;--auto precharge
+						Pins_o.ba <= casaddr(4 downto 3);
+						Pins_o.cs <= cas_sd_cs; 
 
-						dqm <= cas_dqm;
+						Pins_o.dqm <= cas_dqm;
 
-						sd_ras <= cas_sd_ras;
-						sd_cas <= cas_sd_cas;
-						sd_we  <= cas_sd_we;
+						Pins_o.ras <= cas_sd_ras;
+						Pins_o.cas <= cas_sd_cas;
+						Pins_o.we  <= cas_sd_we;
 						if sdram_slot1=writecache then
 							datain <= writecache_word0;
-							dqm <= writecache_dqm(1 downto 0);
+							Pins_o.dqm <= writecache_dqm(1 downto 0);
 						end if;
 
 					when ph6 => -- Next word of burst write
 						if sdram_slot1=writecache then
 							datain <= writecache_word1;
-							dqm <= writecache_dqm(3 downto 2);
+							Pins_o.dqm <= writecache_dqm(3 downto 2);
 						end if;
 
 					when ph7 => -- third word of burst write
 						if sdram_slot1=writecache then
 							datain <= writecache_word2;
-							dqm <= writecache_dqm(5 downto 4);
+							Pins_o.dqm <= writecache_dqm(5 downto 4);
 						end if;
 				
 					when ph8 =>
 						if sdram_slot1=writecache then
 							datain <= writecache_word3;
-							dqm <= writecache_dqm(7 downto 6);
+							Pins_o.dqm <= writecache_dqm(7 downto 6);
 							writecache_burst<='0';
 						end if;
 
@@ -645,8 +648,8 @@ mytwc : component TwoWayCache
 								and (writecache_addr(4 downto 3)/=vga_reserveaddr(4 downto 3)
 									or vga_reservebank='0') then  -- Safe to use this slot with this bank?
 							sdram_slot2<=writecache;
-							sdaddr <= writecache_addr(25 downto 13);
-							ba <= writecache_addr(4 downto 3);
+							Pins_o.addr <= writecache_addr(25 downto 13);
+							Pins_o.ba <= writecache_addr(4 downto 3);
 							slot2_bank <= writecache_addr(4 downto 3);
 							cas_dqm <= port1_i.uds&port1_i.lds;
 							casaddr <= writecache_addr&"000";
@@ -654,15 +657,15 @@ mytwc : component TwoWayCache
 							cas_sd_cas <= '0';
 							cas_sd_we <= '0';
 							sdram_slot2_readwrite <= '0';
-							sd_cs <= '0'; --ACTIVE
-							sd_ras <= '0';
+							Pins_o.cs <= '0'; --ACTIVE
+							Pins_o.ras <= '0';
 						elsif readcache_req='1' -- port1_i.req='1' and port1_i.wr='1'
 								and (port1_i.addr(4 downto 3)/=slot1_bank or sdram_slot1=idle)
 								and (port1_i.addr(4 downto 3)/=vga_reserveaddr(4 downto 3)
 									or vga_reservebank='0') then  -- Safe to use this slot with this bank?
 							sdram_slot2<=port1;
-							sdaddr <= port1_i.addr(25 downto 13);
-							ba <= port1_i.addr(4 downto 3);
+							Pins_o.addr <= port1_i.addr(25 downto 13);
+							Pins_o.ba <= port1_i.addr(4 downto 3);
 							slot2_bank <= port1_i.addr(4 downto 3);
 							cas_dqm <= "00";
 							casaddr <= port1_i.addr(31 downto 1) & "0"; -- We no longer mask off LSBs for burst read
@@ -670,8 +673,8 @@ mytwc : component TwoWayCache
 							cas_sd_cas <= '0';
 							cas_sd_we <= '1';
 							sdram_slot2_readwrite <= '1';
-							sd_cs <= '0'; --ACTIVE
-							sd_ras <= '0';
+							Pins_o.cs <= '0'; --ACTIVE
+							Pins_o.ras <= '0';
 						end if;
 
 						-- Fill - takes effect next cycle.
@@ -695,37 +698,37 @@ mytwc : component TwoWayCache
 					-- Phase 13 - CAS for second window...
 					when ph13 =>
 						if sdram_slot2/=idle then
-							sdaddr <=  "001" & casaddr(12 downto 5) & casaddr(2 downto 1) ;--auto precharge
-							ba <= casaddr(4 downto 3);
-							sd_cs <= cas_sd_cs; 
+							Pins_o.addr <=  "001" & casaddr(12 downto 5) & casaddr(2 downto 1) ;--auto precharge
+							Pins_o.ba <= casaddr(4 downto 3);
+							Pins_o.cs <= cas_sd_cs; 
 
-							dqm <= cas_dqm;
+							Pins_o.dqm <= cas_dqm;
 
-							sd_ras <= cas_sd_ras;
-							sd_cas <= cas_sd_cas;
-							sd_we  <= cas_sd_we;
+							Pins_o.ras <= cas_sd_ras;
+							Pins_o.cas <= cas_sd_cas;
+							Pins_o.we  <= cas_sd_we;
 							if sdram_slot2=writecache then
 								datain <= writecache_word0;
-								dqm <= writecache_dqm(1 downto 0);
+								Pins_o.dqm <= writecache_dqm(1 downto 0);
 							end if;
 						end if;
 
 					when ph14 => -- Second word of burst write
 						if sdram_slot2=writecache then
 							datain <= writecache_word1;
-							dqm <= writecache_dqm(3 downto 2);
+							Pins_o.dqm <= writecache_dqm(3 downto 2);
 						end if;
 
 					when ph15 => -- Third word of burst write
 						if sdram_slot2=writecache then
 							datain <= writecache_word2;
-							dqm <= writecache_dqm(5 downto 4);
+							Pins_o.dqm <= writecache_dqm(5 downto 4);
 						end if;
 
 					when ph0 => -- Final word of burst write
 						if sdram_slot2=writecache then
 							datain <= writecache_word3;
-							dqm <= writecache_dqm(7 downto 6);
+							Pins_o.dqm <= writecache_dqm(7 downto 6);
 							writecache_burst<='0';
 						end if;
 
