@@ -1,14 +1,14 @@
 #include "amiga.h"
 #include "font8.h"
 
-static int plane0[640*208/8];
+static char plane0[640*208/8];
 static short copper[8];
 
 static int cursorx,cursory;
 
 static void FillScreen(int v)
 {
-	int *p=plane0;
+	int *p=(int *)plane0;
 	int i;
 	for(i=0;i<(640*208/32);++i)
 		*p++=v;
@@ -17,7 +17,7 @@ static void FillScreen(int v)
 
 static void IncScreen()
 {
-	int *p=plane0;
+	int *p=(int*)plane0;
 	int i;
 	for(i=0;i<(640*208/32);++i)
 		(*p++)++;

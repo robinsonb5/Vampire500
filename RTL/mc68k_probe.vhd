@@ -107,6 +107,10 @@ signal sampled_reset_s : std_logic;
 signal eclk_shift : std_logic_vector(9 downto 0) := "1111000000";
 signal eclk_fallingedge : std_logic;
 signal VMA_int : std_logic;
+signal VPA_s : std_logic;
+signal VPA : std_logic;
+signal DTACK_s : std_logic;
+signal DTACK : std_logic;
 
 --
 -- FSM
@@ -117,7 +121,8 @@ signal TG68_RESETn : std_logic;  -- TG68 reset, active low
 type mystates is
 	(init,reset,state1,state2,main,bootrom,delay1,delay2,delay3,delay4,
 	writeS0,writeS1,writeS2,writeS3,writeS4,writeS5,writeS6,writeS7,writeS8,
-	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,fast_access,fast2,fast3);
+	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,fast_access,fast2,fast3,
+	peripheral_access,peripheral_access2);
 
 signal mystate : mystates :=init;    -- Declare state machine variable with initial value of "init"
 
@@ -213,9 +218,24 @@ begin
 		if amigaclk_phase2="00100" then -- phase 5 - might need to adjust this
 			amiga_fallingedge_write<='1';
 		end if;
+
 	end if;
 	amiga_eitheredge_read <= amiga_fallingedge_read or amiga_risingedge_read;
 	amiga_eitheredge_write <= amiga_fallingedge_write or amiga_risingedge_write;
+
+end process;
+
+
+process(sysclk)
+begin
+	if rising_edge(sysclk) then
+		-- Synchronize VPA
+		VPA_s<=iVPA;
+		VPA<=VPA_s;
+		-- Synchronize DTACK
+		DTACK_s<=iTG68_DTACKn;
+		DTACK<=DTACK_s;
+	end if;
 end process;
 
 
@@ -386,8 +406,9 @@ begin
 												-- (at 7Mhz no delays are strictly necessary,
 												-- but they certainly will be once we ramp up the speed.)
 					else
-						if cpu_addr=X"FFFFFF84" then	-- fake UART access
-							cpudatasrc<=src_peripheral;
+						if cpu_addr(31 downto 28)=X"F" then	-- fake UART access
+							cpudatasource<=src_peripheral;
+							mystate<=peripheral_access;
 --						if sel_fast='1' then
 --							cpudatasource<=src_sdram;
 --							fastram_fromcpu.req<='1';
@@ -408,8 +429,13 @@ begin
 				end if;
 
 			when peripheral_access =>
+				mystate<=peripheral_access2;
+
+			when peripheral_access2 =>
 				cpu_clkena<='1';
-				uart_ack<='1';
+				if cpu_addr(7 downto 0)=X"86" then
+					uart_ack<='1';
+				end if;
 				mystate<=delay3;
 
 --			when fast_access =>
@@ -488,13 +514,13 @@ begin
 					oTG68_UDSn  <=cpu_uds;	-- Write UDS/LDS on rising edge of S4
 					oTG68_LDSn  <=cpu_lds;
 				end if;
-				if amiga_eitheredge_read='1' then -- Allow a little time for incoming signals to come through the ALVC.
+				if amiga_risingedge_read='1' then -- Allow a little time for incoming signals to come through the ALVC.
 					-- 6800-style cycle?
-					if iVPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
+					if VPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
 						VMA_int<='0';
 						mystate<=writeS5;
 						cpu_clkena<='1';			
-					elsif iTG68_DTACKn ='0' then	-- Wait for DTACK or VPA
+					elsif DTACK ='0' then	-- Wait for DTACK or VPA
 						cpu_clkena<='1';
 						mystate<=writeS5;
 					end if;					
@@ -507,7 +533,7 @@ begin
 				end if;
 				  			
 			when writeS6 => -- Nothing happens during S3
-				if iVPA='0' then
+				if VPA='0' then
 					if eclk_fallingedge='1' then
 						mystate<=writeS7;
 					end if;
@@ -590,10 +616,10 @@ begin
 			when readS4 =>
 				if amiga_risingedge_read='1' then -- "read" to allow time for ALVCs to do their thing.
 
-					if iVPA='0' and E='0' then -- We're looking at a 6800 cycle, and are synchronised to the E clock
+					if VPA='0' and E='0' then -- We're looking at a 6800 cycle, and are synchronised to the E clock
 						VMA_int<='0'; -- Indicate to 6800 device that the cycle is ready to proceed.
 						mystate<=readS6;
-					elsif iTG68_DTACKn ='0' then -- Normal cycle.
+					elsif DTACK ='0' then -- Normal cycle.
 						mystate<=readS6;
 					end if;
 				end if;
@@ -605,7 +631,7 @@ begin
 				
 			when readS6 =>
 --				cpu_datain<=ioTG68_DATA;
-				if iVPA='0' then
+				if VPA='0' then
 					if eclk_fallingedge='1' then
 						cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 						mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
@@ -713,5 +739,21 @@ oBGACKn <= '1';
 --   		U4_2DIR_C			<= '0';
 --  		U4_2OE_C				<= '0';
 -- 
+
+mymemchecker : entity work.MemChecker
+	port map (
+		clk => sysclk,
+		sdram_clk => sdram_clk,
+		reset_in => TG68_RESETn,
+
+		-- SDRAM
+		sdram_pins_io => sdram_pins_io,
+		sdram_pins_o => sdram_pins_o,
+
+		-- Debug channel signals
+		debug_out => fake_uart(7 downto 0),
+		debug_req => fake_uart(9),
+		debug_ack => uart_ack
+	);
 
 END;

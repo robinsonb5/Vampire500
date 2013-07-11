@@ -123,6 +123,10 @@ signal sampled_reset_s : std_logic;
 signal eclk_shift : std_logic_vector(9 downto 0) := "1111000000";
 signal eclk_fallingedge : std_logic;
 signal VMA_int : std_logic;
+signal VPA_s : std_logic;
+signal VPA : std_logic;
+signal DTACK_s : std_logic;
+signal DTACK : std_logic;
 
 --
 -- FSM
@@ -201,7 +205,8 @@ mySysClock : entity work.SysClock
 	
 
 	
--- Double-synchronise the Amiga clock signal.
+-- Double-synchronise the Amiga clock signal
+-- and VPA signal.
 
 process(sysclk,clk_7Mhz)
 begin
@@ -246,6 +251,19 @@ begin
 	end if;
 	amiga_eitheredge_read <= amiga_fallingedge_read or amiga_risingedge_read;
 	amiga_eitheredge_write <= amiga_fallingedge_write or amiga_risingedge_write;
+
+end process;
+
+
+-- Double-sync the VPA and DTACK signals
+process(sysclk)
+begin
+	if rising_edge(sysclk) then
+		VPA_s<=iVPA;
+		VPA<=VPA_s;
+		DTACK_s<=iTG68_DTACKn;
+		DTACK<=DTACK_s;
+	end if;
 end process;
 
 
@@ -524,11 +542,11 @@ begin
 				end if;
 				if amiga_eitheredge_read='1' then -- Allow a little time for incoming signals to come through the ALVC.
 					-- 6800-style cycle?
-					if iVPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
+					if VPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
 						VMA_int<='0';
 						mystate<=writeS5;
 						cpu_clkena<='1';			
-					elsif iTG68_DTACKn ='0' then	-- Wait for DTACK or VPA
+					elsif DTACK ='0' then	-- Wait for DTACK or VPA
 						cpu_clkena<='1';
 						mystate<=writeS5;
 					end if;					
@@ -541,7 +559,7 @@ begin
 				end if;
 				  			
 			when writeS6 => -- Nothing happens during S3
-				if iVPA='0' then
+				if VPA='0' then
 					if eclk_fallingedge='1' then
 						mystate<=writeS7;
 					end if;
@@ -624,10 +642,10 @@ begin
 			when readS4 =>
 				if amiga_risingedge_read='1' then -- "read" to allow time for ALVCs to do their thing.
 
-					if iVPA='0' and E='0' then -- We're looking at a 6800 cycle, and are synchronised to the E clock
+					if VPA='0' and E='0' then -- We're looking at a 6800 cycle, and are synchronised to the E clock
 						VMA_int<='0'; -- Indicate to 6800 device that the cycle is ready to proceed.
 						mystate<=readS6;
-					elsif iTG68_DTACKn ='0' then -- Normal cycle.
+					elsif DTACK ='0' then -- Normal cycle.
 						mystate<=readS6;
 					end if;
 				end if;
@@ -639,7 +657,7 @@ begin
 				
 			when readS6 =>
 --				cpu_datain<=ioTG68_DATA;
-				if iVPA='0' then
+				if VPA='0' then
 					if eclk_fallingedge='1' then
 						cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 						mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.

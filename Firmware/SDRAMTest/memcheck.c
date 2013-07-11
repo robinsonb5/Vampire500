@@ -89,14 +89,12 @@ int lfsrcheck(volatile int *base)
 			if(base[j]!=w)
 			{
 				result=0;
-				printf("Error at %x\n",w);
-				printf("expected %x, got %x\n",w,base[j]);
+				printf("Error at %d, expected %d, got %d\n",j, w,base[j]);
 			}
 			if(base[k]!=x)
 			{
 				result=0;
-				printf("Error at %x\n",w);
-				printf("expected %x, got %x\n",w,base[k]);
+				printf("Error at %d, expected %d, got %d\n",k, x,base[k]);
 			}
 			CYCLE_LFSR;
 		}

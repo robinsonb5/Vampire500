@@ -105,11 +105,15 @@ int main()
 	HW_CIAA(CIAA_PRA)=0xfc;
 	Amiga_SetupScreen();
 
+	Amiga_Puts("Ready to receive\n");
+
 	while(1)
 	{
 		int in=HW_PER(PER_UART);
 		if(in & (1<<PER_UART_RXINT))
+		{
 			Amiga_Putc(in&0xff);
+		}
 	}
 
 	while(1)
