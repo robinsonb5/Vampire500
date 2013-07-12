@@ -25,12 +25,14 @@
 #define COLOR0   0x180
 #define COLOR1   0x182
 
-#define HW_AMIGA(x) (*(short *)(0xDFF000+x))
+#define HW_AMIGA(x) (*(volatile short *)(0xDFF000+x))
 
 #define CIAA_PRA 0x0001
 #define CIAA_DDRA 0x0201
+#define CIAA_PRA_FIRE0 6
+#define CIAA_PRA_FIRE1 7
 
-#define HW_CIAA(x) (*(char *)(0xBFE000+x))
+#define HW_CIAA(x) (*(volatile char *)(0xBFE000+x))
 
 void Amiga_Putc(int c);
 void Amiga_Puts(const char *s);

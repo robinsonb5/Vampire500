@@ -46,7 +46,7 @@ create_clock -name {clk_50} -period 20.000 -waveform { 0.000 0.500 } [get_ports 
 #**************************************************************
 
 derive_pll_clocks 
-create_generated_clock -name sdclk_pin -source [get_pins {mySysClock|altpll_component|pll|clk[1]}] [get_ports {SDRAM_CLK}]
+create_generated_clock -name sdclk_pin -source [get_pins {mySysClock|altpll_component|pll|clk[1]}] [get_ports {sdram_pins_o.clk}]
 
 #**************************************************************
 # Set Clock Latency
@@ -64,8 +64,8 @@ derive_clock_uncertainty;
 #**************************************************************
 # We'll reduce these slightly thanks to the short CLK line
 
-set_input_delay -clock sdclk_pin -max 5.4 [get_ports SDRAM_DQ*]
-set_input_delay -clock sdclk_pin -min 0.3 [get_ports SDRAM_DQ*]
+set_input_delay -clock sdclk_pin -max 5.4 [get_ports sdram_pins_io.*]
+set_input_delay -clock sdclk_pin -min 0.3 [get_ports sdram_pins_io.*]
 
 #**************************************************************
 # Set Output Delay
@@ -73,8 +73,8 @@ set_input_delay -clock sdclk_pin -min 0.3 [get_ports SDRAM_DQ*]
 # CLK line is very short compared with other signals, so we'll add some extra delay here
 # (without this these would be 1.5, -0.8)
 
-set_output_delay -clock sdclk_pin -max 2.5 [get_ports SDRAM_*]
-set_output_delay -clock sdclk_pin -min -0.5 [get_ports SDRAM_*]
+set_output_delay -clock sdclk_pin -max 2.5 [get_ports sdram_pins*]
+set_output_delay -clock sdclk_pin -min -0.5 [get_ports sdram_pins*]
 
 #**************************************************************
 # Set Clock Groups

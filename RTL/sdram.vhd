@@ -742,7 +742,8 @@ mytwc : component TwoWayCache
 						
 				end case;
 
-			END IF;	
+			END IF;
+--			Pins_o.addr(7)<='0'; -- Simulate badly soldered pin...
 		END IF;	
 	END process;		
 END;

@@ -247,17 +247,6 @@ set_global_assignment -name SEARCH_PATH MC68K/ -tag from_archive
 set_global_assignment -name SEARCH_PATH firmware/ -tag from_archive
 
 set_global_assignment -name SMART_RECOMPILE ON
-set_global_assignment -name VHDL_FILE ZPU/zpupkg.vhd
-set_global_assignment -name VHDL_FILE ZPU/zpu_core_small_bramstack.vhd
-set_global_assignment -name VHDL_FILE ZPU/zpu_config.vhd
-set_global_assignment -name VHDL_FILE RTL/TG68K_Pack.vhd
-set_global_assignment -name VHDL_FILE RTL/TG68KdotC_Kernel.vhd
-set_global_assignment -name VHDL_FILE RTL/TG68K_ALU.vhd
-set_global_assignment -name VHDL_FILE RTL/mc68k_probe.vhd
-set_global_assignment -name QIP_FILE GeneratedRTL/SysClock.qip
-set_global_assignment -name VHDL_FILE RTL/DummyCPU.vhd
-set_global_assignment -name VHDL_FILE RTL/zpu_bridge.vhd
-set_global_assignment -name VHDL_FILE Firmware/VampireDiag_ROM.vhd
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=256" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=256" -section_id auto_signaltap_0
 set_location_assignment PIN_35 -to sdram_pins_io.data[15]
@@ -391,15 +380,6 @@ set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to sdram_pins_o.ra
 set_location_assignment PIN_68 -to sdram_pins_o.we
 set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to sdram_pins_o.we
 set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to sdram_pins_o.we
-set_global_assignment -name VHDL_FILE RTL/sdram_config.vhd
-set_global_assignment -name VHDL_FILE RTL/sdram.vhd
-set_global_assignment -name VHDL_FILE RTL/sdram_pkg.vhd
-set_global_assignment -name SIGNALTAP_FILE zpu.stp
-set_global_assignment -name VHDL_FILE Firmware/SDRAMTest_ROM.vhd
-set_global_assignment -name VHDL_FILE ZPU/MemChecker.vhd
-set_global_assignment -name VERILOG_FILE RTL/TwoWayCache.v
-set_global_assignment -name QIP_FILE GeneratedRTL/CacheBlockRAM.qip
-set_global_assignment -name QIP_FILE GeneratedRTL/Cache_DataRAM.qip
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "MemChecker:mymemchecker|currentstate.PAUSE" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "MemChecker:mymemchecker|currentstate.READ1" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "MemChecker:mymemchecker|currentstate.VGAREAD" -section_id auto_signaltap_0
@@ -628,4 +608,25 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=6
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=1" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000111011111" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=23798" -section_id auto_signaltap_0
+set_global_assignment -name SDC_FILE SDRAM.sdc
+set_global_assignment -name VHDL_FILE ZPU/zpupkg.vhd
+set_global_assignment -name VHDL_FILE ZPU/zpu_core_small_bramstack.vhd
+set_global_assignment -name VHDL_FILE ZPU/zpu_config.vhd
+set_global_assignment -name VHDL_FILE RTL/TG68K_Pack.vhd
+set_global_assignment -name VHDL_FILE RTL/TG68KdotC_Kernel.vhd
+set_global_assignment -name VHDL_FILE RTL/TG68K_ALU.vhd
+set_global_assignment -name VHDL_FILE RTL/mc68k_probe.vhd
+set_global_assignment -name QIP_FILE GeneratedRTL/SysClock.qip
+set_global_assignment -name VHDL_FILE RTL/DummyCPU.vhd
+set_global_assignment -name VHDL_FILE RTL/zpu_bridge.vhd
+set_global_assignment -name VHDL_FILE Firmware/VampireDiag_ROM.vhd
+set_global_assignment -name VHDL_FILE RTL/sdram_config.vhd
+set_global_assignment -name VHDL_FILE RTL/sdram.vhd
+set_global_assignment -name VHDL_FILE RTL/sdram_pkg.vhd
+set_global_assignment -name SIGNALTAP_FILE zpu.stp
+set_global_assignment -name VHDL_FILE Firmware/SDRAMTest_ROM.vhd
+set_global_assignment -name VHDL_FILE ZPU/MemChecker.vhd
+set_global_assignment -name VERILOG_FILE RTL/TwoWayCache.v
+set_global_assignment -name QIP_FILE GeneratedRTL/CacheBlockRAM.qip
+set_global_assignment -name QIP_FILE GeneratedRTL/Cache_DataRAM.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -53,6 +53,7 @@ port
 
 -- Housekeeping
 	sysclk		: in std_logic;
+	sdram_clk : in std_logic;
 	reset		: in std_logic;
 	reset_out	: out std_logic;
 	reinit : in std_logic :='0';

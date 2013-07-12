@@ -88,8 +88,8 @@ LED : out std_logic;
 --		SDRAM_BA : out std_logic_vector(1 downto 0); -- Bank
 --		SDRAM_CLK : out std_logic;
 --		SDRAM_CKE : out std_logic;
-		sdram_io : inout SDRAM_Pins_io;
-		sdram_o : out SDRAM_Pins_o
+		sdram_pins_io : inout SDRAM_Pins_io;
+		sdram_pins_o : out SDRAM_Pins_o
 	);
 end Vampire500_Top;
 
@@ -771,8 +771,8 @@ mysdram : component sdram
 port map
 	(
 	-- Physical connections to the SDRAM
-		pins_io => sdram_io,
-		pins_o => sdram_o,
+		pins_io => sdram_pins_io,
+		pins_o => sdram_pins_o,
 --		sdata => SDRAM_DQ,
 --		sdaddr => SDRAM_A,
 --		sd_we	=> SDRAM_WE,
@@ -785,6 +785,7 @@ port map
 
 	-- Housekeeping
 		sysclk => sysclk,
+		sdram_clk => sdram_clk,
 		reset => TG68_RESETn,
 		reset_out => sdram_ready,
 
