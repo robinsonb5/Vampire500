@@ -53,6 +53,48 @@ int sanitycheck(volatile int *base,int cachesize)
 	return(result);
 }
 
+
+int bytecheck(volatile int *base,int cachesize)
+{
+	int result=1;
+	volatile char *b2=(volatile char *)base;
+
+	base[0]=0x55555555;
+	base[3]=0xaaaaaaaa;
+
+	b2[0]=0xcc;	// Write high byte
+	b2[15]=0x33; // Write low byte
+
+	if(base[0]!=0xcc555555)
+	{
+		printf("Byte check failed (before cache refresh) at 0 (got 0x%d)\n",base[0]);
+		result=0;
+	}
+
+	if(base[3]!=0xaaaaaa33)
+	{
+		printf("Byte check failed (before cache refresh) at 3 (got 0x%d)\n",base[3]);
+		result=0;
+	}
+
+	refreshcache(base,cachesize);
+
+	if(base[0]!=0xcc555555)
+	{
+		printf("Byte check failed (after cache refresh) at 0 (got 0x%d)\n",base[0]);
+		result=0;
+	}
+
+	if(base[3]!=0xaaaaaa33)
+	{
+		printf("Byte check failed (after cache refresh) at 3 (got 0x%d)\n",base[3]);
+		result=0;
+	}
+
+	return(result);
+}
+
+
 #define LFSRSEED 12467
 
 int lfsrcheck(volatile int *base)
@@ -150,7 +192,7 @@ int addresscheck(volatile int *base,int cachesize)
 //		{
 			if(base[a1|a2]==ADDRCHECKWORD2)
 			{
-				result=0;
+				// An alias isn't necessarily a failure.
 				aliases|=a1|a2;
 			}
 			else if(base[a1|a2]!=ADDRCHECKWORD)
@@ -167,9 +209,13 @@ int addresscheck(volatile int *base,int cachesize)
 
 	while(aliases)
 	{
+		if((aliases&0x2000000)==0)	// If the alias bits aren't contiguously the high bits, then it indicates a bad address.
+			result=0;
 		aliases=(aliases<<1)&0xffffff;	// Test currently supports up to 16m longwords = 64 megabytes.
 		size>>=1;
 	}
+	if(result && (size<64))
+		printf("(Aliases probably simply indicate that RAM is smaller than 64 megabytes)");
 	printf("SDRAM size (assuming no address faults) is 0x%d megabytes\n",size);
 	
 	return(result);
@@ -187,13 +233,18 @@ int main(int argc, char **argv)
 	HW_PER(PER_UART_CLKDIV)=1250000/1152;	// Running on the ZPU
 #endif
 
-	if(sanitycheck(base,CACHESIZE))
-		printf("First stage sanity check passed.\n");
-	if(addresscheck(base,CACHESIZE))
-		printf("Address check passed.\n");
-	if(lfsrcheck(base))
-		printf("LFSR check passed.\n");
-
+	while(1)
+	{
+		if(sanitycheck(base,CACHESIZE))
+			printf("First stage sanity check passed.\n");
+		if(bytecheck(base,CACHESIZE))
+			printf("Byte (dqm) check passed\n");
+		if(addresscheck(base,CACHESIZE))
+			printf("Address check passed.\n");
+		if(lfsrcheck(base))
+			printf("LFSR check passed.\n");
+		printf("\n");
+	}
 	return(0);
 }
 

@@ -165,10 +165,10 @@ cpu_datain <= ioTG68_Data when cpudatasource=src_amiga
 
 -- PLL to generate 128Mhz from 50MHz sysclock.
 
-mySysClock : entity work.SysClock
+mySysClock : entity work.Clk_100Mhz
 	port map(
 		inclk0 => iSYS_CLK,
-		pllena => '1',
+--		pllena => '1',
 		c0 => sysclk,
 		c1 => sdram_clk
 	);

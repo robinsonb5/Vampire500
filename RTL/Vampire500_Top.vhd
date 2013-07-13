@@ -166,18 +166,26 @@ signal nullsig0 : std_logic;
 
 -- Fast RAM signals
 
-signal sel_fast : std_logic;
+signal sdram_addr : std_logic_vector(31 downto 1); -- CPU's current address
+signal sel_zii_fast : std_logic;
+signal sel_ziii_fast : std_logic;
+signal sel_chipram : std_logic;
+signal sel_kickstart : std_logic;
+signal sel_24bit : std_logic;
+signal sel_autoconfig : std_logic;
+signal sel_autoconfig2 : std_logic;
+
+-- Autoconfig signals
+
+signal autoconfig_data : std_logic_vector(3 downto 0); -- 24-bit (Zorro II) autoconfig data;
+signal autoconfig_data2 : std_logic_vector(3 downto 0); -- 32-bit (Zorro III) autoconfig data;
+signal autoconfig_out : std_logic_vector(1 downto 0); -- Select between 24- and 32-bit autoconfig.
 
 type cpudatasources is (src_amiga,src_sdram,src_autoconfig,src_peripheral);
 signal cpudatasource : cpudatasources := src_amiga;
 
 BEGIN
 
--- Multiplexer for CPU Data in.
-cpu_datain <= ioTG68_Data when cpudatasource=src_amiga
-	else fastram_tocpu.data when cpudatasource=src_sdram
-	else --- src_autoconfig, src_peripheral, etc.
-		(others => 'X');
 
 -- PLL to generate 128Mhz from 50MHz sysclock.
 
@@ -353,11 +361,75 @@ oTG68_ADDR <= amiga_addr;
 --oTG68_ADDR(0) <= null;
 -- FSM who generates one reset on Amiga motherboards, and after that enables reset_fsm with fsm_ena(active high)
 
+
 -- Address decoding...
-sel_fast <= '1' when
-  cpu_addr(31 downto 24)=X"01" -- 1000000 17ffff8
+
+sel_24bit <= '1' when
+	cpu_addr(31 downto 24)=X"00" else '0'; -- 0x000000 to 0xffffff
+
+-- This will be used if we do soft-kicking at any point.
+sel_kickstart <= '1' when
+	sel_24bit='1' and cpu_addr(23 downto 20)=X"F" else '0';
+
+-- The first set of autoconfig data (Zorro II RAM)
+sel_autoconfig <= '1' when
+	sel_24bit='1' and autoconfig_out="01" and cpu_addr(23 downto 16)=X"E8" else '0'; -- Autoconfig space
+
+-- The second set of autoconfig data (Zorro III RAM)
+sel_autoconfig2 <= '1' when
+	sel_24bit='1' and autoconfig_out="10" and cpu_addr(23 downto 16)=X"E8" else '0'; -- Autoconfig space
+
+-- The chipram range.  This signal is only used to subtract chip RAM from the Z-II RAM range.
+sel_chipram <= '1' when
+	sel_24bit='1' and cpu_addr(23 downto 21)="000" else '0'; -- Chip RAM space, 0000000 to 1fffff
+
+-- Zorro II Fast RAM
+sel_zii_fast <= '1' when
+	sel_24bit='1' and sel_chipram='0' and
+		(cpu_addr(23)='0'	or cpu_addr(23 downto 21)="100")	-- Zorro II Fast RAM.
+			else '0';
+
+-- Zorro III Fast RAM
+sel_ziii_fast <= '1' when
+  sel_24bit<='0' and cpu_addr(31)='0' -- 1000000 upwards, aliased to fill the address space.
   else '0';
 
+-- Map Zorro II fast RAM to memory starting 48 meg in.
+-- This leaves the low 48 meg for zorro III fast RAM,
+-- and the last 8 meg for Kickstart mapping, Ranger RAM,
+-- hard disk buffers or anything else we decide to do.
+sdram_addr(25)<= sel_zii_fast;
+sdram_addr(24)<= sel_zii_fast or cpu_addr(24);
+sdram_addr(23 downto 1)<=cpu_addr(23 downto 1);
+
+process(sysclk)
+begin 
+	-- Zorro II RAM (Up to 8 meg at 0x200000)
+	autoconfig_data <= "1111";
+	CASE cpu_addr(6 downto 1) IS
+		WHEN "000000" => autoconfig_data <= "1110";		--Zorro-II card, add mem, no ROM
+		WHEN "000001" => autoconfig_data <= "0000";		--8MB
+		WHEN "001000" => autoconfig_data <= "1110";		-- 5016=Majsta
+		WHEN "001001" => autoconfig_data <= "1100";		
+		WHEN "001010" => autoconfig_data <= "0110";		
+		WHEN "001011" => autoconfig_data <= "0111";		
+		WHEN "010011" => autoconfig_data <= "1110";		--serial=1
+		WHEN OTHERS => null;
+	END CASE;
+end process;
+
+
+-- Multiplexer for CPU Data in.
+cpu_datain <= ioTG68_Data when cpudatasource=src_amiga
+	else fastram_tocpu.data when cpudatasource=src_sdram
+	else autoconfig_data & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="01"
+	else autoconfig_data2 & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="10"
+		---src_peripheral, etc.
+	else
+		(others => 'X');
+
+		
+  
 process(sysclk,reset_counter)
 begin
   if rising_edge(sysclk) then
@@ -378,6 +450,7 @@ begin
 				TG68_RESETn <= '0';
 			 end if; 
 			when reset =>
+				autoconfig_out<="01";
 				if amiga_risingedge_read='1' then
 				  if reset_counter=X"0000" then
 					 mystate<=state1;
@@ -445,11 +518,23 @@ begin
 												-- (at 7Mhz no delays are strictly necessary,
 												-- but they certainly will be once we ramp up the speed.)
 					else
-						if sel_fast='1' then
+						if sel_zii_fast='1' or sel_ziii_fast='1' then
 							cpudatasource<=src_sdram;
 							fastram_fromcpu.req<='1';
 							mystate<=fast_access;
-						else
+						elsif sel_autoconfig='1' then
+							cpudatasource<=src_autoconfig;
+							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
+								autoconfig_out<="00";
+							end if;
+							mystate<=delay1;
+						elsif sel_autoconfig2='1' then
+							cpudatasource<=src_autoconfig;
+							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
+								autoconfig_out<="00";
+							end if;
+							mystate<=delay1;
+						else					
 							cpudatasource<=src_amiga;
 							if cpu_r_w='0' then	-- Write cycle.
 								mystate <= writeS0;
@@ -472,12 +557,12 @@ begin
 						cpu_clkena<='1';
 						mystate<=delay3;
 					else
-						mystate<=fast2;	-- If reading we let the data settle...
+						mystate<=delay1;	-- If reading we let the data settle...
 					end if;
 				end if;
 				
-			when fast2 =>
-				mystate<=delay2;
+--			when fast2 =>
+--				mystate<=delay2;
 --				mystate<=fast3;
 
 --			when fast3 =>
@@ -810,7 +895,7 @@ port map
 
 fastram_fromcpu.wr<=cpu_r_w;
 fastram_fromcpu.data<=cpu_dataout;
-fastram_fromcpu.addr<=cpu_addr&'0'; -- FIXME - need to assign the decoded address properly.
+fastram_fromcpu.addr<=sdram_addr&'0';
 fastram_fromcpu.uds<=cpu_uds;
 fastram_fromcpu.lds<=cpu_lds;
 	
