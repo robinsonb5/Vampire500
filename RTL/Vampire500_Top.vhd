@@ -135,7 +135,7 @@ signal TG68_RESETn : std_logic;  -- TG68 reset, active low
 
 
 type mystates is
-	(init,reset,state1,state2,main,bootrom,delay1,delay2,delay3,delay4,
+	(init,reset,state1,state2,main,bootrom,delay1,delay2,delay3,delay4,delay5,
 	writeS0,writeS1,writeS2,writeS3,writeS4,writeS5,writeS6,writeS7,writeS8,
 	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,fast_access,fast2,fast3);
 
@@ -477,27 +477,31 @@ begin
 				end if;
 				
 			when fast2 =>
-				mystate<=fast3;
+				mystate<=delay2;
+--				mystate<=fast3;
 
-			when fast3 =>
-				cpu_clkena<='1';
-				mystate<=delay3;
+--			when fast3 =>
+--				cpu_clkena<='1';
+--				mystate<=delay3;
 				
 
 --			when fast3 => -- We give the data yet one more clock to settle.
 --				mystate<=delay1;
 		
 			when delay1 =>
-				cpu_clkena<='1';			
 				mystate<=delay2;
 				
 			when delay2 =>
+				cpu_clkena<='1';			
 				mystate<=delay3;
 				
 			when delay3 =>
 				mystate<=delay4;
 				
 			when delay4 =>
+				mystate<=delay5;
+
+			when delay5 =>
 				mystate<=main;
 	
 			-- **** WRITE CYCLE ****
