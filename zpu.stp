@@ -1,0 +1,755 @@
+<session jtag_chain="USB-Blaster [2-6]" jtag_device="@1: EP2C8 (0x020B20DD)" sof_file="mc68k_probe.sof">
+  <display_tree gui_logging_enabled="0">
+    <display_branch instance="auto_signaltap_0" log="USE_GLOBAL_TEMP" signal_set="USE_GLOBAL_TEMP" trigger="USE_GLOBAL_TEMP"/>
+  </display_tree>
+  <instance entity_name="sld_signaltap" is_auto_node="yes" is_expanded="true" name="auto_signaltap_0" source_file="sld_signaltap.vhd">
+    <node_ip_info instance_id="0" mfg_id="110" node_id="0" version="6"/>
+    <signal_set global_temp="1" is_expanded="true" name="signal_set: 2013/07/10 00:38:33  #0">
+      <clock name="SysClock:mySysClock|c0" polarity="posedge" tap_mode="classic"/>
+      <config ram_type="M4K" reserved_data_nodes="0" reserved_storage_qualifier_nodes="0" reserved_trigger_nodes="0" sample_depth="256" trigger_in_enable="no" trigger_out_enable="no"/>
+      <top_entity/>
+      <signal_vec>
+        <trigger_input_vec>
+          <wire name="MemChecker:mymemchecker|currentstate.PAUSE" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.READ1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.VGAREAD" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.VGAWRITE" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WAITING" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WAITSPIR" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WAITSPIW" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WRITE1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|debug_ack" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_req" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.idle" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.read1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.read2" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.read3" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.write1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.write2" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.write3" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.writeb" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_readEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_writeEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[0]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[10]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[11]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[12]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[13]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[14]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[15]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[16]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[17]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[18]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[19]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[1]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[20]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[21]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[22]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[23]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[24]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[25]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[26]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[27]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[28]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[29]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[2]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[30]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[31]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[3]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[4]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[5]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[6]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[7]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[8]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[9]" tap_mode="classic" type="register"/>
+          <wire name="ZPU_Bridge:myTG68|busstate[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|busstate[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|state.readhigh" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.readlow" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.waiting" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.writehigh" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.writelow" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_bEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_hEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_readEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_writeEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="amiga_fallingedge_read" tap_mode="classic" type="register"/>
+          <wire name="amiga_fallingedge_write" tap_mode="classic" type="register"/>
+          <wire name="amiga_risingedge_read" tap_mode="classic" type="register"/>
+          <wire name="amiga_risingedge_write" tap_mode="classic" type="register"/>
+          <wire name="clk_7Mhz" tap_mode="classic" type="input pin"/>
+          <wire name="iTG68_DTACKn" tap_mode="classic" type="input pin"/>
+          <wire name="mystate.bootrom" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay4" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.fast2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.fast3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.fast_access" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.init" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.main" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.peripheral_access" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS0" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS4" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS5" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS6" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS7" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.reset" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.state1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.state2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS0" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS4" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS5" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS6" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS7" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS8" tap_mode="classic" type="state machine"/>
+          <wire name="oTG68_ASn" tap_mode="classic" type="output pin"/>
+          <wire name="reset_a" tap_mode="classic" type="input pin"/>
+        </trigger_input_vec>
+        <data_input_vec>
+          <wire name="MemChecker:mymemchecker|currentstate.PAUSE" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.READ1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.VGAREAD" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.VGAWRITE" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WAITING" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WAITSPIR" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WAITSPIW" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WRITE1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|debug_ack" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_req" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.idle" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.read1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.read2" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.read3" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.write1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.write2" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.write3" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.writeb" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_readEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_writeEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[0]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[10]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[11]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[12]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[13]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[14]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[15]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[16]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[17]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[18]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[19]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[1]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[20]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[21]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[22]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[23]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[24]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[25]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[26]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[27]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[28]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[29]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[2]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[30]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[31]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[3]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[4]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[5]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[6]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[7]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[8]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[9]" tap_mode="classic" type="register"/>
+          <wire name="ZPU_Bridge:myTG68|busstate[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|busstate[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|state.readhigh" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.readlow" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.waiting" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.writehigh" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.writelow" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_bEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_hEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_readEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_writeEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="amiga_fallingedge_read" tap_mode="classic" type="register"/>
+          <wire name="amiga_fallingedge_write" tap_mode="classic" type="register"/>
+          <wire name="amiga_risingedge_read" tap_mode="classic" type="register"/>
+          <wire name="amiga_risingedge_write" tap_mode="classic" type="register"/>
+          <wire name="clk_7Mhz" tap_mode="classic" type="input pin"/>
+          <wire name="iTG68_DTACKn" tap_mode="classic" type="input pin"/>
+          <wire name="mystate.bootrom" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay4" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.fast2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.fast3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.fast_access" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.init" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.main" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.peripheral_access" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS0" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS4" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS5" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS6" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS7" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.reset" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.state1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.state2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS0" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS4" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS5" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS6" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS7" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS8" tap_mode="classic" type="state machine"/>
+          <wire name="oTG68_ASn" tap_mode="classic" type="output pin"/>
+          <wire name="reset_a" tap_mode="classic" type="input pin"/>
+        </data_input_vec>
+        <storage_qualifier_input_vec>
+          <wire name="MemChecker:mymemchecker|currentstate.PAUSE" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.READ1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.VGAREAD" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.VGAWRITE" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WAITING" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WAITSPIR" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WAITSPIW" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|currentstate.WRITE1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|debug_ack" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_out[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|debug_req" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.idle" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.read1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.read2" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.read3" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.write1" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.write2" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.write3" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|sdram_state.writeb" tap_mode="classic" type="state machine"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_readEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_writeEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[0]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[10]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[11]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[12]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[13]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[14]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[15]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[16]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[17]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[18]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[19]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[1]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[20]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[21]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[22]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[23]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[24]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[25]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[26]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[27]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[28]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[29]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[2]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[30]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[31]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[3]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[4]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[5]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[6]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[7]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[8]" tap_mode="classic" type="register"/>
+          <wire name="MemChecker:mymemchecker|zpu_core:zpu|pc[9]" tap_mode="classic" type="register"/>
+          <wire name="ZPU_Bridge:myTG68|busstate[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|busstate[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|state.readhigh" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.readlow" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.waiting" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.writehigh" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|state.writelow" tap_mode="classic" type="state machine"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_bEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_hEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_readEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_writeEnable" tap_mode="classic" type="combinatorial"/>
+          <wire name="amiga_fallingedge_read" tap_mode="classic" type="register"/>
+          <wire name="amiga_fallingedge_write" tap_mode="classic" type="register"/>
+          <wire name="amiga_risingedge_read" tap_mode="classic" type="register"/>
+          <wire name="amiga_risingedge_write" tap_mode="classic" type="register"/>
+          <wire name="clk_7Mhz" tap_mode="classic" type="input pin"/>
+          <wire name="iTG68_DTACKn" tap_mode="classic" type="input pin"/>
+          <wire name="mystate.bootrom" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.delay4" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.fast2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.fast3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.fast_access" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.init" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.main" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.peripheral_access" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS0" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS4" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS5" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS6" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.readS7" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.reset" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.state1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.state2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS0" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS1" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS2" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS3" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS4" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS5" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS6" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS7" tap_mode="classic" type="state machine"/>
+          <wire name="mystate.writeS8" tap_mode="classic" type="state machine"/>
+          <wire name="oTG68_ASn" tap_mode="classic" type="output pin"/>
+          <wire name="reset_a" tap_mode="classic" type="input pin"/>
+        </storage_qualifier_input_vec>
+      </signal_vec>
+      <presentation>
+        <data_view>
+          <net is_signal_inverted="no" name="reset_a"/>
+          <net is_signal_inverted="no" name="iTG68_DTACKn"/>
+          <net is_signal_inverted="no" name="oTG68_ASn"/>
+          <net is_signal_inverted="no" name="amiga_risingedge_read"/>
+          <net is_signal_inverted="no" name="amiga_risingedge_write"/>
+          <net is_signal_inverted="no" name="amiga_fallingedge_read"/>
+          <net is_signal_inverted="no" name="amiga_fallingedge_write"/>
+          <net is_signal_inverted="no" name="clk_7Mhz"/>
+          <bus is_signal_inverted="no" link="all" mnemonics="state_table" name="ZPU_Bridge:myTG68|state" order="lsb_to_msb" state="collapse" type="state machine">
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.readhigh"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.readlow"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.waiting"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.writehigh"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.writelow"/>
+          </bus>
+          <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_bEnable"/>
+          <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_hEnable"/>
+          <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_readEnable"/>
+          <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_writeEnable"/>
+          <bus is_signal_inverted="no" link="all" name="ZPU_Bridge:myTG68|busstate" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|busstate[1]"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|busstate[0]"/>
+          </bus>
+          <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_req"/>
+          <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_ack"/>
+          <bus is_signal_inverted="no" link="all" name="MemChecker:mymemchecker|debug_out" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[7]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[6]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[5]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[4]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[3]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[2]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[1]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="MemChecker:mymemchecker|zpu_core:zpu|pc" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[31]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[30]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[29]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[28]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[27]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[26]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[25]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[24]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[23]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[22]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[21]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[20]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[19]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[18]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[17]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[16]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[15]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[14]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[13]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[12]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[11]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[10]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[9]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[8]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[7]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[6]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[5]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[4]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[3]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[2]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[1]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" mnemonics="currentstate_table" name="MemChecker:mymemchecker|currentstate" order="lsb_to_msb" state="collapse" type="state machine">
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.PAUSE"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.READ1"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.VGAREAD"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.VGAWRITE"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.WAITING"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.WAITSPIR"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.WAITSPIW"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.WRITE1"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" mnemonics="sdram_state_table" name="MemChecker:mymemchecker|sdram_state" order="lsb_to_msb" state="collapse" type="state machine">
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.idle"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.read1"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.read2"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.read3"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.write1"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.write2"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.write3"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.writeb"/>
+          </bus>
+          <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_writeEnable"/>
+          <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_readEnable"/>
+          <bus is_signal_inverted="no" link="all" mnemonics="mystate_table (1)" name="mystate" order="lsb_to_msb" state="collapse" type="state machine">
+            <net is_signal_inverted="no" name="mystate.bootrom"/>
+            <net is_signal_inverted="no" name="mystate.delay1"/>
+            <net is_signal_inverted="no" name="mystate.delay2"/>
+            <net is_signal_inverted="no" name="mystate.delay3"/>
+            <net is_signal_inverted="no" name="mystate.delay4"/>
+            <net is_signal_inverted="no" name="mystate.fast2"/>
+            <net is_signal_inverted="no" name="mystate.fast3"/>
+            <net is_signal_inverted="no" name="mystate.fast_access"/>
+            <net is_signal_inverted="no" name="mystate.init"/>
+            <net is_signal_inverted="no" name="mystate.main"/>
+            <net is_signal_inverted="no" name="mystate.peripheral_access"/>
+            <net is_signal_inverted="no" name="mystate.readS0"/>
+            <net is_signal_inverted="no" name="mystate.readS1"/>
+            <net is_signal_inverted="no" name="mystate.readS2"/>
+            <net is_signal_inverted="no" name="mystate.readS3"/>
+            <net is_signal_inverted="no" name="mystate.readS4"/>
+            <net is_signal_inverted="no" name="mystate.readS5"/>
+            <net is_signal_inverted="no" name="mystate.readS6"/>
+            <net is_signal_inverted="no" name="mystate.readS7"/>
+            <net is_signal_inverted="no" name="mystate.reset"/>
+            <net is_signal_inverted="no" name="mystate.state1"/>
+            <net is_signal_inverted="no" name="mystate.state2"/>
+            <net is_signal_inverted="no" name="mystate.writeS0"/>
+            <net is_signal_inverted="no" name="mystate.writeS1"/>
+            <net is_signal_inverted="no" name="mystate.writeS2"/>
+            <net is_signal_inverted="no" name="mystate.writeS3"/>
+            <net is_signal_inverted="no" name="mystate.writeS4"/>
+            <net is_signal_inverted="no" name="mystate.writeS5"/>
+            <net is_signal_inverted="no" name="mystate.writeS6"/>
+            <net is_signal_inverted="no" name="mystate.writeS7"/>
+            <net is_signal_inverted="no" name="mystate.writeS8"/>
+          </bus>
+        </data_view>
+        <setup_view>
+          <net is_signal_inverted="no" name="reset_a"/>
+          <net is_signal_inverted="no" name="iTG68_DTACKn"/>
+          <net is_signal_inverted="no" name="oTG68_ASn"/>
+          <net is_signal_inverted="no" name="amiga_risingedge_read"/>
+          <net is_signal_inverted="no" name="amiga_risingedge_write"/>
+          <net is_signal_inverted="no" name="amiga_fallingedge_read"/>
+          <net is_signal_inverted="no" name="amiga_fallingedge_write"/>
+          <net is_signal_inverted="no" name="clk_7Mhz"/>
+          <bus is_signal_inverted="no" link="all" mnemonics="state_table" name="ZPU_Bridge:myTG68|state" order="lsb_to_msb" state="collapse" type="state machine">
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.readhigh"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.readlow"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.waiting"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.writehigh"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|state.writelow"/>
+          </bus>
+          <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_bEnable"/>
+          <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_hEnable"/>
+          <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_readEnable"/>
+          <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|zpu_core:zpu|out_mem_writeEnable"/>
+          <bus is_signal_inverted="no" link="all" name="ZPU_Bridge:myTG68|busstate" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|busstate[1]"/>
+            <net is_signal_inverted="no" name="ZPU_Bridge:myTG68|busstate[0]"/>
+          </bus>
+          <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_req"/>
+          <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_ack"/>
+          <bus is_signal_inverted="no" link="all" name="MemChecker:mymemchecker|debug_out" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[7]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[6]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[5]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[4]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[3]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[2]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[1]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|debug_out[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="MemChecker:mymemchecker|zpu_core:zpu|pc" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[31]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[30]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[29]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[28]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[27]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[26]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[25]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[24]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[23]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[22]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[21]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[20]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[19]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[18]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[17]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[16]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[15]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[14]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[13]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[12]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[11]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[10]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[9]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[8]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[7]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[6]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[5]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[4]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[3]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[2]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[1]"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|pc[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" mnemonics="currentstate_table" name="MemChecker:mymemchecker|currentstate" order="lsb_to_msb" state="collapse" type="state machine">
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.PAUSE"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.READ1"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.VGAREAD"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.VGAWRITE"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.WAITING"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.WAITSPIR"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.WAITSPIW"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|currentstate.WRITE1"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" mnemonics="sdram_state_table" name="MemChecker:mymemchecker|sdram_state" order="lsb_to_msb" state="collapse" type="state machine">
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.idle"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.read1"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.read2"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.read3"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.write1"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.write2"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.write3"/>
+            <net is_signal_inverted="no" name="MemChecker:mymemchecker|sdram_state.writeb"/>
+          </bus>
+          <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_writeEnable"/>
+          <net is_signal_inverted="no" name="MemChecker:mymemchecker|zpu_core:zpu|out_mem_readEnable"/>
+          <bus is_signal_inverted="no" link="all" mnemonics="mystate_table (1)" name="mystate" order="lsb_to_msb" state="expand" type="state machine">
+            <net is_signal_inverted="no" name="mystate.bootrom"/>
+            <net is_signal_inverted="no" name="mystate.delay1"/>
+            <net is_signal_inverted="no" name="mystate.delay2"/>
+            <net is_signal_inverted="no" name="mystate.delay3"/>
+            <net is_signal_inverted="no" name="mystate.delay4"/>
+            <net is_signal_inverted="no" name="mystate.fast2"/>
+            <net is_signal_inverted="no" name="mystate.fast3"/>
+            <net is_signal_inverted="no" name="mystate.fast_access"/>
+            <net is_signal_inverted="no" name="mystate.init"/>
+            <net is_signal_inverted="no" name="mystate.main"/>
+            <net is_signal_inverted="no" name="mystate.peripheral_access"/>
+            <net is_signal_inverted="no" name="mystate.readS0"/>
+            <net is_signal_inverted="no" name="mystate.readS1"/>
+            <net is_signal_inverted="no" name="mystate.readS2"/>
+            <net is_signal_inverted="no" name="mystate.readS3"/>
+            <net is_signal_inverted="no" name="mystate.readS4"/>
+            <net is_signal_inverted="no" name="mystate.readS5"/>
+            <net is_signal_inverted="no" name="mystate.readS6"/>
+            <net is_signal_inverted="no" name="mystate.readS7"/>
+            <net is_signal_inverted="no" name="mystate.reset"/>
+            <net is_signal_inverted="no" name="mystate.state1"/>
+            <net is_signal_inverted="no" name="mystate.state2"/>
+            <net is_signal_inverted="no" name="mystate.writeS0"/>
+            <net is_signal_inverted="no" name="mystate.writeS1"/>
+            <net is_signal_inverted="no" name="mystate.writeS2"/>
+            <net is_signal_inverted="no" name="mystate.writeS3"/>
+            <net is_signal_inverted="no" name="mystate.writeS4"/>
+            <net is_signal_inverted="no" name="mystate.writeS5"/>
+            <net is_signal_inverted="no" name="mystate.writeS6"/>
+            <net is_signal_inverted="no" name="mystate.writeS7"/>
+            <net is_signal_inverted="no" name="mystate.writeS8"/>
+          </bus>
+        </setup_view>
+      </presentation>
+      <trigger CRC="5CF6F1B3" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2013/07/12 00:10:28  #0" position="pre" power_up_trigger_mode="true" record_data_gap="true" segment_size="64" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="false" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_in="dont_care" trigger_out="active high" trigger_type="circular">
+        <power_up_trigger position="pre" storage_qualifier_disabled="no" trigger_in="dont_care" trigger_out="active high"/>
+        <events use_custom_flow_control="no">
+          <level enabled="yes" name="condition1" type="basic">'mystate.readS0' == rising edge
+            <power_up enabled="yes">
+            </power_up><op_node/>
+          </level>
+        </events>
+        <storage_qualifier_events>
+          <transitional>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            <pwr_up_transitional>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</pwr_up_transitional>
+          </transitional>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+        </storage_qualifier_events>
+        <log>
+          <data global_temp="1" name="log: 2013/07/12 23:28:36  #0" power_up_mode="false" sample_depth="255" trigger_position="-1">000010000010100000100000000010000000000100000000000000010000100010000000011010010000000000000000000000000000110000100000101000001000000000100000000001000000000000000100001000100000000001100010000000000000000000000000001100001000001010000010000000001000000000010000000000000001000010001000000000011000010000000000000000000000000011000010000010100000100000000010000000000100000000000000010000100010000000000110000000001000000000000000000000110000100000101000001000000000000000000000000000000010000100001000100000000001101000000000000000000000000000001100001000001010000010000000000000000000000000000000100001000010001000000000011001000000000000000000000000000011000010000010100000100000000000000000000000000000001000010000100010000000000110001000000000000000000000000000110000100000101000001000000000000000000000000000000010000100001000100000000001100001000000000000000000000000001100001000001010000010000000000111111111111111111111100111111110001000000110011000000000100000000000000000000011000010000010100000100000000001111111111111111111111001111111100010000000000010100000000000000000000000000000110000100000101000001000000000011111111111111111111110011111111000100000000000100100000000000000000000000000001100001000001010000010000000000111111111111111111111100111111110001000000000001000100000000000000000000000000011000010000010100000100000000001111111111111111111111001111111100010000000000010000100000000000000000000000000110000100000101000001000000000111111111111111111111110011111111000100000000000100000000010000000000000000000001100001000001010000010000000001111111111111111111111100111111110001000000000001010000000000000000000000000000011000010000010100000100000000011111111111111111111111001111111100010000000000010010000000000000000000000000000110000100000101000001000000000111111111111111111111110011111111000100000000110100010000000000000000000000000001100001000001010000010000000000000000000000000000000010000000010001000000000011000010000000000000000000000000011000010000010100000100000000000000000000000000000000100000000100010000000000110000000001000000000000000000000110000100000101000001000000000000000000000000000000001000000001000100000000001101000000000000000000000000000001100001000001010000010000000000000000000000000000000010000000010001000000000011001000000000000000000000000000011000010000010100000100000000010000000000000000000000100000000100010000000000110001000000000000000000000000000110000100000101000001000000000100000000000000000000001000000001000100000000001100001000000000000000000000000001100001000001010000010000000001000000000000000000000010000000010001000000110011000000000100000000000000000000011000010000010100000100000000010000000000000000000000100000000100010000000000010100000000000000000000000000000110000100000101000001000000000000000000001000000000001000000001000100000000000100100000000000000000000000000001100001000001010000010000000000000000000010000000000010000000010001000000000001000100000000000000000000000000011000010000010100000100000000000000000000100000000000100000000100010000000000010000100000000000000000000000000110000100000101000001000000000000000000001000000000001000000001000100000000000100000000010000000000000000000001100001000001010000010000000001000000000010000000000010000000010001000000000001010000000000000000000000000000011000010000010100000100000000010000000000100000000000100000000100010000000000010010000000000000000000000000000110000100000101000001000000000100000000001000000000001000000001000100000000110100010000000000000000000000000001100001000001010000010000000001000000000010000000000010000000010001000000000011000010000000000000000000000000011000010000010100000100000000000000000000000000000001100000000100010000000000110000000001000000000000000000000110000100000101000001000000000000000000000000000000011000000001000100000000001101000000000000000000000000000001100001000001010000010000000000000000000000000000000110000000010001000000000011001000000000000000000000000000011000010000010100000100000000000000000000000000000001100000000100010000000000110001000000000000000000000000000110000100000101000001000000000100000000000000000000011000000001000100000000001100001000000000000000000000000001100001000001010000010000000001000000000000000000000110000000010001000000000011000000000100000000000000000000011000010000010100000100000000010000000000000000000001100000000100010000001100110100000000000000000000000000000110000100000101000001000000000100000000000000000000011000000001000100000000000100100000000000000000000000000001100001000001010000010000000001000000000000000000000110000000010001000000000001000100000000000000000000000000011000010000010100000100000000000000000000100000000001100000000100010000000000010000100000000000000000000000000110000100000101000001000000000000000000001000000000011000000001000100000000000100000000010000000000000000000001100001000001010000010000000000000000000010000000000110000000010001000000000001010000000000000000000000000000011000010000010100000100000000000000000000100000000001100000000100010000000000010010000000000000000000000000000110000100000101000001000000000100000000001000000000001001000001000100000000000100010000000000000000000000000001100001000001010000010000000001000000000010000000000010010000010001000000001101000010000000000000000000000000011000010000010100000100000000010000000000100000000000100100000100010000000000110000000001000000000000000000000110000100000101000001000000000100000000001000000000001001000001000100000000001101000000000000000000000000000001100001000001010000010000000001000000000010000000000010010000010001000000000011001000000000000000000000000000011000010000010100000100000000010000000000100000000000100100000100010000000000110001000000000000000000000000000110000100000101000001000000000000000000000000000000011001000001000100000000001100001000000000000000000000000001100001000001010000010000000000000000000000000000000110010000010001000010000011000000000100000000000000000000011000010000010100000100000000000000000000000000000001100100000100010000000000110100000000000000000000000000000110000100000101000001000000000000000000000000000000011001000001000100000011001100100000000000000000000000000001100001000001010000010000000001000000000000000000000110010000001100000000000001000100000000000000000000000000011000010000010100000100000000010000000000000000000001100100000011000000000000010000100000000000000000000000000110000100000101000001000000000100000000000000000000011001000000110000000000000100000000010000000000000000000001100001000001010000010000000001000000000000000000000110010000001100000000000001000000000010000000000000000000011000010000010100000100000000000000000000100000000001100100000011000000000000010000000000000000000000000000000110000100000101000001000000000000000000001000000000011001000000110000000000000100010000000000000000000000000001100001000001010000010000000000000000000010000000000110010000001010000000000001000010000000000000000000000000011000010000010100000100000000000000000000100000000001100100000010100000000011110000000001000000000000000000000110000100000101000001000000000100000000001000000000011001000000101000000000001100000000001000000000000000000001100001000001010000010000000001000000000010000000000110010000001010000000000011000000000000000000000000000000011000010001010100000100000000010000000000100000000001100100000010100000000000110001000000000000000000000000000110000100000101000001000000000100000000001000000000011001000001000100000000001100001000000000000000000000000001100001000001010000010000000000000000000000000000000010110000010001000000000011000000000100000000000000000000011000010000010100000100000000000000000000000000000000101100000100010000000000110100000000000000000000000000000110000100000101000001000000000000000000000000000000001011000001000100000011001100100000000000000000000000000001100001000001010000010000000000000000000000000000000010110000010001000000000001000100000000000000000000000000011000010000010100000100000000010000000000000000000000101100000100010000000000010000100000000000000000000000000110000100000101000001000000000100000000000000000000001011000001000100000000000100000000010000000000000000000001100001000001010000010000000001000000000000000000000010110000010001000000000001010000000000000000000000000000011000010000010100000100000000010000000000000000000000101100000100010000000000010010000000000000000000000000000110000100000101000001000000000000000000001000000000001011000001000100000000000100010000000000000000000000000001100001000001010000010000000000000000000010000000000010110000010001000000000001000010000000000000000000000000011000010000010100000100000000000000000000100000000000101100000100010000000011010000000001000000000000000000000110000100000101000001000000000000000000001000000000001011000001000100000000001101000000000000000000000000000001100001000001010000010000000001000000000010000000000010110000010001000000000011001000000000000000000000000000011000010000010100000100000000010000000000100000000000101100000100010000000000110001000000000000000000000000000110000100000101000001000000000100000000001000000000001011000001000100000000001100001000000000000000000000000001100001000001010000010000000001000000000010000000000010110000010001000000000011000000000100000000000000000000011000010000010100000100000000000000000000000000000001101100000100010000000000110100000000000000000000000000000110000100000101000001000000000000000000000000000000011011000001000100000000001100100000000000000000000000000001100001000001010000010000000000000000000000000000000110110000010001000000110011000100000000000000000000000000011000010000010100000100000000000000000000000000000001101100000100010000000000010000100000000000000000000000000110000100000101000001000000000000000000000000000000011011000001000100000000000100000000010000000000000000000001100001000001010000010000000001000000000000000000000100100000010001000000000001010000000000000000000000000000011000010000010100000100000000010000000000000000000001001000000100010000000000010010000000000000000000000000000110000100000101000001000000000100000000000000000000010010000001000100000000000100010000000000000000000000000001100001000001010000010000000001000000000000000000000100100000010001000000000001000010000000000000000000000000011000010000010100000100000000010000000000000000000001001000000100010000000000010000000001000000000000000000000110000100000101000001000000000000000000001000000000010010000001000100000000110101000000000000000000000000000001100001000001010000010000000000000000000010000000000100100000010001000000000011001000000000000000000000000000011000010000010100000100000000000000000000100000000001001000000100010000000000110001000000000000000000000000000110000100000101000001000000000000000000001000000000010010000001000100000000001100001000000000000000000000000001100001000001010000010000000001000000000010000000000100100000010001000000000011000000000100000000000000000000011000010000010100000100000000010000000000100000000001001000000100010000000000110100000000000000000000000000000110000100000101000001000000000100000000001000000000010010000001000100000000001100100000000000000000000000000001100001000001010000010000000001000000000010000000000100100000010001000000000011000100000000000000000000000000011000010000010100000100000000000000000000000000000000000100000100010000001100110000100000000000000000000000000110000100000101000001000000000000000000000000000000000001000001000100000000000100000000010000000000000000000001100001000001010000010000000000000000000000000000000000010000010001000000000001010000000000000000000000000000011000010000010100000100000000000000000000000000000000000100000100010000000000010010000000000000000000000000000110000100000101000001000000000100000000000000000000000001000001000100000000000100010000000000000000000000000001100001000001010000010000000001000000000000000000000000010000010001000000000001000010000000000000000000000000011000010000010100000100000000010000000000000000000000000100000100010000000000010000000001000000000000000000000110000100000101000001000000000100000000000000000000000001000001000100000000000101000000000000000000000000000001100001000001010000010000000001000000000000000000000000010000010001000000001101001000000000000000000000000000011000010000010100000100000000000000000000100000000000000100000100010000000000110001000000000000000000000000000110000100000101000001000000000000000000001000000000000001000001000100000000001100001000000000000000000000000001100001000001010000010000000000000000000010000000000000010000010001000000000011000000000100000000000000000000011000010000010100000100000000000000000000100000000000000100000100010000000000110100000000000000000000000000000110000100000101000001000000000100000000001000000000010011000001000100000000001100100000000000000000000000000001100001000001010000010000000001000000000010000000000100110000010001000000000011000100000000000000000000000000011000010000010100000100000000010000000000100000000001001100000100010000001100110000100000000000000000000000000110000100000101000001000000000100000000001000000000010011000001000100000000000100000000010000000000000000000001100001000001010000010000000001000000000010000000000100110000010001000000000001010000000000000000000000000000011000010000010100000100000000010000000000100000000001001100000100010000000000010010000000000000000000000000000110000100000101000001000000000000000000000000000000000000100001000100000000000100010000000000000000000000000001100001000001010000010000000000000000000000000000000000001000010001000000000001000010000000000000000000000000011000010000010100000100000000000000000000000000000000000010000100010000000000010000000001000000000000000000000110000100000101000001000000000000000000000000000000000000100001000100000000000101000000000000000000000000000001100001000001010000010000000001000000000000000000000000001000010001000000001101001000000000000000000000000000011000010000010100000100000000010000000000000000000000000010000100010000000000110001000000000000000000000000000110000100000101000001000000000100000000000000000000000000100001000100000000001100001000000000000000000000000001100001000001010000010000000001000000000000000000000000001000010001000000000011000000000100000000000000000000011000010000010100000100000000000000000000100000000000000010000100010000000000110100000000000000000000000000000110000100000101000001000000000000000000001000000000000000100001000100000000001100100000000000000000000000000001100001000001010000010000000000000000000010000000000000001000010001000000000011000100000000000000000000000000011000010000010100000100000000000000000000100000000000000010000100010000000000110000100000000000000000000000000110000100000101000001000000000100000000001000000000000000100001000100000011001100000000010000000000000000000001100001000001010000010000000001000000000010000000000000001000010001000000000001010000000000000000000000000000011000010000010100000100000000010000000000100000000000000010000100010000000000010010000000000000000000000000000110000100000101000001000000000100000000001000000000000000100001000100000000000100010000000000000000000000000001100001000001010000010000000000000000000000000000000100001000010001000000000001000010000000000000000000000000011000010000010100000100000000000000000000000000000001000010000100010000000000010000000001000000000000000000000110000100000101000001000000000000000000000000000000010000100001000100000000000101000000000000000000000000000001100001000001010000010000000000000000000000000000000100001000010001000000000001001000000000000000000000000000011000010000010100000100000000001111111111111111111111001111111100010000000011010001000000000000000000000000000110000100000101000001000000000011111111111111111111110011111111000100000000001100001000000000000000000000000001100001000001010000010000000000111111111111111111111100111111110001000000000011000000000100000000000000000000011000010000010100000100000000001111111111111111111111001111111100010000000000110100000000000000000000000000000110000100000101000001000000000011111111111111111111110011111111000100000000001100100000000000000000000000000001100001000001010000010000000001111111111111111111111100111111110001000000000011000100000000000000000000000000011000010000010100000100000000011111111111111111111111001111111100010000000000110000100000000000000000000000000110000100000101000001000000000111111111111111111111110011111111000100000000001100000000010000000000000000000001100001000001010000010000000001111111111111111111111100111111110001000000110011010000000000000000000000000000011000010000010100000100000000000000000000000000000000100000000100010000000000010010000000000000000000000000000110000100000101000001000000000000000000000000000000001000000001000100000000000100010000000000000000000000000001100001000001010000010000000000000000000000000000000010000000010001000000000001000010000000000000000000000000011000010000010100000100000000000000000000000000000000100000000100010000100000010000000001000000000000000000000110000100000101000001000000000100000000000000000000001000000001000100000000000101000000000000000000000000000001100001000001010000010000000001000000000000000000000010000000010001000000000001001000000000000000000000000000011000010000010100000100000000010000000000000000000000100000000011000000000000010001000000000000000000000000000110000100000101000001000000000100000000000000000000001000000000110000000000111100001000000000000000000000000001100001000001010000010000000000000000000010000000000010000000001100000000000011000000000100000000000000000000011000010000010100000100000000000000000000100000000000100000000011000000000000110000000000100000000000000000000110000100000101000001000000000000000000001000000000001000000000110000000000001100000000000000000000000000000001100001000001010000010000000000000000000010000000000010000000001100000000000011000100000000000000000000000000011000010000010100000100000000010000000000100000000000100000000010100000000000110000100000000000000000000000000110000100000101000001000000000100000000001000000000001000000000101000000000001100000000010000000000000000000001100001000001010000010000000001000000000010000000000010000000001010000000110011000000000010000000000000000000011000010000010100000100000000010000000000100000000000100000000010100000000000010000000000000000000000000000000110000100010101000001000000000000000000000000000000011000000000101000000000000100010000000000000000000000000001100001000001010000010000000000000000000000000000000110000000010001000000000001000010000000000000000000000000011000010000010100000100000000000000000000000000000001100000000100010000000000010000000001000000000000000000000110000100000101000001000000000000000000000000000000011000000001000100000000000101000000000000000000000000000001100001000001010000010000000001000000000000000000000110000000010001000000000001001000000000000000000000000000011000010000010100000100000000010000000000000000000001100000000100010000000000010001000000000000000000000000000110000100000101000001000000000100000000000000000000011000000001000100000000110100001000000000000000000000000001100001000001010000010000000001000000000000000000000110000000010001000000000011000000000100000000000000000000011000010000010100000100000000010000000000000000000001100000000100010000000000110100000000000000000000000000000110000100000101000001000000000000000000001000000000011000000001000100000000001100100000000000000000000000000001100001000001010000010000000000000000000010000000000110000000010001000000000011000100000000000000000000000000011000010000010100000100000000000000000000100000000001100000000100010000000000110000100000000000000000000000000110000100000101000001000000000000000000001000000000011000000001000100000000001100000000010000000000000000000001100001000001010000010000000001000000000010000000000010010000010001000000000011010000000000000000000000000000011000010000010100000100000000010000000000100000000000100100000100010000001100110010000000000000000000000000000110000100000101000001000000000100000000001000000000001001000001000100000000000100010000000000000000000000000001100001000001010000010000000001000000000010000000000010010000010001000000000001000010000000000000000000000000011000010000010100000100000000010000000000100000000000100100000100010000000000010000000001000000000000000000000110000100000101000001000000000100000000001000000000001001000001000100000000000101000000000000000000000000000001100001000001010000010000000000000000000000000000000110010000010001000000000001001000000000000000000000000000011000010000010100000100000000000000000000000000000001100100000100010000000000010001000000000000000000000000000110000100000101000001000000000000000000000000000000011001000001000100000000000100001000000000000000000000000001100001000001010000010000000000000000000000000000000110010000010001000000001101000000000100000000000000000000011000010000010100000100000000010000000000000000000001100100000100010000000000110100000000000000000000000000000110000100000101000001000000000100000000000000000000011001000001000100000000001100100000000000000000000000000001100001000001010000010000000001000000000000000000000110010000010001000000000011000100000000000000000000000000011000010000010100000100000000010000000000000000000001100100000100010000000000110000100000000000000000000000000110000100000101000001000000000000000000001000000000011001000001000100000000001100000000010000000000000000000001100001000001010000010000000000000000000010000000000110010000010001000000000011010000000000000000000000000000011000010000010100000100000000000000000000100000000001100100000100010000000000110010000000000000000000000000000110000100000101000001000000000000000000001000000000011001000001000100000011001100010000000000000000000000000001100001000001010000010000000001000000000010000000000110010000010001000000000001000010000000000000000000000000011000010000010100000100000000010000000000100000000001100100000100010000000000010000000001000000000000000000000110000100000101000001000000000100000000001000000000011001000001000100000000000101000000000000000000000000000001100001000001010000010000000001000000000010000000000110010000010001000000000001001000000000000000000000000000011000010000010100000100000000000000000000000000000000101100000100010000000000010001000000000000000000000000000110000100000101000001000000000000000000000000000000001011000001000100000000000100001000000000000000000000000001100001000001010000010000000000000000000000000000000010110000010001000000000001000000000100000000000000000000011000010000010100000100000000000000000000000000000000101100000100010000000011110100000000000000000000000000000110000100000101000001000000000100000000000000000000001011000001000100000000001100100000000000000000000000000001100001000001010000010000000001000000000000000000000010110000010001000000000011000100000000000000000000000000011000010000010100000100000000010000000000000000000000101100000100010000000000110000100000000000000000000000000110000100000101000001000000000100000000000000000000001011000001000100000000001100000000010000000000000000000001100001000001010000010000000000000000000010000000000010110000010001000000000011010000000000000000000000000000011000010000010100000100000000000000000000100000000000101100000100010000000000110010000000000000000000000000000110000100000101000001000000000000000000001000000000001011000001000100000011001100010000000000000000000000000001100001000001010000010000000000000000000010000000000010110000010001000000000001000010000000000000000000000000011000010000010100000100000000010000000000100000000000101100000100010000000000010000000001000000000000000000000110000100000101000001000000000100000000001000000000001011000001000100000000000101000000000000000000000000000001100001000001010000010000000001000000000010000000000010110000010001000000000001001000000000000000000000000000011000010000010100000100000000010000000000100000000000101100000100010000000000010001000000000000000000000000000110000100000101000001000000000000000000000000000000011011000001000100000000000100001000000000000000000000000001100001000001010000010000000000000000000000000000000110110000010001000000000001000000000100000000000000000000011000010000010100000100000000000000000000000000000001101100000100010000000011010100000000000000000000000000000110000100000101000001000000000000000000000000000000011011000001000100000000001100100000000000000000000000000001100001000001010000010000000000000000000000000000000110110000010001000000000011000100000000000000000000000000011000010000010100000100000000010000000000000000000001001000000100010000000000110000100000000000000000000000000110000100000101000001000000000100000000000000000000010010000001000100000000001100000000010000000000000000000001100001000001010000010000000001000000000000000000000100100000010001000000000011010000000000000000000000000000011000010000010100000100000000010000000000000000000001001000000100010000000000110010000000000000000000000000000110000100000101000001000000000100000000000000000000010010000001000100000000001100010000000000000000000000000001100001000001010000010000000000000000000010000000000100100000010001000000110011000010000000000000000000000000011000010000010100000100000000000000000000100000000001001000000100010000000000010000000001000000000000000000000110000100000101000001000000000000000000001000000000010010000001000100000000000101000000000000000000000000000001100001000001010000010000000000000000000010000000000100100000010001000000000001001000000000000000000000000000011000010000010100000100000000010000000000100000000001001000000100010000000000010001000000000000000000000000000110000100000101000001000000000100000000001000000000010010000001000100000000000100001000000000000000000000000001100001000001010000010000000001000000000010000000000100100000010001000000000001000000000100000000000000000000011000010000010100000100000000010000000000100000000001001000000100010000000000010100000000000000000000000000000110000100000101000001000000000000000000000000000000000001000001000100000000110100100000000000000000000000000001100001000001010000010000000000000000000000000000000000010000010001000000000011000100000000000000000000000000011000010000010100000100000000000000000000000000000000000100000100010000000000110000100000000000000000000000000110000100000101000001000000000000000000000000000000000001000001000100000000001100000000010000000000000000000001100001000001010000010000000001000000000000000000000000010000010001000000000011010000000000000000000000000000011000010000010100000100000000010000000000000000000000000100000100010000000000110010000000000000000000000000000110000100000101000001000000000100000000000000000000000001000001000100000000001100010000000000000000000000000001100001000001010000010000000001000000000000000000000000010000010001000000000011000010000000000000000000000000011000010000010100000100000000010000000000000000000000000100000100010000001100110000000001000000000000000000000110000100000101000001000000000000000000001000000000000001000001000100000000000101000000000000000000000000000001100001000001010000010000000000000000000010000000000000010000010001000000000001001000000000000000000000000000011000010000010100000100000000000000000000100000000000000100000100010000000000010001000000000000000000000000000110000100000101000001000000000000000000001000000000000001000001000100000000000100001000000000000000000000000001100001000001010000010000000001000000000010000000000100110000010001000000000001000000000100000000000000000000011000010000010100000100000000010000000000100000000001001100000100010000000000010100000000000000000000000000000110000100000101000001000000000100000000001000000000010011000001000100000000000100100000000000000000000000000001100001000001010000010000000001000000000010000000000100110000010001000000001111000100000000000000000000000000011000010000010100000100000000010000000000100000000001001100000100010000000000110000100000000000000000000000000110000100000101000001000000000100000000001000000000010011000001000100001000001100000000010000000000000000000001100001000001010000010000000000000000000000000000000000001000010001000000000011010000000000000000000000000000011</data>
+          <extradata>111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</extradata>
+        </log>
+      </trigger>
+    </signal_set>
+    <position_info>
+      <single attribute="active tab" value="0"/>
+      <single attribute="data horizontal scroll position" value="101"/>
+      <single attribute="data vertical scroll position" value="0"/>
+      <single attribute="setup horizontal scroll position" value="0"/>
+      <single attribute="setup vertical scroll position" value="0"/>
+      <single attribute="zoom level denominator" value="1"/>
+      <single attribute="zoom level numerator" value="32"/>
+      <single attribute="zoom offset denominator" value="1"/>
+      <single attribute="zoom offset numerator" value="4088"/>
+    </position_info>
+  </instance>
+  <mnemonics>
+    <table name="mystate_table" width="30">
+      <symbol name="bootrom" value="000000000000000000000000000001"/>
+      <symbol name="delay1" value="000000000000000000000000000010"/>
+      <symbol name="delay2" value="000000000000000000000000000100"/>
+      <symbol name="delay3" value="000000000000000000000000001000"/>
+      <symbol name="delay4" value="000000000000000000000000010000"/>
+      <symbol name="fast2" value="000000000000000000000000100000"/>
+      <symbol name="fast3" value="000000000000000000000001000000"/>
+      <symbol name="fast_access" value="000000000000000000000010000000"/>
+      <symbol name="init" value="000000000000000000000100000000"/>
+      <symbol name="main" value="000000000000000000001000000000"/>
+      <symbol name="readS0" value="000000000000000000010000000000"/>
+      <symbol name="readS1" value="000000000000000000100000000000"/>
+      <symbol name="readS2" value="000000000000000001000000000000"/>
+      <symbol name="readS3" value="000000000000000010000000000000"/>
+      <symbol name="readS4" value="000000000000000100000000000000"/>
+      <symbol name="readS5" value="000000000000001000000000000000"/>
+      <symbol name="readS6" value="000000000000010000000000000000"/>
+      <symbol name="readS7" value="000000000000100000000000000000"/>
+      <symbol name="reset" value="000000000001000000000000000000"/>
+      <symbol name="state1" value="000000000010000000000000000000"/>
+      <symbol name="state2" value="000000000100000000000000000000"/>
+      <symbol name="writeS0" value="000000001000000000000000000000"/>
+      <symbol name="writeS1" value="000000010000000000000000000000"/>
+      <symbol name="writeS2" value="000000100000000000000000000000"/>
+      <symbol name="writeS3" value="000001000000000000000000000000"/>
+      <symbol name="writeS4" value="000010000000000000000000000000"/>
+      <symbol name="writeS5" value="000100000000000000000000000000"/>
+      <symbol name="writeS6" value="001000000000000000000000000000"/>
+      <symbol name="writeS7" value="010000000000000000000000000000"/>
+      <symbol name="writeS8" value="100000000000000000000000000000"/>
+    </table>
+    <table name="state_table" width="5">
+      <symbol name="readhigh" value="00001"/>
+      <symbol name="readlow" value="00010"/>
+      <symbol name="waiting" value="00100"/>
+      <symbol name="writehigh" value="01000"/>
+      <symbol name="writelow" value="10000"/>
+    </table>
+    <table name="currentstate_table" width="8">
+      <symbol name="PAUSE" value="00000001"/>
+      <symbol name="READ1" value="00000010"/>
+      <symbol name="VGAREAD" value="00000100"/>
+      <symbol name="VGAWRITE" value="00001000"/>
+      <symbol name="WAITING" value="00010000"/>
+      <symbol name="WAITSPIR" value="00100000"/>
+      <symbol name="WAITSPIW" value="01000000"/>
+      <symbol name="WRITE1" value="10000000"/>
+    </table>
+    <table name="sdram_state_table" width="8">
+      <symbol name="idle" value="00000001"/>
+      <symbol name="read1" value="00000010"/>
+      <symbol name="read2" value="00000100"/>
+      <symbol name="read3" value="00001000"/>
+      <symbol name="write1" value="00010000"/>
+      <symbol name="write2" value="00100000"/>
+      <symbol name="write3" value="01000000"/>
+      <symbol name="writeb" value="10000000"/>
+    </table>
+    <table name="mystate_table (1)" width="31">
+      <symbol name="bootrom" value="0000000000000000000000000000001"/>
+      <symbol name="delay1" value="0000000000000000000000000000010"/>
+      <symbol name="delay2" value="0000000000000000000000000000100"/>
+      <symbol name="delay3" value="0000000000000000000000000001000"/>
+      <symbol name="delay4" value="0000000000000000000000000010000"/>
+      <symbol name="fast2" value="0000000000000000000000000100000"/>
+      <symbol name="fast3" value="0000000000000000000000001000000"/>
+      <symbol name="fast_access" value="0000000000000000000000010000000"/>
+      <symbol name="init" value="0000000000000000000000100000000"/>
+      <symbol name="main" value="0000000000000000000001000000000"/>
+      <symbol name="peripheral_access" value="0000000000000000000010000000000"/>
+      <symbol name="readS0" value="0000000000000000000100000000000"/>
+      <symbol name="readS1" value="0000000000000000001000000000000"/>
+      <symbol name="readS2" value="0000000000000000010000000000000"/>
+      <symbol name="readS3" value="0000000000000000100000000000000"/>
+      <symbol name="readS4" value="0000000000000001000000000000000"/>
+      <symbol name="readS5" value="0000000000000010000000000000000"/>
+      <symbol name="readS6" value="0000000000000100000000000000000"/>
+      <symbol name="readS7" value="0000000000001000000000000000000"/>
+      <symbol name="reset" value="0000000000010000000000000000000"/>
+      <symbol name="state1" value="0000000000100000000000000000000"/>
+      <symbol name="state2" value="0000000001000000000000000000000"/>
+      <symbol name="writeS0" value="0000000010000000000000000000000"/>
+      <symbol name="writeS1" value="0000000100000000000000000000000"/>
+      <symbol name="writeS2" value="0000001000000000000000000000000"/>
+      <symbol name="writeS3" value="0000010000000000000000000000000"/>
+      <symbol name="writeS4" value="0000100000000000000000000000000"/>
+      <symbol name="writeS5" value="0001000000000000000000000000000"/>
+      <symbol name="writeS6" value="0010000000000000000000000000000"/>
+      <symbol name="writeS7" value="0100000000000000000000000000000"/>
+      <symbol name="writeS8" value="1000000000000000000000000000000"/>
+    </table>
+  </mnemonics>
+  <static_plugin_mnemonics/>
+  <global_info>
+    <single attribute="active instance" value="0"/>
+    <single attribute="config widget visible" value="1"/>
+    <single attribute="data log widget visible" value="0"/>
+    <single attribute="hierarchy widget visible" value="0"/>
+    <single attribute="instance widget visible" value="1"/>
+    <single attribute="jtag widget visible" value="1"/>
+    <multi attribute="column width" size="23" value="34,34,223,74,68,70,88,88,98,98,88,88,110,101,101,101,101,101,101,101,101,107,78"/>
+    <multi attribute="frame size" size="2" value="1254,910"/>
+    <multi attribute="jtag widget size" size="2" value="384,133"/>
+  </global_info>
+</session>
