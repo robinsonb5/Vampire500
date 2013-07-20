@@ -63,7 +63,7 @@ signal h_enable : std_logic;
 
 begin
 
-	myrom : entity work.VampireDiag_ROM
+	myrom : entity work.MicroSDTest_ROM
 	port map (
 		clk => clk,
 		from_zpu => zpu_to_rom,

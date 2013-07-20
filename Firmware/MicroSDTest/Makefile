@@ -10,11 +10,12 @@ BUILD_DIR=zpu_obj
 MINSTARTUP_SRC = ../Common/mincrt0.s
 MINSTARTUP_OBJ = $(patsubst ../Common/%.s,$(BUILD_DIR)/%.o,$(MINSTARTUP_SRC))
 
-COMMON_SRC = ../Common/minisoc_hardware.c ../Common/small_printf.c
+COMMON_SRC = ../Common/small_printf.c ../Common/font8.c ../Common/font8.h \
+	../Common/spi.c ../Common/spi.h ../Common/swap.c ../Common/swap.h ../Common/amiga_hardware.c 
 COMMON_OBJ = $(patsubst ../Common/%.c,$(BUILD_DIR)/%.o,$(COMMON_SRC))
 
-BOOT_PRJ = SDRAMTest
-BOOT_SRC = memcheck.c
+BOOT_PRJ = MicroSDTest
+BOOT_SRC = main.c minfat.c minfat.h
 BOOT_OBJ = $(COMMON_OBJ) $(patsubst %.c,$(BUILD_DIR)/%.o,$(BOOT_SRC))
 
 LINKMAP  = boot.ld
@@ -25,7 +26,7 @@ LIBDIR   =
 #  -mno-call -mno-neqbranch -mno-pushspadd \
 #  -mno-neg -mno-mod -mno-div
 
-ZPUOPTS= -mno-poppcrel -mno-pushspadd -mno-callpcrel -mno-byteop -mno-neg # No-neg requires bugfixed toolchain
+ZPUOPTS= -mno-poppcrel -mno-pushspadd -mno-callpcrel  -mno-neg # No-neg requires bugfixed toolchain
 
 CFLAGS  = -I. -I../Common/ -c -Os $(ZPUOPTS) -DPRINTF_HEX_ONLY -DDISABLE_UART_RX # -DDISABLE_UART_TX 
 AFLAGS  = 

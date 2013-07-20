@@ -1,14 +1,33 @@
-#include "minisoc_hardware.h"
 
 #include <stdarg.h>
+
+int putchar(int c);
 
 #ifndef DISABLE_PRINTF
 
 static char temp[80];
 
 static int
-_cvt(unsigned int val, char *buf, int radix, char *digits)
+_cvt(unsigned int val, char *buf, int radix)
 {
+	int c;
+	int i;
+	int nz=0;
+	for(i=0;i<8;++i)
+	{
+		c=(val>>28)&0xf;
+		val<<=4;
+		if(c)
+			nz=1;	// Non-zero?  Start printing then.
+		if(c>9)
+			c+='A'-10;
+		else
+			c+='0';
+		if(nz)	// If we've encountered only zeroes so far we don't print.
+			putchar(c);
+	}
+	return(0);
+#if 0
     char *cp = temp;
     int length = 0;
 
@@ -17,13 +36,21 @@ _cvt(unsigned int val, char *buf, int radix, char *digits)
         *cp++ = '0';
     } else {
         while (val) {
+			unsigned int c;
 #ifdef PRINTF_HEX_ONLY
-            *cp++ = digits[val &15]; // % radix];
+			c=val&15;
+//            *cp++ = digits[val &15]; // % radix];
             val >>=4; // /= radix;
 #else
-            *cp++ = digits[val % radix];
+//            *cp++ = digits[val % radix];
+			c=val%radix;
             val /= radix;
 #endif
+			if(c>9)
+				c+='A'-10;
+			else
+				c+='0';
+			*cp++=c;
         }
     }
     while (cp != temp) {
@@ -32,83 +59,96 @@ _cvt(unsigned int val, char *buf, int radix, char *digits)
     }
     *buf = '\0';
     return (length);
+#endif
 }
 
 #define is_digit(c) ((c >= '0') && (c <= '9'))
 
 
-char vpfbuf[sizeof(long long)*8];
+static char vpfbuf[sizeof(long long)*8];
 
 static int
-_vprintf(void (*putc)(char c, void **param), void **param, const char *fmt, va_list ap)
+_vprintf(const char *fmt, va_list ap)
 {
-    char c, sign, *cp=vpfbuf;
+    unsigned int c;
+	int sign;
+	int *s2;
+	char *cp=vpfbuf;
     int left_prec, right_prec, zero_fill, pad, pad_on_right, 
         i, islong, islonglong;
     unsigned int val = 0;
     int res = 0, length = 0;
+	int nextfmt;
 
-    while ((c = *fmt++) != '\0') {
-		char tmp[2];
-        if (c == '%') {
-            c = *fmt++;
-            left_prec = right_prec = pad_on_right = islong = islonglong = 0;
-            sign = '\0';
-            // Fetch value [numeric descriptors only]
-            switch (c) {
-            case 'd':
-                    val = (long)va_arg(ap, unsigned int);
-                break;
-            default:
-                break;
-            }
-            // Process output
-            switch (c) {
-            case 'd':
-                switch (c) {
-                case 'd':
-                    length = _cvt(val, vpfbuf, 10, "0123456789ABCDEF");
-                    break;
-                }
-                cp = vpfbuf;
-                break;
-            case 's':
-                cp = va_arg(ap, char *);
-                length = 0;
-                while (cp[length] != '\0') length++;
-                break;
-            case 'c':
-                c = va_arg(ap, int /*char*/);
-                (*putc)(c, param);
-                res++;
-                continue;
-            default:
-                (*putc)('%', param);
-                (*putc)(c, param);
-                res += 2;
-                continue;
-            }
-            while (length-- > 0) {
-                c = *cp++;
-                (*putc)(c, param);
-                res++;
-            }
-        } else {
-            (*putc)(c, param);
-            res++;
+	// Because we haven't implemented loadb from ROM yet, we can't use *<char*>++.
+	s2=(int*)fmt;
+	nextfmt=0;
+	do
+	{
+		int i;
+		int cs=*s2++;
+		for(i=0;i<4;++i)
+		{
+			char tmp[2];
+			c=(cs>>24)&0xff;
+			cs<<=8;
+			if(c==0)
+				return(res);
+
+			if(nextfmt) // Have we encountered a %?
+			{
+				nextfmt=0;
+		        left_prec = right_prec = pad_on_right = islong = islonglong = 0;
+		        sign = '\0';
+		        // Fetch value [numeric descriptors only]
+		        switch (c) {
+				    case 'd':
+			            val = (long)va_arg(ap, unsigned int);
+				        break;
+				    default:
+				        break;
+		        }
+		        // Process output
+		        switch (c) {
+				    case 'd':
+				        length = _cvt(val, vpfbuf, 10);
+				        break;
+					    cp = vpfbuf;
+					    break;
+				    case 's':
+				        cp = va_arg(ap, char *);
+						puts(cp);
+				        length = 0;
+				        break;
+				    case 'c':
+				        c = va_arg(ap, int /*char*/);
+				        putchar(c);
+				        res++;
+				        continue;
+				    default:
+				        putchar('%');
+				        putchar(c);
+				        res += 2;
+				        continue;
+		        }
+		        while (length-- > 0) {
+		            c = *cp++;
+		            putchar(c);
+		            res++;
+		        }
+		    }
+			else
+			{
+			    if (c == '%')
+					nextfmt=1;
+				else
+				{
+			        putchar(c);
+			        res++;
+				}
+			}
         }
-    }
-    return (res);
-}
-
-
-// Default wrapper function used by diag_printf
-static void
-_diag_write_char(char c, void **param)
-{
-	while(!(HW_PER(PER_UART)&(1<<PER_UART_TXREADY)))
-		;
-	HW_PER(PER_UART)=c;
+    } while(c);
 }
 
 
@@ -119,7 +159,7 @@ small_printf(const char *fmt, ...)
     int ret;
 
     va_start(ap, fmt);
-    ret = _vprintf(_diag_write_char, (void **)0, fmt, ap);
+    ret = _vprintf(fmt, ap);
     va_end(ap);
     return (ret);
 }

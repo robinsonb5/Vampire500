@@ -1,8 +1,9 @@
-all: zpuromgen VampireDiag.gen SDRAMTest.gen
+all: zpuromgen VampireDiag.gen SDRAMTest.gen MicroSDTest.gen
 
 clean:
 	make -C VampireDiag clean
 	make -C SDRAMTest clean
+	make -C MicroSDTest clean
 	rm *.vhd
 	rm zpuromgen
 

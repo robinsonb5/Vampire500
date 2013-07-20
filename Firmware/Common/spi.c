@@ -1,18 +1,18 @@
-#include "minisoc_hardware.h"
+#include "amiga_hardware.h"
 #include "small_printf.h"
 
 int SDHCtype;
 
-// #define SPI_WAIT(x) while(HW_PER(PER_SPI_CS)&(1<<PER_SPI_BUSY));
-// #define SPI(x) {while((HW_PER(PER_SPI_CS)&(1<<PER_SPI_BUSY))); HW_PER(PER_SPI)=(x);}
-// #define SPI_READ(x) (HW_PER(PER_SPI)&255)
+// #define SPI_WAIT(x) while(HW_PER(VAMPIRE_SPI_CS)&(1<<VAMPIRE_SPI_BUSY));
+// #define SPI(x) {while((HW_PER(VAMPIRE_SPI_CS)&(1<<VAMPIRE_SPI_BUSY))); HW_PER(VAMPIRE_SPI)=(x);}
+// #define SPI_READ(x) (HW_PER(VAMPIRE_SPI)&255)
 
-#define SPI(x) HW_PER(PER_SPI)=(x)
-#define SPI_PUMP(x) HW_PER(PER_SPI_PUMP)
-// #define SPI_PUMP_L(x) HW_PER_L(PER_SPI_PUMP)
-#define SPI_READ(x) (HW_PER(PER_SPI)&255)
+#define SPI(x) HW_VAMPIRE(VAMPIRE_SPI)=(x)
+#define SPI_PUMP(x) HW_VAMPIRE(VAMPIRE_SPIW)
+// #define SPI_PUMP_L(x) HW_PER_L(VAMPIRE_SPI_PUMP)
+#define SPI_READ(x) (HW_VAMPIRE(VAMPIRE_SPI)&255)
 
-#define SPI_CS(x) {while((HW_PER(PER_SPI_CS)&(1<<PER_SPI_BUSY))); HW_PER(PER_SPI_CS)=(x);}
+#define SPI_CS(x) {while((HW_VAMPIRE(VAMPIRE_SPI_CS)&(1<<VAMPIRE_SPI_BUSY))); HW_VAMPIRE(VAMPIRE_SPI_CS)=(x);}
 
 #define cmd_reset(x) cmd_write(0x950040,0) // Use SPI mode
 #define cmd_init(x) cmd_write(0xff0041,0)
@@ -60,7 +60,7 @@ int cmd_write(unsigned long cmd, unsigned long lba)
 		SPI(0xff);
 		result=SPI_READ();
 	}
-//	printf("Got result %d \n",result);
+	printf("Cmd %d got result %d \n",cmd,result);
 
 	return(result);
 }
@@ -80,6 +80,7 @@ int wait_initV2()
 {
 	int i=20000;
 	int r;
+	printf("waitinit_v2");
 	spi_spin();
 	while(--i)
 	{
@@ -109,7 +110,7 @@ int wait_init()
 	int i=20;
 	int r;
 	SPI(0xff);
-//	puts("Cmd_init\n");
+	puts("wait_init\n");
 	while(--i)
 	{
 		if((r=cmd_init())==0)
@@ -168,6 +169,9 @@ int is_sdhc()
 	}
 #endif
 	r=SPI_PUMP();
+	printf("%d, ",r);
+	r=SPI_PUMP();
+	printf("%d\n",r);
 	if((r&0xffff)!=0x01aa)
 	{
 		wait_init();
@@ -192,6 +196,7 @@ int is_sdhc()
 //				SPI_WAIT();
 				r=SPI_READ();
 				printf("CMD58_2 %d\n  ",r);
+				SPI_PUMP();
 				SPI_PUMP();
 //				SPI(0xff);
 //				SPI(0xff);
@@ -224,7 +229,7 @@ int spi_init()
 //	HW_PER(PER_TIMER_DIV7)=150;	// About 350KHz
 	SPI_CS(0);	// Disable CS
 	spi_spin();
-//	puts("Activating CS\n");
+	puts("Activating CS\n");
 	SPI_CS(1);
 	i=8;
 	while(--i)
@@ -270,7 +275,7 @@ int sd_read_sector(unsigned long lba,unsigned char *buf)
 	int i;
 	int r;
 //	printf("sd_read_sector %d, %d\n",lba,buf);
-	SPI_CS(1|(1<<PER_SPI_FAST));
+	SPI_CS(1|(1<<VAMPIRE_SPI_FAST));
 	SPI(0xff);
 
 	r=cmd_read(lba);
@@ -293,15 +298,29 @@ int sd_read_sector(unsigned long lba,unsigned char *buf)
 //			spi_readsector((long *)buf);
 			int j;
 //			SPI(0xff);
+			short *out=(short *)buf;
 
-			for(j=0;j<128;++j)
+			for(j=0;j<256;++j)
+			{
+				unsigned int t=0;
+				SPI(0xff);
+				t=SPI_READ()<<8;
+				SPI(0xff);
+				t|=SPI_READ();
+
+				*out++=t;
+			}
+
+#if 0
+			for(j=0;j<256;++j)
 			{
 				int t,v;
 				t=SPI_PUMP();
-				*(int *)buf=t;
+				*(short *)buf=t;
 //				printf("%d: %d\n",buf,t);
-				buf+=4;
+				buf+=2;
 			}
+#endif
 
 			i=1; // break out of the loop
 			result=1;

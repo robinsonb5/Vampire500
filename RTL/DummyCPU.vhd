@@ -47,7 +47,7 @@ process(clk)
 begin
 	nResetOut<=nReset;
 	if nReset='0' then
-		state<=read1;
+		state<=write1;
 	elsif rising_edge(clk) then
 
 		case state is
@@ -63,7 +63,8 @@ begin
 				
 			when write2 =>
 				if clkena_in='1' then
-					state<=write3;
+					temp<=temp+1;
+					state<=write1;
 				end if;
 
 			when write3 =>

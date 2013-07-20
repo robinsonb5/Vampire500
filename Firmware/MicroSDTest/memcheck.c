@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include <malloc.h>
 
@@ -5,8 +6,6 @@
 
 #ifndef DEBUG
 #include "small_printf.h"
-#else
-#include "stdio.h"
 #endif
 
 //#define CYCLE_LFSR {lfsr<<=1; if(lfsr&0x80000000) lfsr|=1; if(lfsr&0x10000000) lfsr^=1;}

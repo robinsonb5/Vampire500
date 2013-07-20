@@ -1,4 +1,4 @@
-<session jtag_chain="USB-Blaster [2-6]" jtag_device="@1: EP2C8 (0x020B20DD)" sof_file="mc68k_probe.sof">
+<session jtag_chain="USB-Blaster [2-6]" jtag_device="@1: EP2C8 (0x020B20DD)" sof_file="PinTest.sof">
   <display_tree gui_logging_enabled="0">
     <display_branch instance="auto_signaltap_0" log="USE_GLOBAL_TEMP" signal_set="USE_GLOBAL_TEMP" trigger="USE_GLOBAL_TEMP"/>
   </display_tree>
@@ -630,7 +630,7 @@
           </bus>
         </setup_view>
       </presentation>
-      <trigger CRC="218AC20E" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2013/06/30 21:09:15  #0" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="256" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="true" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_in="dont_care" trigger_out="active high" trigger_type="circular">
+      <trigger CRC="218AC20E" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2013/06/30 21:09:15  #0" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="256" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="false" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_in="dont_care" trigger_out="active high" trigger_type="circular">
         <power_up_trigger position="pre" storage_qualifier_disabled="no" trigger_in="dont_care" trigger_out="active high"/>
         <events use_custom_flow_control="no">
           <level enabled="yes" name="condition1" type="basic">'DummyCPU:myTG68|addr[20]' == low &amp;&amp; 'DummyCPU:myTG68|addr[21]' == low &amp;&amp; 'DummyCPU:myTG68|addr[22]' == low &amp;&amp; 'DummyCPU:myTG68|addr[23]' == low &amp;&amp; 'DummyCPU:myTG68|addr[24]' == low &amp;&amp; 'DummyCPU:myTG68|addr[25]' == low &amp;&amp; 'DummyCPU:myTG68|addr[26]' == low &amp;&amp; 'DummyCPU:myTG68|addr[27]' == low &amp;&amp; 'DummyCPU:myTG68|addr[28]' == low &amp;&amp; 'DummyCPU:myTG68|addr[29]' == low &amp;&amp; 'DummyCPU:myTG68|addr[30]' == low &amp;&amp; 'DummyCPU:myTG68|addr[31]' == low &amp;&amp; 'mystate.readS0' == either edge
@@ -3317,6 +3317,7 @@ HIqfFvD/+Xq9/k+P1esPPfLYY588+uijjwY/tl979/8DMxomlA==
     
     
     
+    
     </embedded_sof_file>
     <embedded_sof_file id_crc_pairs="30006E00,218AC20E" name="Vampire500.sof" size="240862">eJzcvW+QW9d1J3ju7QvoAYTEhyZEgjJDX6CbIqgoJijTEzrTTt1uNklQoi3o
 z9icrIsFybRWmvFmGDnZZU/y4QJqyhClSKBM222NhwvZiuNkXSnmz+y6ppit
@@ -5522,6 +5523,7 @@ fQ7/hEHNl4HTvTe19Hsw+6fW/5nzcc4PKRX6P70nM2HG14erDart9vPCzOEP
 w6L30xvC7I/+kznP+2/6d9jhN9lzqpq1TDMrSfcW1F8LYuMM/JYLJbi9UCh8
 cnehsHnb1p3FXdsojiAh7oFX/39QByiM
 
+    
     
     
     </embedded_sof_file>

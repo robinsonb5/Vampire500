@@ -112,6 +112,8 @@ oTG68_ASn <= onoff;
 oTG68_UDSn <= onoff;
 oTG68_LDSn <= onoff;
 oTG68_RW <= onoff;
+reset_b <= onoff;
+halt_b <= onoff;
 ioTG68_DATA <= (others=>onoff);
 LED <= onoff;
 

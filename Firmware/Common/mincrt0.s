@@ -48,7 +48,7 @@ Boston, MA 02111-1307, USA.  */
 
 		.globl _start
 _start:
-		jmp main
+		jmp _premain
 
 	.section ".text","ax"
 	.global _boot
@@ -175,6 +175,15 @@ _storeb:
 	
 	storesp 4
 	storesp 4
+	poppc
+
+_premain:
+	im .endloop
+	nop
+	fixedim main
+	poppc
+.endloop:
+	im .endloop
 	poppc
 
 	.section ".rodata"

@@ -12,12 +12,13 @@ DIAG_PRJ = VampireDiag
 MINSTARTUP_SRC = ../Common/mincrt0.s
 MINSTARTUP_OBJ = $(patsubst ../Common/%.s,$(BUILD_DIR)/%.o,$(MINSTARTUP_SRC))
 
-COMMON_SRC = ../Common/minisoc_hardware.c ../Common/minisoc_hardware.h ../Common/small_printf.c ../Common/small_printf.h
+COMMON_SRC = ../Common/small_printf.c ../Common/small_printf.h \
+	../Common/amiga_hardware.c ../Common/amiga_hardware.h ../Common/font8.c ../Common/font8.h
 COMMON_OBJ = $(patsubst ../Common/%.c,$(BUILD_DIR)/%.o,$(COMMON_SRC))
 
-DIAG_SRC_C = main.c font8.h font8.c amiga.c amiga.h
+DIAG_SRC_C = main.c
 DIAG_OBJ_C = $(patsubst %.c,$(BUILD_DIR)/%.o,$(DIAG_SRC_C))
-DIAG_OBJ = $(MINSTARTUP_OBJ) $(DIAG_OBJ_C)
+DIAG_OBJ = $(MINSTARTUP_OBJ) $(COMMON_OBJ) $(DIAG_OBJ_C)
 
 LINKMAP  = $(DIAG_PRJ).ld
 LIBDIR   = 

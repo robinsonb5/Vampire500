@@ -1,33 +1,27 @@
-BASE	= zpu-elf
+BASE	= m68k-elf
 CC      = $(BASE)-gcc
 LD      = $(BASE)-gcc
 AS      = $(BASE)-as
 CP      = $(BASE)-objcopy
 DUMP    = $(BASE)-objdump
 
-BUILD_DIR=zpu_obj
+BUILD_DIR=68k_obj
 
-MINSTARTUP_SRC = ../Common/mincrt0.s
+MINSTARTUP_SRC = ../Common/startup_68k.s
 MINSTARTUP_OBJ = $(patsubst ../Common/%.s,$(BUILD_DIR)/%.o,$(MINSTARTUP_SRC))
 
-COMMON_SRC = ../Common/minisoc_hardware.c ../Common/small_printf.c
+COMMON_SRC = ../Common/small_printf.c ../Common/font8.c ../Common/font8.h \
+	../Common/spi.c ../Common/spi.h ../Common/swap.c ../Common/swap.h ../Common/amiga_hardware.c 
 COMMON_OBJ = $(patsubst ../Common/%.c,$(BUILD_DIR)/%.o,$(COMMON_SRC))
 
-BOOT_PRJ = SDRAMTest
-BOOT_SRC = memcheck.c
+BOOT_PRJ = MicroSDTest_68K
+BOOT_SRC = main.c minfat.c minfat.h
 BOOT_OBJ = $(COMMON_OBJ) $(patsubst %.c,$(BUILD_DIR)/%.o,$(BOOT_SRC))
 
-LINKMAP  = boot.ld
+LINKMAP  = m68kboot.ld
 LIBDIR   = 
 
-# Commandline options for each tool.
-#ZPUOPTS= -mno-poppcrel -mno-compare -mno-byteop -mno-shortop -mno-callpcrel \
-#  -mno-call -mno-neqbranch -mno-pushspadd \
-#  -mno-neg -mno-mod -mno-div
-
-ZPUOPTS= -mno-poppcrel -mno-pushspadd -mno-callpcrel -mno-byteop -mno-neg # No-neg requires bugfixed toolchain
-
-CFLAGS  = -I. -I../Common/ -c -Os $(ZPUOPTS) -DPRINTF_HEX_ONLY -DDISABLE_UART_RX # -DDISABLE_UART_TX 
+CFLAGS  = -I. -I../Common/ -c -Os -m68020 -DPRINTF_HEX_ONLY -DDISABLE_UART_RX # -DDISABLE_UART_TX 
 AFLAGS  = 
 LFLAGS  = -Wl,--relax -nostdlib -Os
 CP_HEXFLAGS = -Oihex
@@ -72,7 +66,7 @@ link:
 # Link - this produces an ELF binary.
 
 $(BOOT_PRJ).elf: $(MINSTARTUP_OBJ) $(BOOT_OBJ)
-	$(LD) $(LFLAGS) -T boot.ld -o $@ $+ $(LIBS)
+	$(LD) $(LFLAGS) -T $(LINKMAP) -o $@ $+ $(LIBS)
 
 $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS)  -o $@ -c $<

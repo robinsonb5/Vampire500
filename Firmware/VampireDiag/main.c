@@ -1,4 +1,4 @@
-#include "amiga.h"
+#include "amiga_hardware.h"
 
 #include "minisoc_hardware.h"
 
@@ -14,7 +14,7 @@ void Putint(unsigned int val)
 			c+='A'-10;
 		else
 			c+='0';
-		Amiga_Putc(c);
+		putchar(c);
 	}
 }
 
@@ -30,7 +30,7 @@ void CheckAlias()
 	i3=*(volatile int *)0xf00004;
 	Putint(i3);
 	Putint(i4);
-	Amiga_Putc('\n');
+	putchar('\n');
 
 	i2=*(volatile int *)0xfc0008;
 	i1=*(volatile int *)0xf00008;
@@ -40,7 +40,7 @@ void CheckAlias()
 	i3=*(volatile int *)0xf0000c;
 	Putint(i3);
 	Putint(i4);
-	Amiga_Putc('\n');
+	putchar('\n');
 }
 #endif
 
@@ -58,13 +58,13 @@ int main()
 	Amiga_SetupScreen();
 //	Amiga_TestPattern2();
 
-//	Amiga_Putc('H');
-//	Amiga_Putc('e');
-//	Amiga_Putc('l');
-//	Amiga_Putc('l');
-//	Amiga_Putc('o');
-//	Amiga_Putc('\n');
-//	Amiga_Puts("Hello, world!\n");
+//	putchar('H');
+//	putchar('e');
+//	putchar('l');
+//	putchar('l');
+//	putchar('o');
+//	putchar('\n');
+//	puts("Hello, world!\n");
 
 	a=*(volatile short*)0xfc0000;
 	a=*(volatile short*)0xfc0000;
@@ -79,12 +79,12 @@ int main()
 	}
 	d=*(volatile short*)0xfc0004; // Something we can pick up in SignalTap
 
-	Amiga_Puts("Shadow of ");
+	puts("Shadow of ");
 	Putint(a);
-	Amiga_Puts(" persisted for ");
+	puts(" persisted for ");
 	Putint(i);
-	Amiga_Puts(" consecutive reads\n");
-	Amiga_Puts("Ending with a read of ");
+	puts(" consecutive reads\n");
+	puts("Ending with a read of ");
 	Putint(c);
 
 //	CheckAlias();
@@ -105,14 +105,14 @@ int main()
 	HW_CIAA(CIAA_PRA)=0xfc;
 	Amiga_SetupScreen();
 
-	Amiga_Puts("Ready to receive\n");
+	puts("Ready to receive\n");
 
 	while(1)
 	{
 		int in=HW_PER(PER_UART);
 		if(in & (1<<PER_UART_RXINT))
 		{
-			Amiga_Putc(in&0xff);
+			putchar(in&0xff);
 		}
 	}
 
