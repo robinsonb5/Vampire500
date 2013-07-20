@@ -3,9 +3,9 @@
 
 MEMORY
 {
-  BOOT (rx) : ORIGIN = 0x00000000, LENGTH = 0x00000008 /* Boot section contains just the initial jump */
+  VECTORS (r) : ORIGIN = 0x00EE0000, LENGTH = 0x00000008 /* Boot section contains just the initial jump */
   TRAP (rx) : ORIGIN = 0x10000000, LENGTH = 0x00000000 /* Dummy region to ensure we don't have any Initialized writable data */
-  CODE (rx) : ORIGIN = 0x00000100, LENGTH = 0x0000f000 /* Code section of an overlay BOOT ROM */
+  CODE (rx) : ORIGIN = 0x00EE0010, LENGTH = 0x00004000 /* Code section of an overlay BOOT ROM */
   CHIPRAM (rw) : ORIGIN = 0x00010000, LENGTH = 0x0070000 /* Half a meg of chip RAM */
 }
 
@@ -19,12 +19,14 @@ SECTIONS
   .fixed_vectors :
   {
     *(.fixed_vectors)
-  }>BOOT
+  }>VECTORS
 
   /* Remaining code sections */
   .text :
   {
+	ROM_start = .;
 	. = ALIGN(4);
+	*(.boot)
     *(.text)                   /* remaining code */
   } >CODE
 

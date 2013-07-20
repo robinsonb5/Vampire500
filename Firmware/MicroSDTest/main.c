@@ -33,12 +33,10 @@ int main(int argc,char **argv)
 	int i;
 	Amiga_Init();
 	Amiga_SetupScreen();
-	puts("Hello, world\n");
 
 	puts("Initializing SD card\n");
 	if(spi_init())
 	{
-		puts("SD card successfully initialised, hunting for filesystem\n");
 		FindDrive();
 		puts("Attempting to load ROM\n");
 		if(LoadFile(0,"kick13.rom\n"))
