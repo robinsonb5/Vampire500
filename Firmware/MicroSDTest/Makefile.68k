@@ -21,7 +21,7 @@ BOOT_OBJ = $(COMMON_OBJ) $(patsubst %.c,$(BUILD_DIR)/%.o,$(BOOT_SRC))
 LINKMAP  = m68kboot.ld
 LIBDIR   = 
 
-CFLAGS  = -I. -I../Common/ -c -Os -m68020 -DPRINTF_HEX_ONLY -DDISABLE_UART_RX # -DDISABLE_UART_TX 
+CFLAGS  = -I. -I../Common/ -c -Os -fno-common -fomit-frame-pointer -m68020 -DPRINTF_HEX_ONLY -DDISABLE_UART_RX # -DDISABLE_UART_TX 
 AFLAGS  = 
 LFLAGS  = -Wl,--relax -nostdlib -Os
 CP_HEXFLAGS = -Oihex
@@ -31,7 +31,7 @@ CP_SRECFLAGS = -Osrec --gap-fill 0
 LIBS       =
 
 # Our target.
-all: $(BUILD_DIR) $(BOOT_PRJ).bin $(BOOT_PRJ).rpt
+all: $(BUILD_DIR) $(BOOT_PRJ).mif $(BOOT_PRJ).rpt
 
 mif: $(BOOT_PRJ).mif
 
@@ -56,7 +56,7 @@ link:
 
 # Convert SREC to .mif file
 %.mif: %.srec
-	srec_cat $< -offset=-0x00EE0000 -o $@ -mif 32
+	srec_cat $< -offset=-0x00EE0000 -o $@ -mif 16
 
 %.rpt: %.elf
 	$(DUMP) -x $< | grep _romend   #  End of Boot ROM
@@ -68,7 +68,7 @@ link:
 $(BOOT_PRJ).elf: $(MINSTARTUP_OBJ) $(BOOT_OBJ)
 	$(LD) $(LFLAGS) -T $(LINKMAP) -o $@ $+ $(LIBS)
 
-$(BUILD_DIR)/%.o: %.c
+$(BUILD_DIR)/%.o: %.c  Makefile.68k m68kboot.ld
 	$(CC) $(CFLAGS)  -o $@ -c $<
 
 $(BUILD_DIR)/%.o: ../Common/%.c

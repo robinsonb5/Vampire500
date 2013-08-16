@@ -6,7 +6,8 @@ MEMORY
   VECTORS (r) : ORIGIN = 0x00EE0000, LENGTH = 0x00000008 /* Boot section contains just the initial jump */
   TRAP (rx) : ORIGIN = 0x10000000, LENGTH = 0x00000000 /* Dummy region to ensure we don't have any Initialized writable data */
   CODE (rx) : ORIGIN = 0x00EE0010, LENGTH = 0x00004000 /* Code section of an overlay BOOT ROM */
-  CHIPRAM (rw) : ORIGIN = 0x00010000, LENGTH = 0x0070000 /* Half a meg of chip RAM */
+  CHIPRAM (rw) : ORIGIN = 0x00010000, LENGTH = 0x00070000 /* Half a meg of chip RAM */
+  FASTRAM (rw) : ORIGIN = 0x00200000, LENGTH = 0x009ffff0 /* Eight meg of Fast RAM */
 }
 
 
@@ -59,5 +60,5 @@ SECTIONS
     . = ALIGN(4);
   } >CHIPRAM
   __bss_end__ = . ;
-  stack_top = 0x6fffc;
+  stack_top = 0x300000;
 }

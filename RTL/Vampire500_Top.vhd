@@ -89,7 +89,12 @@ LED : out std_logic;
 --		SDRAM_CLK : out std_logic;
 --		SDRAM_CKE : out std_logic;
 		sdram_pins_io : inout SDRAM_Pins_io;
-		sdram_pins_o : out SDRAM_Pins_o
+		sdram_pins_o : out SDRAM_Pins_o;
+
+		SD_CLK : out std_logic;
+		SD_CS : out std_logic;
+		SD_MOSI : out std_logic;
+		SD_MISO : in std_logic
 	);
 end Vampire500_Top;
 
@@ -137,7 +142,8 @@ signal TG68_RESETn : std_logic;  -- TG68 reset, active low
 type mystates is
 	(init,reset,state1,state2,main,bootrom,delay1,delay2,delay3,delay4,delay5,
 	writeS0,writeS1,writeS2,writeS3,writeS4,writeS5,writeS6,writeS7,writeS8,
-	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,fast_access,fast2,fast3);
+	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,fast_access,fast2,fast3,
+	vampire1, vampire2,bootrom1, bootrom2);
 
 signal mystate : mystates :=init;    -- Declare state machine variable with initial value of "init"
 
@@ -174,6 +180,8 @@ signal sel_kickstart : std_logic;
 signal sel_24bit : std_logic;
 signal sel_autoconfig : std_logic;
 signal sel_autoconfig2 : std_logic;
+signal sel_vampire : std_logic;
+signal sel_bootrom : std_logic;
 
 -- Autoconfig signals
 
@@ -181,13 +189,20 @@ signal autoconfig_data : std_logic_vector(3 downto 0); -- 24-bit (Zorro II) auto
 signal autoconfig_data2 : std_logic_vector(3 downto 0); -- 32-bit (Zorro III) autoconfig data;
 signal autoconfig_out : std_logic_vector(1 downto 0); -- Select between 24- and 32-bit autoconfig.
 
-type cpudatasources is (src_amiga,src_sdram,src_autoconfig,src_peripheral);
+signal vampire_req : std_logic;
+signal vampire_ack : std_logic;
+signal vampire_data : std_logic_vector(15 downto 0);
+signal bootrom_data : std_logic_vector(15 downto 0);
+signal bootrom_data_latched : std_logic_vector(15 downto 0);
+signal rom_overlay : std_logic :='0'; -- Vampire ROM overlay, as opposed to Kickstart ROM overlay.
+
+type cpudatasources is (src_amiga,src_sdram,src_autoconfig,src_peripheral,src_vampire,src_bootrom);
 signal cpudatasource : cpudatasources := src_amiga;
 
 BEGIN
 
 
--- PLL to generate 128Mhz from 50MHz sysclock.
+-- PLL to generate sysclk from 50MHz input clock.
 
 mySysClock : entity work.SysClock
 	port map(
@@ -196,20 +211,6 @@ mySysClock : entity work.SysClock
 		c0 => sysclk,
 		c1 => sdram_clk
 	);
-
-
--- SDRAM - -Stub out the SDRAM for now.
---SDRAM_A <= (others => '1');
---SDRAM_DQ  <= (others => 'Z');
---SDRAM_WE <= '1';
---SDRAM_RAS <= '1';
---SDRAM_CAS <= '1';
---SDRAM_CS <= '0';
---SDRAM_DQMH <= '1';
---SDRAM_DQML <= '1';
---SDRAM_BA  <= (others => '1');
--- SDRAM_CKE <= '1';
-
 	
 
 	
@@ -347,15 +348,33 @@ E<=eclk_shift(0);
 oVMA <= VMA_int;
 
 	
--- Simple boot ROM for testing.  Once this is tested and working we can remove it
--- and let the CPU boot from Kickstart.
---mybootrom : entity work.BootRom
---	port map (
---		clock => sysclk,
---		address => cpu_addr(8 downto 1),
---		q => romdata
---		);
+-- Simple boot ROM for testing.
+mybootrom : entity work.BootRom
+	port map (
+		clock => sysclk,
+		address => cpu_addr(12 downto 1),
+		q => bootrom_data
+	);
 	
+-- Custom hardware registers provided by the Vampire (for SPI, etc.)
+
+vampireregs : entity work.Vampire_Registers
+port map (
+	clk => sysclk,
+	reset => TG68_RESETn,
+	addr => cpu_addr(3 downto 1)&'0',
+	fromcpu => cpu_dataout,
+	tocpu => vampire_data,
+	rw => cpu_r_w,
+	req => vampire_req,
+	ack => vampire_ack,
+	-- SPI signals
+	sd_cs => SD_CS,
+	sd_clk => SD_CLK,
+	sd_mosi => SD_MOSI,
+	sd_miso => SD_MISO
+--	rom_overlay => rom_overlay
+);
 
 oTG68_ADDR <= amiga_addr;
 --oTG68_ADDR(0) <= null;
@@ -394,6 +413,15 @@ sel_ziii_fast <= '1' when
   sel_24bit<='0' and cpu_addr(31)='0' -- 1000000 upwards, aliased to fill the address space.
   else '0';
 
+-- Custom Vampire 500 registers
+sel_vampire <= '1' when
+	sel_24bit='1' and cpu_addr(23 downto 16)=X"EF" else '0';
+
+-- Vampire Boot ROM
+sel_bootrom <= '1' when
+	sel_24bit='1' and cpu_addr(23 downto 16)=X"EE" else '0';
+
+
 -- Map Zorro II fast RAM to memory starting 48 meg in.
 -- This leaves the low 48 meg for zorro III fast RAM,
 -- and the last 8 meg for Kickstart mapping, Ranger RAM,
@@ -424,6 +452,8 @@ cpu_datain <= ioTG68_Data when cpudatasource=src_amiga
 	else fastram_tocpu.data when cpudatasource=src_sdram
 	else autoconfig_data & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="01"
 	else autoconfig_data2 & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="10"
+	else vampire_data when cpudatasource=src_vampire
+	else bootrom_data_latched when cpudatasource=src_bootrom
 		---src_peripheral, etc.
 	else
 		(others => 'X');
@@ -522,6 +552,10 @@ begin
 							cpudatasource<=src_sdram;
 							fastram_fromcpu.req<='1';
 							mystate<=fast_access;
+						elsif sel_vampire='1' then
+							cpudatasource<=src_vampire;
+							vampire_req<='1';
+							mystate<=vampire1;
 						elsif sel_autoconfig='1' then
 							cpudatasource<=src_autoconfig;
 							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
@@ -534,6 +568,10 @@ begin
 								autoconfig_out<="00";
 							end if;
 							mystate<=delay1;
+						elsif sel_bootrom='1' or rom_overlay='1' then
+							cpudatasource<=src_bootrom;
+							bootrom_data_latched<=bootrom_data;
+							mystate<=bootrom;
 						else					
 							cpudatasource<=src_amiga;
 							if cpu_r_w='0' then	-- Write cycle.
@@ -548,6 +586,18 @@ begin
 				if sampled_reset='0' then
 					mystate <= init;
 				end if;
+
+			when vampire1 =>
+				if vampire_ack='1' then
+					mystate<=delay1;
+				end if;
+
+			when bootrom =>
+				bootrom_data_latched<=bootrom_data;
+				mystate<=bootrom2;
+
+			when bootrom2 =>
+				mystate<=delay1;
 
 			when fast_access =>
 --				cpu_datain<=fastram_tocpu.data;	-- copy data from SDRAM to CPU. (Unnecessary but harmless for write cycles.)
@@ -584,7 +634,8 @@ begin
 				mystate<=delay4;
 				
 			when delay4 =>
-				mystate<=delay5;
+				mystate<=main;
+--				mystate<=delay5;
 
 			when delay5 =>
 				mystate<=main;

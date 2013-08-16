@@ -1,18 +1,5 @@
 /*	Firmware for loading files from SD card.
-	Part of the ZPUTest project by Alastair M. Robinson.
 	SPI and FAT code borrowed from the Minimig project.
-
-	This boot ROM ends up stored in the ZPU stack RAM
-	which in the current incarnation of the project is
-	memory-mapped to 0x04000000
-	Halfword and byte writes to the stack RAM aren't
-	currently supported in hardware, so if you use
-    hardware storeh/storeb, and initialised global
-    variables in the boot ROM should be declared as
-    int, not short or char.
-	Uninitialised globals will automatically end up
-	in SDRAM thanks to the linker script, which in most
-	cases solves the problem.
 */
 
 
@@ -22,17 +9,20 @@
 #include "spi.h"
 #include "minfat.h"
 
-
-void _boot();
-void _break();
-
-/* Load files named in a manifest file */
-
 int main(int argc,char **argv)
 {
-	int i;
-	Amiga_Init();
+	volatile short *a=(short*)65536;
+	int i,j,k;
+	for(i=0;i<16;++i)
+	{
+		for(j=0;j<65535;++j)
+		{
+			*(a)=i;
+			HW_AMIGA(COLOR0)=*(a);
+		}
+	}
 	Amiga_SetupScreen();
+	puts("Hello world!\n");
 
 	puts("Initializing SD card\n");
 	if(spi_init())

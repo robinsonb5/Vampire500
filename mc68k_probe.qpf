@@ -1,6 +1,6 @@
 # -------------------------------------------------------------------------- #
 #
-# Copyright (C) 1991-2012 Altera Corporation
+# Copyright (C) 1991-2013 Altera Corporation
 # Your use of Altera Corporation's design tools, logic functions 
 # and other software and tools, and its AMPP partner logic 
 # functions, and any output files from any of the foregoing 
@@ -17,19 +17,19 @@
 # -------------------------------------------------------------------------- #
 #
 # Quartus II 32-bit
-# Version 12.0 Build 232 07/05/2012 Service Pack 1 SJ Web Edition
-# Date created = 23:32:35  July 19, 2013
+# Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
+# Date created = 00:30:19  August 17, 2013
 #
 # -------------------------------------------------------------------------- #
 
-QUARTUS_VERSION = "12.0"
-DATE = "23:32:35  July 19, 2013"
+QUARTUS_VERSION = "13.0"
+DATE = "00:30:19  August 17, 2013"
 
 # Revisions
 
-PROJECT_REVISION = "MicroSD"
 PROJECT_REVISION = "Vampire500"
+PROJECT_REVISION = "MicroSD"
+PROJECT_REVISION = "mc68k_probe"
 PROJECT_REVISION = "SDRAMTest"
 PROJECT_REVISION = "repair"
 PROJECT_REVISION = "PinTest"
-PROJECT_REVISION = "mc68k_probe"

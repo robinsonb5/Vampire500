@@ -151,7 +151,8 @@ begin
 							state<=writelow;
 							
 						else	-- longword cycle.
-							addr<=mem_addr(31 downto 2)&"00"; -- longword writes are 32-bit aligned to make the logic simpler
+--							addr<=mem_addr(31 downto 2)&"00"; -- longword writes are 32-bit aligned to make the logic simpler
+							addr<=mem_addr(31 downto 1)&'0'; -- longword writes are now word-aligned.
 							data_write<=mem_write(31 downto 16);
 							nUDS<='0';
 							nLDS<='0';
@@ -178,7 +179,8 @@ begin
 							nLDS<=not mem_addr(0);
 							state<=readlow;
 						else	-- longword cycle.
-							addr<=mem_addr(31 downto 2)&"00"; -- longword writes are 32-bit aligned to make the logic simpler
+--							addr<=mem_addr(31 downto 2)&"00"; -- longword writes are 32-bit aligned to make the logic simpler
+							addr<=mem_addr(31 downto 1)&'0'; -- longword writes are now word-aligned
 							nUDS<='0';
 							nLDS<='0';
 							state<=readhigh;
@@ -192,7 +194,8 @@ begin
 			when readhigh =>
 				if clkena_in='1' then
 					mem_read(31 downto 16)<=data_in;
-					addr(1)<='1'; -- Adjust address for second word
+					addr<=(mem_addr(31 downto 1)&'0')+2; -- Adjust address for second word
+--					addr(1)<='1'; -- Adjust address for second word
 					state<=readlow;
 				end if;
 
@@ -214,7 +217,8 @@ begin
 			
 			when writehigh =>
 				if clkena_in='1' then
-					addr(1)<='1'; -- Adjust address for second word
+					addr<=(mem_addr(31 downto 1)&'0')+2; -- Adjust address for second word
+--					addr(1)<='1'; -- Adjust address for second word
 					data_write<=mem_write(15 downto 0);
 					state<=writelow;
 				end if;
