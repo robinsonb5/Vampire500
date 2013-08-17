@@ -7,11 +7,14 @@
 // can hold 128 cachelines.  Since we're building a 2-way cache, this will end
 // up being 2 overlapping sets of 64 cachelines.
 
+// (In fact we end up using a single M9K for tag RAM, which gives us 512 cachelines,
+// as two sets of 256.)
+
 // The address is broken down as follows:
 //   bit 0 is irrelevant because we're working in 16-bit words.
 //   bits 2:1 specify which word of a burst we're interested in.
-//   Bits 10:3 specify the six bit address of the cachelines;
-//     this will map to {1'b0,addr[8:3]} and {1;b1,addr[8:3]} respectively.
+//   Bits 10:3 specify the eight bit address of the cachelines;
+//     this will map to {1'b0,addr[10:3]} and {1;b1,addr[10:3]} respectively.
 //   Bits 25:11 have to be stored in the tag, which, it turns out is no problem,
 //     since we can use have 18-bit wide words.  The highest bit will be used as
 //     a "most recently used" flag, leaving one bit spare, so we can support 64 meg

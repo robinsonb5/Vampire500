@@ -426,17 +426,35 @@ sel_bootrom <= '1' when
 -- This leaves the low 48 meg for zorro III fast RAM,
 -- and the last 8 meg for Kickstart mapping, Ranger RAM,
 -- hard disk buffers or anything else we decide to do.
-sdram_addr(25)<= sel_zii_fast;
-sdram_addr(24)<= sel_zii_fast or cpu_addr(24);
-sdram_addr(23 downto 1)<=cpu_addr(23 downto 1);
+--sdram_addr(25)<= sel_zii_fast;
+--sdram_addr(24)<= sel_zii_fast or cpu_addr(24);
+--sdram_addr(23 downto 1)<=cpu_addr(23 downto 1);
+sdram_addr(25 downto 1)<=cpu_addr(25 downto 1);
+
+--process(sysclk)
+--begin 
+--	-- Zorro II RAM (Up to 8 meg at 0x200000)
+--	autoconfig_data <= "1111";
+--	CASE cpu_addr(6 downto 1) IS
+--		WHEN "000000" => autoconfig_data <= "1110";		--Zorro-II card, add mem, no ROM
+--		WHEN "000001" => autoconfig_data <= "0000";		--8MB
+--		WHEN "001000" => autoconfig_data <= "1110";		-- 5016=Majsta
+--		WHEN "001001" => autoconfig_data <= "1100";		
+--		WHEN "001010" => autoconfig_data <= "0110";		
+--		WHEN "001011" => autoconfig_data <= "0111";		
+--		WHEN "010011" => autoconfig_data <= "1110";		--serial=1
+--		WHEN OTHERS => null;
+--	END CASE;
+--end process;
 
 process(sysclk)
 begin 
-	-- Zorro II RAM (Up to 8 meg at 0x200000)
+	-- Zorro III RAM (Up to 8 meg at 0x200000)
 	autoconfig_data <= "1111";
 	CASE cpu_addr(6 downto 1) IS
-		WHEN "000000" => autoconfig_data <= "1110";		--Zorro-II card, add mem, no ROM
-		WHEN "000001" => autoconfig_data <= "0000";		--8MB
+		WHEN "000000" => autoconfig_data <= "1010";		--Zorro-II card, add mem, no ROM
+		WHEN "000001" => autoconfig_data <= "0010";		--64meg (with extension bit)
+		WHEN "000100" => autoconfig_data <= "0000";		-- Extended 
 		WHEN "001000" => autoconfig_data <= "1110";		-- 5016=Majsta
 		WHEN "001001" => autoconfig_data <= "1100";		
 		WHEN "001010" => autoconfig_data <= "0110";		
@@ -447,6 +465,8 @@ begin
 end process;
 
 
+
+		
 -- Multiplexer for CPU Data in.
 cpu_datain <= ioTG68_Data when cpudatasource=src_amiga
 	else fastram_tocpu.data when cpudatasource=src_sdram
