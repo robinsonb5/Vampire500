@@ -64,8 +64,8 @@ derive_clock_uncertainty;
 #**************************************************************
 # We'll reduce these slightly thanks to the short CLK line
 
-set_input_delay -clock sdclk_pin -max 5.4 [get_ports sdram_pins_io.*]
-set_input_delay -clock sdclk_pin -min 0.3 [get_ports sdram_pins_io.*]
+set_input_delay -clock sdclk_pin -max 5.8 [get_ports sdram_pins_io.*]
+set_input_delay -clock sdclk_pin -min 3.2 [get_ports sdram_pins_io.*]
 
 #**************************************************************
 # Set Output Delay
@@ -73,8 +73,10 @@ set_input_delay -clock sdclk_pin -min 0.3 [get_ports sdram_pins_io.*]
 # CLK line is very short compared with other signals, so we'll add some extra delay here
 # (without this these would be 1.5, -0.8)
 
-set_output_delay -clock sdclk_pin -max 2.5 [get_ports sdram_pins*]
-set_output_delay -clock sdclk_pin -min -0.5 [get_ports sdram_pins*]
+set_output_delay -clock sdclk_pin -max 1.5 [get_ports sdram_pins*]
+set_output_delay -clock sdclk_pin -min -0.8 [get_ports sdram_pins*]
+set_output_delay -clock sdclk_pin -min 0.5 [get_ports sdram_pins_o.clk]
+set_output_delay -clock sdclk_pin -max 0.5 [get_ports sdram_pins_o.clk]
 
 #**************************************************************
 # Set Clock Groups
@@ -96,6 +98,11 @@ set_output_delay -clock sdclk_pin -min -0.5 [get_ports sdram_pins*]
 #set_multicycle_path -from [get_clocks {mypll2|altpll_component|auto_generated|pll1|clk[0]}] -to [get_clocks {sd2clk_pin}] -setup -end 2
 
 set_multicycle_path -from [get_clocks {sdclk_pin}] -to [get_clocks {mySysClock|altpll_component|pll|clk[0]}] -setup -end 2
+
+set_multicycle_path -from {TG68KdotC_Kernel:myTG68|altsyncram:regfile*} -to {TG68KdotC_Kernel:myTG68|altsyncram:regfile*} -setup -end 3
+set_multicycle_path -from {TG68KdotC_Kernel:myTG68|altsyncram:regfile*} -to {TG68KdotC_Kernel:myTG68|regfile*} -setup -end 3
+set_multicycle_path -from {TG68KdotC_Kernel:myTG68|regfile*} -to {TG68KdotC_Kernel:myTG68|altsyncram:regfile*} -setup -end 3
+set_multicycle_path -from {TG68KdotC_Kernel:myTG68|regfile*} -to {TG68KdotC_Kernel:myTG68|regfile*} -setup -end 3
 
 #**************************************************************
 # Set Maximum Delay

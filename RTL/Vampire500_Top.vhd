@@ -173,10 +173,14 @@ signal nullsig0 : std_logic;
 -- Fast RAM signals
 
 signal sdram_addr : std_logic_vector(31 downto 1); -- CPU's current address
+signal ziii_base : std_logic_vector(7 downto 0):=X"10";
+signal ziii_base2 : std_logic_vector(7 downto 0):=X"12";
 signal sel_zii_fast : std_logic;
 signal sel_ziii_fast : std_logic;
+signal sel_ziii_fast2 : std_logic;
 signal sel_chipram : std_logic;
-signal sel_kickstart : std_logic;
+signal sel_kickstart_shadow_r : std_logic;
+signal sel_kickstart_shadow_w : std_logic;
 signal sel_24bit : std_logic;
 signal sel_autoconfig : std_logic;
 signal sel_autoconfig2 : std_logic;
@@ -196,7 +200,12 @@ signal bootrom_data : std_logic_vector(15 downto 0);
 signal bootrom_data_latched : std_logic_vector(15 downto 0);
 signal rom_overlay : std_logic :='0'; -- Vampire ROM overlay, as opposed to Kickstart ROM overlay.
 
-type cpudatasources is (src_amiga,src_sdram,src_autoconfig,src_peripheral,src_vampire,src_bootrom);
+signal kickstart_shadow_ena : std_logic;
+signal kickstart_shadow_we : std_logic;
+signal causereset : std_logic;
+
+type cpudatasources is (src_amiga,src_sdram,src_autoconfig,src_peripheral,
+	src_vampire,src_bootrom,src_busnoise);
 signal cpudatasource : cpudatasources := src_amiga;
 
 BEGIN
@@ -355,7 +364,7 @@ mybootrom : entity work.BootRom
 		address => cpu_addr(12 downto 1),
 		q => bootrom_data
 	);
-	
+
 -- Custom hardware registers provided by the Vampire (for SPI, etc.)
 
 vampireregs : entity work.Vampire_Registers
@@ -372,7 +381,10 @@ port map (
 	sd_cs => SD_CS,
 	sd_clk => SD_CLK,
 	sd_mosi => SD_MOSI,
-	sd_miso => SD_MISO
+	sd_miso => SD_MISO,
+	kickstart_we => kickstart_shadow_we,
+	kickstart_ena => kickstart_shadow_ena,
+	causereset => causereset
 --	rom_overlay => rom_overlay
 );
 
@@ -385,10 +397,6 @@ oTG68_ADDR <= amiga_addr;
 
 sel_24bit <= '1' when
 	cpu_addr(31 downto 24)=X"00" else '0'; -- 0x000000 to 0xffffff
-
--- This will be used if we do soft-kicking at any point.
-sel_kickstart <= '1' when
-	sel_24bit='1' and cpu_addr(23 downto 20)=X"F" else '0';
 
 -- The first set of autoconfig data (Zorro II RAM)
 sel_autoconfig <= '1' when
@@ -410,8 +418,25 @@ sel_zii_fast <= '1' when
 
 -- Zorro III Fast RAM
 sel_ziii_fast <= '1' when
-  sel_24bit<='0' and cpu_addr(31)='0' -- 1000000 upwards, aliased to fill the address space.
-  else '0';
+	cpu_addr(31 downto 25)=ziii_base(7 downto 1)
+		else '0';
+--  sel_24bit<='0' and cpu_addr(31)='0' -- 1000000 upwards, aliased to fill the address space.
+--  else '0';
+
+-- Zorro III Fast RAM
+sel_ziii_fast2 <= '1' when
+	cpu_addr(31 downto 25)=ziii_base2(7 downto 1)
+		else '0';
+
+-- Kickstart shadow - for reading
+sel_kickstart_shadow_r <= '1' when
+	sel_24bit='1' and cpu_addr(23 downto 20)=X"F" and kickstart_shadow_ena='1'
+		else '0';
+
+-- Kickstart shadow - for writing
+sel_kickstart_shadow_w <= '1' when
+	sel_24bit='1' and cpu_addr(23 downto 20)=X"F" and kickstart_shadow_we='1'
+		else '0';
 
 -- Custom Vampire 500 registers
 sel_vampire <= '1' when
@@ -429,7 +454,24 @@ sel_bootrom <= '1' when
 --sdram_addr(25)<= sel_zii_fast;
 --sdram_addr(24)<= sel_zii_fast or cpu_addr(24);
 --sdram_addr(23 downto 1)<=cpu_addr(23 downto 1);
-sdram_addr(25 downto 1)<=cpu_addr(25 downto 1);
+--sdram_addr(25 downto 1)<=cpu_addr(25 downto 1);
+
+-- SDRAM mapping:
+--		Zorro II card from 0x00200000 - 0x00a00000 -> 0x00200000 - 0x00a00000, direct mapping
+--   Zorro III card from 0x40000000 - 0x42000000 -> 0x02000000 - 0x04000000
+--   Zorro III card from 0x42000000 - 0x43000000 -> 0x01000000 - 0x02000000
+--    Spare regions from 0x00000000 - 0x00200000  & 0x00a00000 - 0x01000000
+--   We can direct map the Kickstart ROM!
+--   Just need to take care of interrupt acknowledge cycles?  Or ignore them and let the
+--   real Kickstart ROM take care of them?
+
+--   Bits 31 downto 26 are always 0.
+--   Bit 25 <= sel_ziii
+--   Bit 24 <= cpu_addr(24) or sel_ziii2
+
+sdram_addr(25)<= sel_ziii_fast;
+sdram_addr(24)<= sel_ziii_fast2 or cpu_addr(24);
+sdram_addr(23 downto 1)<=cpu_addr(23 downto 1);
 
 --process(sysclk)
 --begin 
@@ -447,44 +489,70 @@ sdram_addr(25 downto 1)<=cpu_addr(25 downto 1);
 --	END CASE;
 --end process;
 
-process(sysclk)
+process(cpu_addr(6 downto 1))
 begin 
 	-- Zorro III RAM (Up to 8 meg at 0x200000)
 	autoconfig_data <= "1111";
 	CASE cpu_addr(6 downto 1) IS
-		WHEN "000000" => autoconfig_data <= "1010";		--Zorro-II card, add mem, no ROM
-		WHEN "000001" => autoconfig_data <= "0010";		--64meg (with extension bit)
+		WHEN "000000" => autoconfig_data <= "1010";		--Zorro-III card, add mem, no ROM
+		WHEN "000001" => autoconfig_data <= "0001";		--32 meg (with extension bit)
 		WHEN "000100" => autoconfig_data <= "0000";		-- Extended 
 		WHEN "001000" => autoconfig_data <= "1110";		-- 5016=Majsta
-		WHEN "001001" => autoconfig_data <= "1100";		
-		WHEN "001010" => autoconfig_data <= "0110";		
-		WHEN "001011" => autoconfig_data <= "0111";		
+		WHEN "001001" => autoconfig_data <= "1100";
+		WHEN "001010" => autoconfig_data <= "0110";
+		WHEN "001011" => autoconfig_data <= "0111";
 		WHEN "010011" => autoconfig_data <= "1110";		--serial=1
 		WHEN OTHERS => null;
 	END CASE;
 end process;
 
 
+process(sysclk)
+begin
+	if sampled_reset='0' then
+		ziii_base <= X"10";
+		ziii_base <= X"12";
+		autoconfig_out<="01";
+	elsif rising_edge(sysclk) then
+		if sel_autoconfig='1' and cpu_addr(6 downto 1)="100010" then 	-- Base address register, 0x44 - 
+															-- assign base address to ZIII RAM.
+			if cpu_r_w='0' then -- Write cycle
+--				case autoconfig_out is
+--					when "01" => -- Zorro II -- just skip over to Zorro III board 1
+						ziii_base<=cpu_dataout(15 downto 8); -- Zorro III boards are configured by writing to 44; write to 48 happens first.
+						autoconfig_out<="00";
+--					when others =>
+--						null;
+--					autoconfig_out<="00";	-- Move on to the next autoconfig 
+--				end case;
+			end if;
+		end if;
+	end if;
+end process;
 
 		
 -- Multiplexer for CPU Data in.
 cpu_datain <= ioTG68_Data when cpudatasource=src_amiga
 	else fastram_tocpu.data when cpudatasource=src_sdram
-	else autoconfig_data & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="01"
-	else autoconfig_data2 & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="10"
+--	else autoconfig_data & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="01"
+--	else autoconfig_data2 & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="10"
 	else vampire_data when cpudatasource=src_vampire
 	else bootrom_data_latched when cpudatasource=src_bootrom
 		---src_peripheral, etc.
 	else
-		(others => 'X');
+		(others => '1'); -- "bus noise"
 
 		
   
 process(sysclk,reset_counter)
 begin
-  if rising_edge(sysclk) then
 
-	cpu_clkena<='0';	-- The CPU will be paused by default.  The delay2 state will allow it to run for 1 cycle.
+	-- Respond to reset signal
+	if sampled_reset='0' then
+		mystate <= init;
+	elsif rising_edge(sysclk) then
+
+		cpu_clkena<='0';	-- The CPU will be paused by default.  The delay2 state will allow it to run for 1 cycle.
 	
 		 case mystate is	
 			when init =>
@@ -500,7 +568,7 @@ begin
 				TG68_RESETn <= '0';
 			 end if; 
 			when reset =>
-				autoconfig_out<="01";
+--				autoconfig_out<="01";
 				if amiga_risingedge_read='1' then
 				  if reset_counter=X"0000" then
 					 mystate<=state1;
@@ -561,7 +629,6 @@ begin
 				-- **** This Main state directs the state machine depending upon the CPU address and write flag. ****
 				
 				when main =>
-
 					if cpustate="01" then -- CPU state 01 (decode) doesn't involve any external access
 						 -- We run CPU one more cycle
 						mystate<=delay1;	-- so we just skip straight to the delay state.
@@ -578,34 +645,37 @@ begin
 							mystate<=vampire1;
 						elsif sel_autoconfig='1' then
 							cpudatasource<=src_autoconfig;
-							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
-								autoconfig_out<="00";
-							end if;
+--							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
+--								autoconfig_out<="00";
+--							end if;
 							mystate<=delay1;
 						elsif sel_autoconfig2='1' then
 							cpudatasource<=src_autoconfig;
-							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
-								autoconfig_out<="00";
-							end if;
+--							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
+--								autoconfig_out<="00";
+--							end if;
 							mystate<=delay1;
-						elsif sel_bootrom='1' or rom_overlay='1' then
+						elsif sel_bootrom='1' or (rom_overlay='1' and sel_chipram='1') then
 							cpudatasource<=src_bootrom;
 							bootrom_data_latched<=bootrom_data;
 							mystate<=bootrom;
-						else					
+						elsif sel_24bit='1' then			
 							cpudatasource<=src_amiga;
 							if cpu_r_w='0' then	-- Write cycle.
 								mystate <= writeS0;
 							else -- Read cycle
 								mystate <= readS0;
 							end if;
+						else
+							cpudatasource<=src_busnoise;
+							mystate<=delay1;
 						end if;
 					end if;
 
-				-- Respond to reset signal
-				if sampled_reset='0' then
-					mystate <= init;
-				end if;
+					if causereset='1' then
+						vampire_req<='0';
+						mystate<=init;
+					end if;
 
 			when vampire1 =>
 				if vampire_ack='1' then
