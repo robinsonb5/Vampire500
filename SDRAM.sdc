@@ -46,7 +46,8 @@ create_clock -name {clk_50} -period 20.000 -waveform { 0.000 0.500 } [get_ports 
 #**************************************************************
 
 derive_pll_clocks 
-create_generated_clock -name sdclk_pin -source [get_pins {mySysClock|altpll_component|pll|clk[1]}] [get_ports {sdram_pins_o.clk}]
+create_generated_clock -name sdclk_pin -source [get_pins {mySysClock|altpll_component|pll|clk[1]}] [get_ports {sdram_pins_clk.clk}]
+create_generated_clock -name sysclk -source [get_pins {mySysClock|altpll_component|pll|clk[0]}]
 
 #**************************************************************
 # Set Clock Latency
@@ -67,14 +68,43 @@ derive_clock_uncertainty;
 set_input_delay -clock sdclk_pin -max 5.4 [get_ports sdram_pins_io.*]
 set_input_delay -clock sdclk_pin -min 0.3 [get_ports sdram_pins_io.*]
 
+set_input_delay -clock sysclk -min 0.5 [get_ports clk_7Mhz]
+set_input_delay -clock sysclk -max 1.0 [get_ports clk_7Mhz]
+
 #**************************************************************
 # Set Output Delay
 #**************************************************************
 # CLK line is very short compared with other signals, so we'll add some extra delay here
 # (without this these would be 1.5, -0.8)
 
-set_output_delay -clock sdclk_pin -max 2.5 [get_ports sdram_pins*]
-set_output_delay -clock sdclk_pin -min -0.5 [get_ports sdram_pins*]
+set_output_delay -clock sdclk_pin -max 2.5 [get_ports sdram_pins_io.*]
+set_output_delay -clock sdclk_pin -min -0.5 [get_ports sdram_pins_io.*]
+set_output_delay -clock sdclk_pin -max 2.5 [get_ports sdram_pins_o.*]
+set_output_delay -clock sdclk_pin -min -0.5 [get_ports sdram_pins_o.*]
+
+set_output_delay -clock sysclk -min 0.5 [get_ports U*OE_C]
+set_output_delay -clock sysclk -max 1.0 [get_ports U*OE_C]
+
+set_output_delay -clock sysclk -min 0.5 [get_ports U*OE]
+set_output_delay -clock sysclk -max 1.0 [get_ports U*OE]
+
+set_output_delay -clock sysclk -min 0.5 [get_ports ioTG68_DATA*]
+set_output_delay -clock sysclk -max 1.0 [get_ports ioTG68_DATA*]
+
+set_output_delay -clock sysclk -min 0.5 [get_ports E]
+set_output_delay -clock sysclk -max 1.0 [get_ports E]
+
+set_output_delay -clock sysclk -min 0.5 [get_ports halt_b]
+set_output_delay -clock sysclk -max 1.0 [get_ports halt_b]
+
+set_output_delay -clock sysclk -min 0.5 [get_ports reset_b]
+set_output_delay -clock sysclk -max 1.0 [get_ports reset_b]
+
+set_output_delay -clock sdclk_pin -min 0.5 [get_ports sdram_pins_clk.clk]
+set_output_delay -clock sdclk_pin -max 1.0 [get_ports sdram_pins_clk.clk]
+
+set_output_delay -clock sdclk_pin -min 0.5 [get_ports sdram_pins_clk.cke]
+set_output_delay -clock sdclk_pin -max 1.0 [get_ports sdram_pins_clk.cke]
 
 #**************************************************************
 # Set Clock Groups
@@ -86,7 +116,7 @@ set_output_delay -clock sdclk_pin -min -0.5 [get_ports sdram_pins*]
 # Set False Path
 #**************************************************************
 
-
+set_false_path -from {reset_a} -to {*}
 
 #**************************************************************
 # Set Multicycle Path

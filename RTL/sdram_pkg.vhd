@@ -14,8 +14,6 @@ type SDRAM_Pins_io is record
 end record;
 
 type SDRAM_Pins_o is record
-	clk : std_logic;
-	cke : std_logic; -- Clock enable
 	addr : std_logic_vector(sdram_rows-1 downto 0); -- Address - size specified in sdram_config.vhd
 	we : std_logic;	-- Write enable, active low
 	ras : std_logic;	-- Row Address Strobe, active low
@@ -23,6 +21,11 @@ type SDRAM_Pins_o is record
 	cs : std_logic;	-- Chip select - only the lsb does anything.
 	dqm : std_logic_vector(1 downto 0);	-- Data mask, upper and lower byte
 	ba : std_logic_vector(1 downto 0); -- Bank
+end record;
+
+type SDRAM_Pins_clk is record
+	clk : std_logic;
+	cke : std_logic; -- Clock enable
 end record;
 
 
@@ -50,6 +53,7 @@ port
 -- Pinssical connections to the SDRAM
 	pins_io : inout SDRAM_Pins_io;	-- Data lines
 	pins_o : out SDRAM_Pins_o; -- control signals
+	pins_clk : out SDRAM_Pins_clk; -- control signals
 
 -- Housekeeping
 	sysclk		: in std_logic;

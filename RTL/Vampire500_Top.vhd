@@ -90,6 +90,7 @@ LED : out std_logic;
 --		SDRAM_CKE : out std_logic;
 		sdram_pins_io : inout SDRAM_Pins_io;
 		sdram_pins_o : out SDRAM_Pins_o;
+		sdram_pins_clk : out SDRAM_Pins_clk;
 
 		SD_CLK : out std_logic;
 		SD_CS : out std_logic;
@@ -109,7 +110,8 @@ signal fastram_tocpu : SDRAM_Port_ToCPU;
 
 
 -- Clock signals 
-signal sysclk : std_logic; -- Master clock, about 128MHz.
+signal sysclk : std_logic; -- Master clock, about 100MHz.
+signal cpuclk : std_logic; -- CPU clock, about 25Mhz.
 signal amigaclk_r : std_logic; -- Amiga clock, synchronised to sysclk
 signal amigaclk : std_logic; -- Amiga clock, double-synchronised to sysclk.
 signal amigaclk_phase1 : std_logic_vector(4 downto 0); -- Count sysclks since the falling edge of 7Mhz
@@ -147,6 +149,10 @@ type mystates is
 
 signal mystate : mystates :=init;    -- Declare state machine variable with initial value of "init"
 
+
+type cpurunstates is (run,waitresponse);
+signal cpurunstate : cpurunstates:=run;
+
 signal amiga_addr : std_logic_vector(23 downto 1); -- CPU's current address
 signal reset_counter : unsigned(15 downto 0) := X"FFFF";
 
@@ -166,6 +172,16 @@ signal cpu_clkena : std_logic :='0';
 signal tg68_ready : std_logic; -- High when the CPU is initialised and ready for use.
 signal cpu_ipl_s : std_logic_vector(2 downto 0);
 signal cpu_ipl : std_logic_vector(2 downto 0);
+
+-- Registered CPU signals for faster clock
+signal cpu_dataout_r : std_logic_vector(15 downto 0); -- Data received from the CPU
+signal cpu_addr_r : std_logic_vector(31 downto 1); -- CPU's current address
+signal cpu_uds_r : std_logic; -- upper data strobe
+signal cpu_lds_r : std_logic; -- lower data strobe
+signal cpu_r_w_r : std_logic; -- read(high)/write(low)
+signal cpustate_r : std_logic_vector(1 downto 0);
+
+
 
 signal nullsig : std_logic_vector (31 downto 24);
 signal nullsig0 : std_logic;
@@ -204,14 +220,13 @@ BEGIN
 
 -- PLL to generate sysclk from 50MHz input clock.
 
-mySysClock : entity work.SysClock
+mySysClock : entity work.Clk_100MhzSplit
 	port map(
 		inclk0 => iSYS_CLK,
-		pllena => '1',
 		c0 => sysclk,
-		c1 => sdram_clk
+		c1 => sdram_clk,
+		c2 => cpuclk
 	);
-	
 
 	
 -- Double-synchronise the Amiga clock signal
@@ -292,11 +307,10 @@ begin
 end process;
 
 	
--- Instantiate CPU and Boot ROM
+-- Instantiate CPU
 
-myTG68 : entity work.TG68KdotC_Kernel
---myTG68 : entity work.DummyCPU
---myTG68 : entity work.ZPU_Bridge
+--myTG68 : entity work.TG68KdotC_Kernel
+myTG68 : entity work.DummyCPU
 	generic map
 	(
 		SR_Read =>2,
@@ -308,7 +322,7 @@ myTG68 : entity work.TG68KdotC_Kernel
 	)
    port map
 	(
-		clk => sysclk,
+		clk => cpuclk,
       nReset => TG68_RESETn,  -- Contributes to reset, so have to use reset_in here.
       clkena_in => cpu_clkena,
       data_in => cpu_datain,
@@ -330,6 +344,22 @@ myTG68 : entity work.TG68KdotC_Kernel
 	);
 
 
+-- Register the CPU signals on the faster clock, thus isolating the high-speed state machine
+-- stuff from the TG68k's lenthy combinational chains
+process (sysclk)
+begin
+	if rising_edge(sysclk) then
+		cpu_dataout_r<=cpu_dataout;
+		cpu_addr_r<=cpu_addr;
+		cpu_uds_r<=cpu_uds;
+		cpu_lds_r<=cpu_lds;
+		cpu_r_w_r<=cpu_r_w;
+		cpustate_r<=cpustate;
+	end if;
+end process;
+
+
+	
 -- ECLK generation.
 -- Every rising edge of the Amiga's clock we rotate a 10-bit register
 -- 1 bit to the right.  The lowest bit of this register is output as the eclk signal.
@@ -351,8 +381,8 @@ oVMA <= VMA_int;
 -- Simple boot ROM for testing.
 mybootrom : entity work.BootRom
 	port map (
-		clock => sysclk,
-		address => cpu_addr(12 downto 1),
+		clock => sysclk, -- Run the boot ROM at 100Mhz
+		address => cpu_addr_r(12 downto 1),
 		q => bootrom_data
 	);
 	
@@ -362,10 +392,10 @@ vampireregs : entity work.Vampire_Registers
 port map (
 	clk => sysclk,
 	reset => TG68_RESETn,
-	addr => cpu_addr(3 downto 1)&'0',
-	fromcpu => cpu_dataout,
+	addr => cpu_addr_r(3 downto 1)&'0',
+	fromcpu => cpu_dataout_r,
 	tocpu => vampire_data,
-	rw => cpu_r_w,
+	rw => cpu_r_w_r,
 	req => vampire_req,
 	ack => vampire_ack,
 	-- SPI signals
@@ -381,55 +411,41 @@ oTG68_ADDR <= amiga_addr;
 -- FSM who generates one reset on Amiga motherboards, and after that enables reset_fsm with fsm_ena(active high)
 
 
+
 -- Address decoding...
 
-sel_24bit <= '1' when
-	cpu_addr(31 downto 24)=X"00" else '0'; -- 0x000000 to 0xffffff
+sel_24bit <= '1' when cpu_addr_r(31 downto 24)=X"00" else '0'; -- 0x000000 to 0xffffff
 
 -- This will be used if we do soft-kicking at any point.
-sel_kickstart <= '1' when
-	sel_24bit='1' and cpu_addr(23 downto 20)=X"F" else '0';
+sel_kickstart <= '1' when sel_24bit='1' and cpu_addr_r(23 downto 20)=X"F" else '0';
 
 -- The first set of autoconfig data (Zorro II RAM)
-sel_autoconfig <= '1' when
-	sel_24bit='1' and autoconfig_out="01" and cpu_addr(23 downto 16)=X"E8" else '0'; -- Autoconfig space
+sel_autoconfig <= '1' when sel_24bit='1' and autoconfig_out="01" and cpu_addr_r(23 downto 16)=X"E8" else '0'; -- Autoconfig space
 
 -- The second set of autoconfig data (Zorro III RAM)
-sel_autoconfig2 <= '1' when
-	sel_24bit='1' and autoconfig_out="10" and cpu_addr(23 downto 16)=X"E8" else '0'; -- Autoconfig space
+sel_autoconfig2 <= '1' when sel_24bit='1' and autoconfig_out="10" and cpu_addr_r(23 downto 16)=X"E8" else '0'; -- Autoconfig space
 
 -- The chipram range.  This signal is only used to subtract chip RAM from the Z-II RAM range.
-sel_chipram <= '1' when
-	sel_24bit='1' and cpu_addr(23 downto 21)="000" else '0'; -- Chip RAM space, 0000000 to 1fffff
+sel_chipram <= '1' when sel_24bit='1' and cpu_addr_r(23 downto 21)="000" else '0'; -- Chip RAM space, 0000000 to 1fffff
 
 -- Zorro II Fast RAM
-sel_zii_fast <= '1' when
-	sel_24bit='1' and sel_chipram='0' and
-		(cpu_addr(23)='0'	or cpu_addr(23 downto 21)="100")	-- Zorro II Fast RAM.
+sel_zii_fast <= '1' when sel_24bit='1' and sel_chipram='0' and
+		(cpu_addr_r(23)='0'	or cpu_addr_r(23 downto 21)="100")	-- Zorro II Fast RAM.
 			else '0';
 
--- Zorro III Fast RAM
-sel_ziii_fast <= '1' when
-  sel_24bit<='0' and cpu_addr(31)='0' -- 1000000 upwards, aliased to fill the address space.
+-- Zorro III Fast RAM -- FIXME - match against base address here
+sel_ziii_fast <= '1' when sel_24bit<='0' and cpu_addr_r(31)='0' -- 1000000 upwards, aliased to fill the address space.
   else '0';
 
 -- Custom Vampire 500 registers
-sel_vampire <= '1' when
-	sel_24bit='1' and cpu_addr(23 downto 16)=X"EF" else '0';
+sel_vampire <= '1' when sel_24bit='1' and cpu_addr_r(23 downto 16)=X"EF" else '0';
 
 -- Vampire Boot ROM
-sel_bootrom <= '1' when
-	sel_24bit='1' and cpu_addr(23 downto 16)=X"EE" else '0';
+sel_bootrom <= '1' when	sel_24bit='1' and cpu_addr_r(23 downto 16)=X"EE" else '0';
 
 
--- Map Zorro II fast RAM to memory starting 48 meg in.
--- This leaves the low 48 meg for zorro III fast RAM,
--- and the last 8 meg for Kickstart mapping, Ranger RAM,
--- hard disk buffers or anything else we decide to do.
---sdram_addr(25)<= sel_zii_fast;
---sdram_addr(24)<= sel_zii_fast or cpu_addr(24);
---sdram_addr(23 downto 1)<=cpu_addr(23 downto 1);
-sdram_addr(25 downto 1)<=cpu_addr(25 downto 1);
+-- ZorroIII memory - directly mapped.
+sdram_addr(25 downto 1)<=cpu_addr_r(25 downto 1);
 
 --process(sysclk)
 --begin 
@@ -451,7 +467,7 @@ process(sysclk)
 begin 
 	-- Zorro III RAM (Up to 8 meg at 0x200000)
 	autoconfig_data <= "1111";
-	CASE cpu_addr(6 downto 1) IS
+	CASE cpu_addr_r(6 downto 1) IS
 		WHEN "000000" => autoconfig_data <= "1010";		--Zorro-II card, add mem, no ROM
 		WHEN "000001" => autoconfig_data <= "0010";		--64meg (with extension bit)
 		WHEN "000100" => autoconfig_data <= "0000";		-- Extended 
@@ -465,18 +481,39 @@ begin
 end process;
 
 
+-- Registered multiplexer for CPU Data in.
+process(cpuclk)
+begin
+	if rising_edge(cpuclk) then
+		case cpudatasource is
+			when src_amiga =>	cpu_datain <= ioTG68_Data;
+			when src_autoconfig =>
+				if autoconfig_out="01" then
+					cpu_datain <= autoconfig_data & X"FFF";
+				elsif autoconfig_out="10" then
+					cpu_datain <= autoconfig_data2 & X"FFF";
+				else
+					cpu_datain <= X"FFFF";
+				end if;
+			when src_sdram =>	cpu_datain <= fastram_tocpu.data;
+			when src_vampire => cpu_datain <= vampire_data;
+			when src_bootrom => cpu_datain <= bootrom_data_latched;
+			when others => cpu_datain <= X"FFFF";
+		end case;
+	end if;
+end process;
 
-		
--- Multiplexer for CPU Data in.
-cpu_datain <= ioTG68_Data when cpudatasource=src_amiga
-	else fastram_tocpu.data when cpudatasource=src_sdram
-	else autoconfig_data & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="01"
-	else autoconfig_data2 & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="10"
-	else vampire_data when cpudatasource=src_vampire
-	else bootrom_data_latched when cpudatasource=src_bootrom
-		---src_peripheral, etc.
-	else
-		(others => 'X');
+
+---- Multiplexer for CPU Data in.
+--cpu_datain <= ioTG68_Data when cpudatasource=src_amiga
+--	else fastram_tocpu.data when cpudatasource=src_sdram
+--	else autoconfig_data & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="01"
+--	else autoconfig_data2 & fastram_tocpu.data(11 downto 0) when cpudatasource=src_autoconfig and autoconfig_out="10"
+--	else vampire_data when cpudatasource=src_vampire
+--	else bootrom_data_latched when cpudatasource=src_bootrom
+--		---src_peripheral, etc.
+--	else
+--		(others => 'X');
 
 		
   
@@ -484,7 +521,7 @@ process(sysclk,reset_counter)
 begin
   if rising_edge(sysclk) then
 
-	cpu_clkena<='0';	-- The CPU will be paused by default.  The delay2 state will allow it to run for 1 cycle.
+--**	cpu_clkena<='0';	-- The CPU will be paused by default.  The delay2 state will allow it to run for 1 cycle.
 	
 		 case mystate is	
 			when init =>
@@ -561,47 +598,47 @@ begin
 				-- **** This Main state directs the state machine depending upon the CPU address and write flag. ****
 				
 				when main =>
-
-					if cpustate="01" then -- CPU state 01 (decode) doesn't involve any external access
-						 -- We run CPU one more cycle
-						mystate<=delay1;	-- so we just skip straight to the delay state.
-												-- (at 7Mhz no delays are strictly necessary,
-												-- but they certainly will be once we ramp up the speed.)
-					else
-						if sel_zii_fast='1' or sel_ziii_fast='1' then
-							cpudatasource<=src_sdram;
-							fastram_fromcpu.req<='1';
-							mystate<=fast_access;
-						elsif sel_vampire='1' then
-							cpudatasource<=src_vampire;
-							vampire_req<='1';
-							mystate<=vampire1;
-						elsif sel_autoconfig='1' then
-							cpudatasource<=src_autoconfig;
-							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
-								autoconfig_out<="00";
-							end if;
-							mystate<=delay1;
-						elsif sel_autoconfig2='1' then
-							cpudatasource<=src_autoconfig;
-							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
-								autoconfig_out<="00";
-							end if;
-							mystate<=delay1;
-						elsif sel_bootrom='1' or rom_overlay='1' then
-							cpudatasource<=src_bootrom;
-							bootrom_data_latched<=bootrom_data;
-							mystate<=bootrom;
-						else					
-							cpudatasource<=src_amiga;
-							if cpu_r_w='0' then	-- Write cycle.
-								mystate <= writeS0;
-							else -- Read cycle
-								mystate <= readS0;
-							end if;
-						end if;
-					end if;
-
+--
+--					if cpustate="01" then -- CPU state 01 (decode) doesn't involve any external access
+--						 -- We run CPU one more cycle
+--						mystate<=delay1;	-- so we just skip straight to the delay state.
+--												-- (at 7Mhz no delays are strictly necessary,
+--												-- but they certainly will be once we ramp up the speed.)
+--					else
+--						if sel_zii_fast='1' or sel_ziii_fast='1' then
+--							cpudatasource<=src_sdram;
+--							fastram_fromcpu.req<='1';
+--							mystate<=fast_access;
+--						elsif sel_vampire='1' then
+--							cpudatasource<=src_vampire;
+--							vampire_req<='1';
+--							mystate<=vampire1;
+--						elsif sel_autoconfig='1' then
+--							cpudatasource<=src_autoconfig;
+--							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
+--								autoconfig_out<="00";
+--							end if;
+--							mystate<=delay1;
+--						elsif sel_autoconfig2='1' then
+--							cpudatasource<=src_autoconfig;
+--							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
+--								autoconfig_out<="00";
+--							end if;
+--							mystate<=delay1;
+--						elsif sel_bootrom='1' or rom_overlay='1' then
+--							cpudatasource<=src_bootrom;
+--							bootrom_data_latched<=bootrom_data;
+--							mystate<=bootrom;
+--						else					
+--							cpudatasource<=src_amiga;
+--							if cpu_r_w='0' then	-- Write cycle.
+--								mystate <= writeS0;
+--							else -- Read cycle
+--								mystate <= readS0;
+--							end if;
+--						end if;
+--					end if;
+--
 				-- Respond to reset signal
 				if sampled_reset='0' then
 					mystate <= init;
@@ -623,8 +660,8 @@ begin
 --				cpu_datain<=fastram_tocpu.data;	-- copy data from SDRAM to CPU. (Unnecessary but harmless for write cycles.)
 				if fastram_tocpu.ack='0' then
 					fastram_fromcpu.req<='0'; -- Cancel the request, since it's been acknowledged.
-					if cpu_r_w='0' then -- If we're writing we can let the CPU continue immediately...
-						cpu_clkena<='1';
+					if cpu_r_w_r='0' then -- If we're writing we can let the CPU continue immediately...
+--	**					cpu_clkena<='1';
 						mystate<=delay3;
 					else
 						mystate<=delay1;	-- If reading we let the data settle...
@@ -647,7 +684,7 @@ begin
 				mystate<=delay2;
 				
 			when delay2 =>
-				cpu_clkena<='1';			
+--**				cpu_clkena<='1';			
 				mystate<=delay3;
 				
 			when delay3 =>
@@ -673,7 +710,7 @@ begin
 			when writeS1 =>
 				if amiga_fallingedge_write='1' then	-- Entering S1 the CPU drives the Address lines.
 					U1_U2_OE 			<= '0';  -- enable address bus
-					amiga_addr <= cpu_addr(23 downto 1);
+					amiga_addr <= cpu_addr_r(23 downto 1);
 					mystate<=writeS2;
 				end if;
 				
@@ -690,24 +727,24 @@ begin
 					U4_1OE_C  <= '0';            -- ALVC devices as output
 					U4_2DIR_C <= '1';         
 					U4_2OE_C  <= '0';			
-					ioTG68_DATA<=cpu_dataout;     -- DATA to Amiga bus			
+					ioTG68_DATA<=cpu_dataout_r;     -- DATA to Amiga bus			
 					mystate<=writeS4;
 				end if;
 
 			when writeS4 =>
 
 				if amiga_risingedge_write='1' then -- Entering S4...	
-					oTG68_UDSn  <=cpu_uds;	-- Write UDS/LDS on rising edge of S4
-					oTG68_LDSn  <=cpu_lds;
+					oTG68_UDSn  <=cpu_uds_r;	-- Write UDS/LDS on rising edge of S4
+					oTG68_LDSn  <=cpu_lds_r;
 				end if;
 				if amiga_eitheredge_read='1' then -- Allow a little time for incoming signals to come through the ALVC.
 					-- 6800-style cycle?
 					if VPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
 						VMA_int<='0';
 						mystate<=writeS5;
-						cpu_clkena<='1';			
+--**						cpu_clkena<='1';			
 					elsif DTACK ='0' then	-- Wait for DTACK or VPA
-						cpu_clkena<='1';
+--**						cpu_clkena<='1';
 						mystate<=writeS5;
 					end if;					
 				end if;
@@ -778,7 +815,7 @@ begin
 				
 			when readS1 =>
 --				if amiga_fallingedge_write='1' then	-- Entering S1...
-					amiga_addr <= cpu_addr(23 downto 1);
+					amiga_addr <= cpu_addr_r(23 downto 1);
 					U1_U2_OE 			<= '0';  -- enable address bus
 					mystate<=readS2;
 --				end if;
@@ -788,8 +825,8 @@ begin
 					oTG68_ASn  	<='0'; -- Now pull /AS low to indicate that a valid address is on the bus			
 					-- The DATA lines are inputs by default, so we don't have to worry about the direction lines								
 
-					oTG68_UDSn  <=cpu_uds;	
-					oTG68_LDSn  <=cpu_lds;
+					oTG68_UDSn  <=cpu_uds_r;	
+					oTG68_LDSn  <=cpu_lds_r;
 								
 					mystate<=readS3;	
 --				end if;	
@@ -819,11 +856,11 @@ begin
 --				cpu_datain<=ioTG68_DATA;
 				if VPA='0' then
 					if eclk_fallingedge='1' then
-						cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
+--**						cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 						mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
 					end if;
 				elsif amiga_eitheredge_read='1' then
-					cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
+--**					cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 					U4_1DIR_C <= '0';	-- Set ALVCs to input, and give them time to turn around.
 					U4_1OE_C  <= '0';	-- (They should be input already, but it doesn't hurt to be sure.)
 					U4_2DIR_C <= '0';
@@ -853,6 +890,33 @@ begin
 
 	end if;
 end process;
+
+
+
+-- Slower State machine running on the CPU clock (nominally 25Mhz for now)
+process(cpuclk)
+begin
+	if sampled_reset='0' then
+		cpurunstate<=run;
+	elsif rising_edge(cpuclk) then
+		case cpurunstate is
+			when run =>
+				cpu_clkena<='0';
+				cpurunstate<=waitresponse;
+			when waitresponse =>
+				-- Just wait here for the fast state machine to do its thing.
+
+				-- When SDRAM access finishes, force the state machine back to the "run" state
+				if fastram_tocpu.ack='1' then
+					cpu_clkena<='1';
+					cpurunstate<=run;
+				end if;
+		end case;
+	end if;
+end process;
+
+
+
 
 
 oBRn <='1';
@@ -933,6 +997,7 @@ port map
 	-- Physical connections to the SDRAM
 		pins_io => sdram_pins_io,
 		pins_o => sdram_pins_o,
+		pins_clk => sdram_pins_clk,
 --		sdata => SDRAM_DQ,
 --		sdaddr => SDRAM_A,
 --		sd_we	=> SDRAM_WE,
@@ -964,10 +1029,10 @@ port map
 --SDRAM_DQML <= tosdram.dqm(0);
 --SDRAM_BA <= tosdram.ba;
 
-fastram_fromcpu.wr<=cpu_r_w;
-fastram_fromcpu.data<=cpu_dataout;
+fastram_fromcpu.wr<=cpu_r_w_r;
+fastram_fromcpu.data<=cpu_dataout_r;
 fastram_fromcpu.addr<=sdram_addr&'0';
-fastram_fromcpu.uds<=cpu_uds;
-fastram_fromcpu.lds<=cpu_lds;
+fastram_fromcpu.uds<=cpu_uds_r;
+fastram_fromcpu.lds<=cpu_lds_r;
 	
 END;

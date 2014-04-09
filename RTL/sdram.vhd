@@ -34,6 +34,7 @@ port
 		-- Physical connections to the SDRAM
 		pins_io : inout SDRAM_Pins_io;	-- Data lines
 		pins_o : out SDRAM_Pins_o; -- control signals
+		pins_clk : out SDRAM_Pins_clk; -- clock signals
 		
 --	-- Physical connections to the SDRAM
 --		sdata		: inout std_logic_vector(15 downto 0);
@@ -171,8 +172,8 @@ END COMPONENT;
 
 begin
 
-Pins_o.cke <= '1';
-Pins_o.clk <= sdram_clk;
+Pins_clk.cke <= '1';
+Pins_clk.clk <= sdram_clk;
 
 	process(sysclk)
 	begin
@@ -211,21 +212,60 @@ Pins_o.clk <= sdram_clk;
 		case writecache_state is
 			when waitwrite =>
 				if port1_i.req='1' and port1_i.wr='0' then -- write request
+					-- Need to be careful with write merges; if we byte-write to an address
+					-- that already has a pending word write, we must be sure not to cancel
+					-- the other half of the existing word write.
 					if writecache_dirty='0' or port1_i.addr(31 downto 3)=writecache_addr(31 downto 3) then
 						writecache_addr(31 downto 3)<=port1_i.addr(31 downto 3);
 						case port1_i.addr(2 downto 1) is
 							when "00" =>
-								writecache_word0<=port1_i.data;
-								writecache_dqm(1 downto 0)<=port1_i.uds&port1_i.lds;
+								if port1_i.uds='0' then
+									writecache_word0(15 downto 8)<=port1_i.data(15 downto 8);
+									writecache_dqm(1)<='0';
+								end if;
+								if port1_i.lds='0' then
+									writecache_word0(7 downto 0)<=port1_i.data(7 downto 0);
+									writecache_dqm(0)<='0';
+								end if;
 							when "01" =>
-								writecache_word1<=port1_i.data;
-								writecache_dqm(3 downto 2)<=port1_i.uds&port1_i.lds;
+								if port1_i.uds='0' then
+									writecache_word1(15 downto 8)<=port1_i.data(15 downto 8);
+									writecache_dqm(3)<='0';
+								end if;
+								if port1_i.lds='0' then
+									writecache_word1(7 downto 0)<=port1_i.data(7 downto 0);
+									writecache_dqm(2)<='0';
+								end if;
 							when "10" =>
-								writecache_word2<=port1_i.data;
-								writecache_dqm(5 downto 4)<=port1_i.uds&port1_i.lds;
+								if port1_i.uds='0' then
+									writecache_word2(15 downto 8)<=port1_i.data(15 downto 8);
+									writecache_dqm(5)<='0';
+								end if;
+								if port1_i.lds='0' then
+									writecache_word2(7 downto 0)<=port1_i.data(7 downto 0);
+									writecache_dqm(4)<='0';
+								end if;
 							when "11" =>
-								writecache_word3<=port1_i.data;
-								writecache_dqm(7 downto 6)<=port1_i.uds&port1_i.lds;
+								if port1_i.uds='0' then
+									writecache_word3(15 downto 8)<=port1_i.data(15 downto 8);
+									writecache_dqm(7)<='0';
+								end if;
+								if port1_i.lds='0' then
+									writecache_word3(7 downto 0)<=port1_i.data(7 downto 0);
+									writecache_dqm(6)<='0';
+								end if;
+--							when "00" =>
+--								writecache_word0<=port1_i.data;
+--								writecache_dqm(1 downto 0)<=port1_i.uds&port1_i.lds;
+--							when "01" =>
+--								writecache_word1<=port1_i.data;
+--								writecache_dqm(3 downto 2)<=port1_i.uds&port1_i.lds;
+--							when "10" =>
+--								writecache_word2<=port1_i.data;
+--								writecache_dqm(5 downto 4)<=port1_i.uds&port1_i.lds;
+--							when "11" =>
+--								writecache_word3<=port1_i.data;
+--								writecache_dqm(7 downto 6)<=port1_i.uds&port1_i.lds;
 						end case;
 						writecache_req<='1';
 
