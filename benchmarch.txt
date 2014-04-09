@@ -1,0 +1,5 @@
+Sysinfo benchmark results for the current build:
+Dhrystones: 5972
+MIPS: 6.23
+Chip speed: 2.76
+
