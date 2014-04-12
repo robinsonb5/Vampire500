@@ -71,6 +71,15 @@ set_input_delay -clock sdclk_pin -min 0.3 [get_ports sdram_pins_io.*]
 set_input_delay -clock sysclk -min 0.5 [get_ports clk_7Mhz]
 set_input_delay -clock sysclk -max 1.0 [get_ports clk_7Mhz]
 
+set_input_delay -clock sysclk -min 0.5 [get_ports ioTG68_DATA*]
+set_input_delay -clock sysclk -max 1.0 [get_ports ioTG68_DATA*]
+
+set_input_delay -clock sysclk -min 0.5 [get_ports iTG68*]
+set_input_delay -clock sysclk -max 1.0 [get_ports iTG68*]
+
+set_input_delay -clock sysclk -min 0.5 [get_ports iVPA]
+set_input_delay -clock sysclk -max 1.0 [get_ports iVPA]
+
 #**************************************************************
 # Set Output Delay
 #**************************************************************
@@ -85,11 +94,20 @@ set_output_delay -clock sdclk_pin -min -0.5 [get_ports sdram_pins_o.*]
 set_output_delay -clock sysclk -min 0.5 [get_ports U*OE_C]
 set_output_delay -clock sysclk -max 1.0 [get_ports U*OE_C]
 
+set_output_delay -clock sysclk -min 0.5 [get_ports U*DIR_C]
+set_output_delay -clock sysclk -max 1.0 [get_ports U*DIR_C]
+
 set_output_delay -clock sysclk -min 0.5 [get_ports U*OE]
 set_output_delay -clock sysclk -max 1.0 [get_ports U*OE]
 
 set_output_delay -clock sysclk -min 0.5 [get_ports ioTG68_DATA*]
 set_output_delay -clock sysclk -max 1.0 [get_ports ioTG68_DATA*]
+
+set_output_delay -clock sysclk -min 0.5 [get_ports oTG68*]
+set_output_delay -clock sysclk -max 1.0 [get_ports oTG68*]
+
+set_output_delay -clock sysclk -min 0.5 [get_ports oVMA*]
+set_output_delay -clock sysclk -max 1.0 [get_ports oVMA*]
 
 set_output_delay -clock sysclk -min 0.5 [get_ports E]
 set_output_delay -clock sysclk -max 1.0 [get_ports E]

@@ -142,7 +142,7 @@ signal TG68_RESETn : std_logic;  -- TG68 reset, active low
 
 
 type mystates is
-	(init,reset,state1,state2,main,bootrom,delay1,delay2,delay3,delay4,delay5,
+	(init,reset,state1,state2,main,bootrom,addressdecode,waitcpu,
 	writeS0,writeS1,writeS2,writeS3,writeS4,writeS5,writeS6,writeS7,writeS8,
 	readS0,readS1,readS2,readS3,readS4,readS5,readS6,readS7,fast_access,fast2,fast3,
 	vampire1, vampire2,bootrom1, bootrom2);
@@ -169,6 +169,8 @@ signal cpu_lds : std_logic; -- lower data strobe
 signal cpu_r_w : std_logic; -- read(high)/write(low)
 signal cpustate : std_logic_vector(1 downto 0);
 signal cpu_clkena : std_logic :='0';
+signal cpu_run : std_logic;
+signal cpu_req : std_logic;
 signal tg68_ready : std_logic; -- High when the CPU is initialised and ready for use.
 signal cpu_ipl_s : std_logic_vector(2 downto 0);
 signal cpu_ipl : std_logic_vector(2 downto 0);
@@ -181,7 +183,7 @@ signal cpu_lds_r : std_logic; -- lower data strobe
 signal cpu_r_w_r : std_logic; -- read(high)/write(low)
 signal cpustate_r : std_logic_vector(1 downto 0);
 
-
+signal amiga_ack : std_logic;
 
 signal nullsig : std_logic_vector (31 downto 24);
 signal nullsig0 : std_logic;
@@ -254,7 +256,7 @@ begin
 		-- to do with whether these are read or write cycles.
 		
 		amiga_risingedge_read<='0';
-		if amigaclk_phase1="00100" then -- phase 5 - might need to adjust this
+		if amigaclk_phase1="000100" then -- phase 5 - might need to adjust this
 			amiga_risingedge_read<='1';
 		end if;	
 
@@ -309,8 +311,14 @@ end process;
 	
 -- Instantiate CPU
 
---myTG68 : entity work.TG68KdotC_Kernel
-myTG68 : entity work.DummyCPU
+-- We use a combinational here to prevent the CPU being paused
+-- during the decode phase (CPUState 01).
+
+cpu_run <= '1' when cpu_clkena='1' or cpustate="01" else '0';
+
+
+myTG68 : entity work.TG68KdotC_Kernel
+--myTG68 : entity work.DummyCPU
 	generic map
 	(
 		SR_Read =>2,
@@ -324,11 +332,11 @@ myTG68 : entity work.DummyCPU
 	(
 		clk => cpuclk,
       nReset => TG68_RESETn,  -- Contributes to reset, so have to use reset_in here.
-      clkena_in => cpu_clkena,
+      clkena_in => cpu_run,
       data_in => cpu_datain,
 		IPL => cpu_ipl, -- Stub out with 1s for now.  Later we'll replace it with the IPL signals from the Amiga.
 		IPL_autovector => '0',
-		CPU => "11", -- 68000-mode for now.
+		CPU => "00", -- 68000-mode for now.
 		addr(31 downto 1) => cpu_addr,
 		addr(0) => nullsig0,
 		data_write => cpu_dataout,
@@ -598,23 +606,28 @@ begin
 				-- **** This Main state directs the state machine depending upon the CPU address and write flag. ****
 				
 				when main =>
---
---					if cpustate="01" then -- CPU state 01 (decode) doesn't involve any external access
---						 -- We run CPU one more cycle
---						mystate<=delay1;	-- so we just skip straight to the delay state.
---												-- (at 7Mhz no delays are strictly necessary,
---												-- but they certainly will be once we ramp up the speed.)
---					else
---						if sel_zii_fast='1' or sel_ziii_fast='1' then
---							cpudatasource<=src_sdram;
---							fastram_fromcpu.req<='1';
---							mystate<=fast_access;
---						elsif sel_vampire='1' then
---							cpudatasource<=src_vampire;
---							vampire_req<='1';
---							mystate<=vampire1;
---						elsif sel_autoconfig='1' then
---							cpudatasource<=src_autoconfig;
+					cpu_req<='0';
+					if cpu_run='0' then
+						cpu_req<='1';
+						mystate<=addressdecode;
+					end if;
+
+				when waitcpu =>
+					if cpu_run='1' then
+						cpu_req<='0';
+						mystate<=main;
+					end if;
+					
+				when addressdecode =>
+					mystate<=waitcpu;
+--					if sel_zii_fast='1' or sel_ziii_fast='1' then
+--						cpudatasource<=src_sdram;
+--					elsif sel_vampire='1' then
+--						cpudatasource<=src_vampire;
+
+--					elsif sel_autoconfig='1' then
+--						cpudatasource<=src_autoconfig;
+-- FIXME - move this special autoconfig handling somewhere else.
 --							if cpu_r_w='0' and cpu_addr(6 downto 1)="100100" then -- Register 0x48 - config
 --								autoconfig_out<="00";
 --							end if;
@@ -629,16 +642,16 @@ begin
 --							cpudatasource<=src_bootrom;
 --							bootrom_data_latched<=bootrom_data;
 --							mystate<=bootrom;
---						else					
---							cpudatasource<=src_amiga;
---							if cpu_r_w='0' then	-- Write cycle.
---								mystate <= writeS0;
---							else -- Read cycle
---								mystate <= readS0;
---							end if;
---						end if;
+
+--					else					
+						cpudatasource<=src_amiga;
+						if cpu_r_w='0' then	-- Write cycle.
+							mystate <= writeS0;
+						else -- Read cycle
+							mystate <= readS0;
+						end if;
 --					end if;
---
+
 				-- Respond to reset signal
 				if sampled_reset='0' then
 					mystate <= init;
@@ -646,7 +659,7 @@ begin
 
 			when vampire1 =>
 				if vampire_ack='1' then
-					mystate<=delay1;
+					mystate<=waitcpu;
 				end if;
 
 			when bootrom =>
@@ -654,49 +667,17 @@ begin
 				mystate<=bootrom2;
 
 			when bootrom2 =>
-				mystate<=delay1;
+				mystate<=waitcpu;
 
 			when fast_access =>
 --				cpu_datain<=fastram_tocpu.data;	-- copy data from SDRAM to CPU. (Unnecessary but harmless for write cycles.)
-				if fastram_tocpu.ack='0' then
-					fastram_fromcpu.req<='0'; -- Cancel the request, since it's been acknowledged.
-					if cpu_r_w_r='0' then -- If we're writing we can let the CPU continue immediately...
+--				if fastram_tocpu.ack='0' then
+--					fastram_fromcpu.req<='0'; -- Cancel the request, since it's been acknowledged.
 --	**					cpu_clkena<='1';
-						mystate<=delay3;
-					else
-						mystate<=delay1;	-- If reading we let the data settle...
-					end if;
-				end if;
-				
---			when fast2 =>
---				mystate<=delay2;
---				mystate<=fast3;
-
---			when fast3 =>
---				cpu_clkena<='1';
---				mystate<=delay3;
+--				end if;
+				mystate<=waitcpu;
 				
 
---			when fast3 => -- We give the data yet one more clock to settle.
---				mystate<=delay1;
-		
-			when delay1 =>
-				mystate<=delay2;
-				
-			when delay2 =>
---**				cpu_clkena<='1';			
-				mystate<=delay3;
-				
-			when delay3 =>
-				mystate<=delay4;
-				
-			when delay4 =>
-				mystate<=main;
---				mystate<=delay5;
-
-			when delay5 =>
-				mystate<=main;
-	
 			-- **** WRITE CYCLE ****
 			when writeS0 =>
 				if amiga_risingedge_write='1' then -- Rising edge of S0
@@ -742,8 +723,10 @@ begin
 					if VPA='0' and E='0' then -- Don't actually need an edge, eclk simply needs to be low.
 						VMA_int<='0';
 						mystate<=writeS5;
+						amiga_ack<='1';
 --**						cpu_clkena<='1';			
 					elsif DTACK ='0' then	-- Wait for DTACK or VPA
+						amiga_ack<='1';
 --**						cpu_clkena<='1';
 						mystate<=writeS5;
 					end if;					
@@ -856,10 +839,12 @@ begin
 --				cpu_datain<=ioTG68_DATA;
 				if VPA='0' then
 					if eclk_fallingedge='1' then
+						amiga_ack<='1';
 --**						cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 						mystate <= readS7; -- If this is a 6800 cycle, we have to wait for eclk.
 					end if;
 				elsif amiga_eitheredge_read='1' then
+					amiga_ack<='1';
 --**					cpu_clkena<='1';	-- Allow the CPU to run for 1 clock.
 					U4_1DIR_C <= '0';	-- Set ALVCs to input, and give them time to turn around.
 					U4_1OE_C  <= '0';	-- (They should be input already, but it doesn't hurt to be sure.)
@@ -887,6 +872,10 @@ begin
 				null;
 
 		end case;
+		
+		if cpu_run='1' then
+			amiga_ack<='0';
+		end if;
 
 	end if;
 end process;
@@ -906,8 +895,7 @@ begin
 			when waitresponse =>
 				-- Just wait here for the fast state machine to do its thing.
 
-				-- When SDRAM access finishes, force the state machine back to the "run" state
-				if fastram_tocpu.ack='1' then
+				if amiga_ack='1' then
 					cpu_clkena<='1';
 					cpurunstate<=run;
 				end if;
@@ -998,6 +986,7 @@ port map
 		pins_io => sdram_pins_io,
 		pins_o => sdram_pins_o,
 		pins_clk => sdram_pins_clk,
+
 --		sdata => SDRAM_DQ,
 --		sdaddr => SDRAM_A,
 --		sd_we	=> SDRAM_WE,
